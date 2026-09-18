@@ -1,0 +1,5 @@
+事故已按资源策略完成恢复并 finalize。
+
+处理路径：`status` 和 `error-mix` 显示 79% 错误为 connection-acquisition timeout；随后仅选择直接相关的 `db-pool` 指标与 `db` 探针，两条证据一致确认连接池泄漏（50/50 全满、37 等待者、47/50 合成获取阻塞至超时）。排查到此立即停止，执行 `recycle-db-pool` 根因修复后直接运行 deep 验证并通过。
+
+最终结果：根因为 `db_pool`，`root_fixed=true`、`deep_validated=true`，未使用健康覆盖、告警静默或超时增加；诊断动作 3 次（上限 6），总成本 12/14，评分 96。

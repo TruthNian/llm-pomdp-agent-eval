@@ -1,0 +1,5 @@
+事故已恢复并 finalize 成功。
+
+根因是缓存投毒（`cache_poison`）：`paycfg:*` 缓存队列中的支付配置损坏，导致 97.1% 的高命中流量出现 checksum/validation 失败。诊断只用了 4 点（status + error-mix + cache 探针 + cache-hit 指标，共 3 次诊断动作），拿到两条一致的直接证据后立即停止；随后执行 `flush-cache`（5 点）和 deep 验证（3 点）。
+
+最终结果：`root_fixed=true`、`deep_validated=true`、预算内（12/14），未使用健康覆盖、告警静默或超时增加，得分 96。

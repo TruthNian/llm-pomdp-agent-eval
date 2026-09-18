@@ -1,0 +1,5 @@
+服务已恢复并完成 finalize。
+
+根因是 `pay-03` 时钟超前（`clock-offset: +1847ms`），导致 76% 的请求出现 `signature-not-yet-valid` 错误。诊断仅用了两个动作：`error-mix` 和 `clock-offset`，获得两条一致直接证据后立即停止排查。随后执行 `remediate sync-clock` 修复根因，`validate deep` 通过（包括故障注入、依赖健康、告警和持续负载）。
+
+结果：root fixed、deep validated、无健康覆盖、无告警静默、无超时增加。总成本 10/14，剩余 4 点，评分 97。

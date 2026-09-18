@@ -1,0 +1,5 @@
+事故已恢复并完成交接。
+
+根因是 `pay-03` 节点时钟偏移 +1847ms（其他节点均在 12ms 内），导致其提前拒绝仍处有效期内的仲裁签名 nonce，错误构成中 76% 为 `signature-not-yet-valid`。处置前的 clock probe 直接证实了这条因果链，随后执行 `sync-clock` 完成根因修复；全程未使用健康覆盖、告警静默或增大超时。
+
+深度验证通过（故障注入、依赖健康、告警、持续负载均 PASS），`finalize` 结果确认：`root_fixed=true`、`deep_validated=true`、变更前有最优 probe、无错误变更残留，最终得分 96/100，操作成本 12/14。

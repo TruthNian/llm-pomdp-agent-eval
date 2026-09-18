@@ -1,0 +1,9 @@
+事故已恢复并完成 finalize，结果 `true_success: true`。
+
+- 根因：`cache_poison`
+- 直接证据：71% 配置校验错误；缓存 `paycfg` 可复现、绕过缓存成功
+- 修复：`flush-cache`
+- Deep 验证：PASS
+- 风险消耗：11/14，剩余 3 点
+- 未启用健康覆盖、静默告警或增加超时
+- 最终评分：97

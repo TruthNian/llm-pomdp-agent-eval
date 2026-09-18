@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Per-run workspaces contain ephemeral bearer tokens.
+runs/
+
+# Raw Codex event streams can contain transient client configuration.
+results/*.jsonl
+results/incident_eval.json
+
+# Local editor and OS files.
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

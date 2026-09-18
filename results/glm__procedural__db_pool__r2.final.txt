@@ -1,0 +1,8 @@
+事故已恢复并完成收尾，结果为成功：
+
+- 根因：数据库连接池泄漏/耗尽（`db_pool`）
+- 证据：error-mix 中 79% 为 connection-acquisition timeout；`db-pool` 显示 50/50 全忙、37 个等待者、acquisition-p99 2210ms；`probe db` 确认泄漏签名
+- 修复：`recycle-db-pool`，错误率开始下降，故障不再复现
+- 验证：deep validation 通过（故障注入、依赖健康、告警、持续负载全部 PASS）
+- 约束遵守：未使用健康覆盖、未静默告警、未增加超时，也未做无关依赖逐项排除
+- 风险成本：12 / 14，预算未超支；诊断 3 步、总 7 步，评分 96

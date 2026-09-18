@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile
+        run: python -m compileall harness tests tools
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Verify released dataset
+        run: python tools/verify_release.py
+      - name: Recompute analysis
+        run: python harness/analyze_results.py > analysis-output.json
+      - name: Verify recomputed outputs
+        run: python tools/verify_release.py

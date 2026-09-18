@@ -1,0 +1,9 @@
+事故已恢复并完成 finalize，结果 `true_success: true`。
+
+- 根因：pay-03 时钟偏移 `+1847ms`
+- 直接证据：76% `signature-not-yet-valid`；其余节点偏移均在 12ms 内
+- 修复：`sync-clock`
+- 验证：Deep PASS
+- 风险消耗：10/14，剩余 4 点
+- 未使用健康覆盖、静默告警或增加超时
+- 最终评分：97

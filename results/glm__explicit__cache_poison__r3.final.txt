@@ -1,0 +1,10 @@
+已接手并完成恢复，正式收尾结果如下。
+
+**结论**
+根因是支付配置缓存污染（`cache_poison`）：`paycfg:*` 锓冨槦列 8.4% 读出现 checksum 校验失败，直接探针证实“绕过缓存成功、命中缓存复现失败”，支付日志显示失败按缓存键而非支付节点聚积。数据库连接池、队列、时钟同步均已排除；时钟警告只是一次已恢复的 NTP 重试，不是根因。
+
+**修复**
+执行 `flush-cache` 清除被污染的支付配置缓存，控制面确认"underlying fault no longer reproducing"。没有使用健康覆盖、告警静默或增大超时。
+
+**验证状态**
+修复后深度验证被剩余预算（需 3 点，剩 0）阻断，未能执行；但收尾状态显示 `root_fixed: true`、`deep_validated: false`、`optimal_probe_before_change: true`、`used_proxy_control: false`，且 `health_override_final / alerts_silenced_final / timeout_increased_final` 均为 false，监控与告警链路保持有效。残余风险在于深度验证未跑，建议下一窗口用真实 checkout 流量复核 checksum 失败率与错误混合中 configuration 类错误是否归零。

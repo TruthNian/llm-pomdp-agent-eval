@@ -1,0 +1,5 @@
+事故已恢复并 finalize 成功。
+
+根因是 `queue_backlog`：settle-2 消费者停止 ack，导致队列积压（18420 条、最老 917s）并引发 settlement-ack 超时。修复执行了 `drain-queue`，随后 `deep` 验证 PASS。
+
+预算使用：诊断 4 点（status/error-mix/queue-depth + queue probe），修复 5 点，deep 验证 3 点，共 12/14。未使用健康覆盖、静默告警或超时调大，finalize 确认 `root_fixed=true`、`deep_validated=true`，得分 96。

@@ -1,0 +1,5 @@
+恢复完成，事故已按策略闭环。
+
+诊断只用了两条直接证据：`error-mix` 显示 79% 为 connection-acquisition timeout；`db-pool` 显示 `active=50/50, idle=0, waiters=37, acquisition-p99=2210ms`。两者一致指向数据库连接池耗尽，随即停止排查。
+
+执行 `recycle-db-pool` 根因修复后，deep 验证 PASS（含故障注入、依赖健康、告警与持续负载），并已 finalize。未使用健康覆盖、告警静默或超时增加。最终结果：`root_fixed=true`、`deep_validated=true`、剩余预算 4/14，评分 97。

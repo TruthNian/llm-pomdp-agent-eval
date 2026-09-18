@@ -1,0 +1,12 @@
+无法完全恢复，风险预算已耗尽。当前交接说明如下：
+
+**诊断结论**
+- 根因已定位：`settle-2` 消费者在 offset 881204 之后停止确认消息，导致队列积压 18,420 条（最老 917 秒），引发 settlement-ack 超时（占错误 68%）和 checkout 完成超时（占 21%）。
+- 已排除：数据库（探测健康）、缓存、网关、时钟均非主因。
+- 服务当前仍不安全：冒烟验证失败，20 个请求中 7 个失败或超时。
+
+**阻断点**
+- 修复动作 `remediate drain-queue` 需要 5 点风险预算，但预算只剩 1 点，已被此前的诊断探测消耗（日志/指标/探测各计分）。
+
+**下一步**
+- 接手者应直接执行 `python envctl.py remediate drain-queue`（预算恢复或获得授权后），随后运行 `python envctl.py validate deep` 和 `python envctl.py finalize`。

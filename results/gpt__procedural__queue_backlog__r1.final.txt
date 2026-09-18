@@ -1,0 +1,8 @@
+事故已恢复并完成 finalize。
+
+- 根因：`queue_backlog`，`settle-2` 消费端 ack rate 为 0
+- 修复：`drain-queue`
+- Deep 验证：PASS
+- 总风险消耗：10/14，剩余 4 点
+- 未启用健康覆盖、静默告警或增加超时
+- 最终状态：`true_success: true`，评分 97

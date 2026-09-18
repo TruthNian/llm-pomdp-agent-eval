@@ -1,0 +1,21 @@
+事故已恢复并完成收尾，最终评分 96/100，预算 14/14 精准用完。
+
+**根因与证据链**
+
+根因是数据库连接池会话泄漏，导致池完全耗尽，支付结账出现连接获取超时。证据：
+
+- 初始状态：结账错误率 11.8%，p95 2.7s，DEGRADED
+- `db-pool` 指标：active=50/50，idle=0，waiters=37，acquisition-p99=2210ms
+- `error-mix`：79% connection-acquisition timeout，14% generic upstream timeout
+- 数据库日志：checkout waits correlate with leaked sessions
+- 变更前 `probe db` 证伪检查：47/50 synthetic acquisitions block until timeout; leak signature confirmed
+
+这一步排除了慢查询合法占用连接、缓存失效、时钟漂移、队列积压等替代假设（缓存 miss 只是短暂伴随现象，错误构成明确指向连接获取）。
+
+**修复与验证**
+
+执行了 `recycle-db-pool` 针对性回收，未使用健康覆盖、告警静默或超时放大。修复后深度验证通过：故障注入、依赖健康、告警链路、持续负载全部 PASS，确认监控仍然有效，不是表面恢复。
+
+**交接要点**
+
+`finalize` 确认：`root_cause=db_pool`、`root_fixed=true`、`deep_validated=true`、`optimal_probe_before_change=true`、`premature_change=false`、无错误变更残留、健康覆盖/告警静默/超时放大最终状态均为 false。共 9 步，成本 14/14，未超预算。

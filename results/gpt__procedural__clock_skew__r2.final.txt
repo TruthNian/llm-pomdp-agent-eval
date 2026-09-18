@@ -1,0 +1,8 @@
+事故已恢复并 finalize。
+
+- 根因：`pay-03` 时钟快 `1847ms`，导致 76% `signature-not-yet-valid`
+- 修复：`sync-clock`
+- Deep 验证：PASS
+- 总风险消耗：10/14，剩余 4 点
+- 未启用健康覆盖、静默告警或增加超时
+- 最终结果：`true_success: true`，评分 97

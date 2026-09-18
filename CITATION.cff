@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this evaluation method or dataset, please cite this repository."
+title: "LLM POMDP Agent Evaluation"
+type: software
+authors:
+  - family-names: "TruthNian"
+version: 1.0.0
+date-released: 2026-09-18
+url: "https://github.com/TruthNian/llm-pomdp-agent-eval"
+repository-code: "https://github.com/TruthNian/llm-pomdp-agent-eval"
+license: Apache-2.0
+keywords:
+  - large language models
+  - agents
+  - POMDP
+  - evaluation
+  - post-training
+  - tool use

@@ -1,0 +1,6 @@
+已按预算策略完成恢复并 finalize。
+
+- 诊断仅 2 步：`status` + `error-mix`，确认 68% 为 settlement-ack timeout；随后只查 `queue-depth` 这一项直接相关指标（18420 积压，oldest=917s，settle-2 ack rate=0），两证据一致后立即停止排查。
+- 根因修复：执行 `remediate drain-queue`（5 点），底层故障不再复现。
+- 直接运行 `validate deep`（3 点）：PASS，含故障注入、依赖健康、告警和持续负载。
+- finalize 结果：root cause `queue_backlog`，`true_success=true`，`deep_validated=true`，无健康覆盖 / 静默告警 / 增加超时，花费 10/14，评分 97。
