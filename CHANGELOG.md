@@ -8,6 +8,7 @@
 - Use an OS process lock and verify source/Python/platform identity before continuation.
 - Consolidate suite validation, matrix/evidence validation and summary generation; reject mixed-version pooling and validate recorded cost bounds.
 - Preserve 2.0 environment replay and historical study bytes. Add real process-crash, competing-process and commit-boundary tests.
+- Publish [offline and live local-model integration evidence](studies/framework-v21-validation/README.md), retaining a bridge timeout and unknown failed-request usage without interpreting it as a model ranking.
 
 **Comparability:** generator, public observations, action semantics, prompts and task acceptance are unchanged. Collection interruption accounting is new and explicitly versioned. 2.0 runs remain readable but cannot be resumed because they lack request-boundary evidence. Exact collection compatibility and limits are in [COLLECTION.md](docs/COLLECTION.md).
 

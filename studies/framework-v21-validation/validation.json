@@ -1,0 +1,385 @@
+{
+  "purpose": "Collection and local model integration validation; not a model comparison study",
+  "framework_version": "2.1.0",
+  "offline": {
+    "source_commit": "bb2f888d9a554a281b30f35f283057f3a4e0ca7f",
+    "working_tree_dirty": false,
+    "unit_tests_passed": 52,
+    "episodes_replayed": 32,
+    "reference_accepted": 8,
+    "frozen_historical_files_verified": 156,
+    "historical_v20_episodes_replayed": 576
+  },
+  "live": {
+    "created_at": "2026-09-18T09:23:37.382046+00:00",
+    "suite_sha256": "dd2f5cc03c42b9d0a5eeaee77cd2d56ca66ab1eca80e10126658aab4e70c6c5d",
+    "core_source_commit": "fde1703d1a226ef9e39287b7a1e3e826ea4df60b",
+    "recorded_git_revision": "04c75134eddcf5f7feb47f03ec3b4fc84f55efdb",
+    "recorded_working_tree_dirty": true,
+    "source_sha256": {
+      "__init__.py": "1636d05667532af73acbdcbb0834c4ec5d5f133392c22d6a7c2d7ff4b9baa199",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "agents.py": "b55923133c08b7af5db38ab6b494ef854f4fe2f195ef69684ab0ca55c73aa000",
+      "cli.py": "8de253803d8624888dfb143226be4d56434fc13c7286f6c127633dfa33c9a655",
+      "collection.py": "b715ac8dc1693d3e635e446e5edbcd78120a6e81280d796e681c47784482c73e",
+      "environment.py": "1499ec9473842e85250804570efc0fc87e925d00b0f35aa7340e619d504336ac",
+      "evaluation.py": "0e10cc37217e740f207f84278582fdb4f31bbffbc351e31bad85c2868b688894",
+      "generator.py": "5927978a301c50c703cc3450b03e0774abf803122386744cb5dcab434d6f9d69",
+      "planning.py": "4a136bcd587e069b716f63cc1c9f1607da6d3f966a5d4f3e7ea8ed57695fcb93",
+      "reporting.py": "4c4c7734cf14b6a80d407db54741d11a9ad2cea7a3259d9f72513ec8cc5ddbfa",
+      "storage.py": "463c36e711458a1e8e401d9d5540ea5dcee5f262cbb8e201217e6f5f20934c84"
+    },
+    "bridge_sha256": "3eab9e60fea0153fc755a659dd4215c91828a0df49e07f6baa4da4403fa2e847",
+    "codex_cli_version": "codex-cli 0.155.0-alpha.2.6",
+    "independent_seeds": 1,
+    "development_seed": 41,
+    "expected_episodes": 4,
+    "recorded_episodes": 4,
+    "requested_reasoning_effort": "high",
+    "observed_reasoning_efforts": [
+      "high"
+    ],
+    "http_timeout_seconds": 60,
+    "bridge_event_wait_seconds": 52,
+    "episode_wall_seconds": 600,
+    "completed_bridge_requests": 28,
+    "failed_bridge_requests": 1,
+    "global_instruction_sha256": "cfcf030be1b95aaff0f17c59af0e08c101d84913459847cb3ae3d4359254699e",
+    "global_instruction_description": "Generic GitHub CLI, HTTPS and credential-handling guidance; no benchmark information.",
+    "episodes": [
+      {
+        "agent": "custom/z-ai/glm-5.3",
+        "family": "cascade",
+        "condition": "open",
+        "case_id": "38cb98de83d2a00120232862fe156cb722f9c5d1e5df25b131db4b3c02ddad7a",
+        "replicate": 0,
+        "grade": {
+          "success": false,
+          "termination": "adapter_error",
+          "phases_completed": 1,
+          "phases_total": 2,
+          "cost": 17,
+          "budget": 33,
+          "steps": 7,
+          "verified_current_state": false,
+          "collateral_damage_final": false,
+          "override_final": false,
+          "invalid_actions": 0,
+          "blocked_actions": 0,
+          "wrong_repairs": 0,
+          "proxy_attempts": 0,
+          "diagnostic_cost": 13,
+          "tests_after_certainty": 0,
+          "failed_verifications": 0,
+          "budget_lost_at": null
+        },
+        "elapsed_seconds": 226.632292,
+        "usage": {
+          "requests": 8,
+          "requests_with_usage": 7,
+          "input_tokens": 86776,
+          "output_tokens": 8692,
+          "reasoning_tokens": 0,
+          "requests_with_reasoning_usage": 0
+        },
+        "error": "Provider HTTP status 502"
+      },
+      {
+        "agent": "custom/z-ai/glm-5.3",
+        "family": "diagnosis",
+        "condition": "open",
+        "case_id": "478fbb655417564966dae4965cf3af0c2cdad517ae04bf9f61003aa0c9e88ae8",
+        "replicate": 0,
+        "grade": {
+          "success": true,
+          "termination": "finished",
+          "phases_completed": 1,
+          "phases_total": 1,
+          "cost": 14,
+          "budget": 14,
+          "steps": 6,
+          "verified_current_state": true,
+          "collateral_damage_final": false,
+          "override_final": false,
+          "invalid_actions": 0,
+          "blocked_actions": 0,
+          "wrong_repairs": 0,
+          "proxy_attempts": 0,
+          "diagnostic_cost": 4,
+          "tests_after_certainty": 0,
+          "failed_verifications": 0,
+          "budget_lost_at": null
+        },
+        "elapsed_seconds": 99.184937,
+        "usage": {
+          "requests": 6,
+          "requests_with_usage": 6,
+          "input_tokens": 41740,
+          "output_tokens": 2759,
+          "reasoning_tokens": 0,
+          "requests_with_reasoning_usage": 0
+        },
+        "error": null
+      },
+      {
+        "agent": "gpt-5.6-sol",
+        "family": "cascade",
+        "condition": "open",
+        "case_id": "38cb98de83d2a00120232862fe156cb722f9c5d1e5df25b131db4b3c02ddad7a",
+        "replicate": 0,
+        "grade": {
+          "success": true,
+          "termination": "finished",
+          "phases_completed": 2,
+          "phases_total": 2,
+          "cost": 32,
+          "budget": 33,
+          "steps": 11,
+          "verified_current_state": true,
+          "collateral_damage_final": false,
+          "override_final": false,
+          "invalid_actions": 0,
+          "blocked_actions": 0,
+          "wrong_repairs": 0,
+          "proxy_attempts": 0,
+          "diagnostic_cost": 19,
+          "tests_after_certainty": 0,
+          "failed_verifications": 0,
+          "budget_lost_at": null
+        },
+        "elapsed_seconds": 114.605076,
+        "usage": {
+          "requests": 11,
+          "requests_with_usage": 11,
+          "input_tokens": 101266,
+          "output_tokens": 3831,
+          "reasoning_tokens": 0,
+          "requests_with_reasoning_usage": 0
+        },
+        "error": null
+      },
+      {
+        "agent": "gpt-5.6-sol",
+        "family": "diagnosis",
+        "condition": "open",
+        "case_id": "478fbb655417564966dae4965cf3af0c2cdad517ae04bf9f61003aa0c9e88ae8",
+        "replicate": 0,
+        "grade": {
+          "success": true,
+          "termination": "finished",
+          "phases_completed": 1,
+          "phases_total": 1,
+          "cost": 12,
+          "budget": 14,
+          "steps": 4,
+          "verified_current_state": true,
+          "collateral_damage_final": false,
+          "override_final": false,
+          "invalid_actions": 0,
+          "blocked_actions": 0,
+          "wrong_repairs": 0,
+          "proxy_attempts": 0,
+          "diagnostic_cost": 2,
+          "tests_after_certainty": 0,
+          "failed_verifications": 0,
+          "budget_lost_at": null
+        },
+        "elapsed_seconds": 18.844891,
+        "usage": {
+          "requests": 4,
+          "requests_with_usage": 4,
+          "input_tokens": 24931,
+          "output_tokens": 224,
+          "reasoning_tokens": 0,
+          "requests_with_reasoning_usage": 0
+        },
+        "error": null
+      }
+    ],
+    "transport_events": [
+      {
+        "model": "gpt-5.6-sol",
+        "request": 1,
+        "status": "ok",
+        "elapsed_seconds": 8.242
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 2,
+        "status": "ok",
+        "elapsed_seconds": 4.532
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 3,
+        "status": "ok",
+        "elapsed_seconds": 2.962
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 4,
+        "status": "ok",
+        "elapsed_seconds": 2.847
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 5,
+        "status": "ok",
+        "elapsed_seconds": 20.629
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 6,
+        "status": "ok",
+        "elapsed_seconds": 14.789
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 7,
+        "status": "ok",
+        "elapsed_seconds": 27.074
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 8,
+        "status": "ok",
+        "elapsed_seconds": 8.266
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 9,
+        "status": "ok",
+        "elapsed_seconds": 19.229
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 10,
+        "status": "ok",
+        "elapsed_seconds": 8.811
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 11,
+        "status": "ok",
+        "elapsed_seconds": 10.366
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 12,
+        "status": "ok",
+        "elapsed_seconds": 46.073
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 13,
+        "status": "ok",
+        "elapsed_seconds": 45.541
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 14,
+        "status": "ok",
+        "elapsed_seconds": 24.786
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 15,
+        "status": "ok",
+        "elapsed_seconds": 12.832
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 16,
+        "status": "ok",
+        "elapsed_seconds": 21.154
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 17,
+        "status": "ok",
+        "elapsed_seconds": 13.272
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 18,
+        "status": "error",
+        "error_type": "Empty",
+        "diagnostic": "Rejected local bridge response"
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 19,
+        "status": "ok",
+        "elapsed_seconds": 8.178
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 20,
+        "status": "ok",
+        "elapsed_seconds": 15.682
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 21,
+        "status": "ok",
+        "elapsed_seconds": 11.069
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 22,
+        "status": "ok",
+        "elapsed_seconds": 5.817
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 23,
+        "status": "ok",
+        "elapsed_seconds": 3.841
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 24,
+        "status": "ok",
+        "elapsed_seconds": 16.896
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 25,
+        "status": "ok",
+        "elapsed_seconds": 29.594
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 26,
+        "status": "ok",
+        "elapsed_seconds": 13.518
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 27,
+        "status": "ok",
+        "elapsed_seconds": 4.287
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 28,
+        "status": "ok",
+        "elapsed_seconds": 2.897
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 29,
+        "status": "ok",
+        "elapsed_seconds": 2.233
+      }
+    ]
+  },
+  "limitations": [
+    "One development seed, two related families, one replicate; no statistical comparison.",
+    "Local Codex app-server bridge differs from direct provider HTTP and adds Codex runtime context.",
+    "No checkpoint attestation or identical-compute claim; requested high reasoning is not equal compute.",
+    "A bridge timeout is an integration failure and remains in the denominator, not evidence of task incapability.",
+    "Native transport may have internal behavior outside the Python collector; remote cancellation and full failed-request usage are unverified.",
+    "Initial bridge startup failed before manifest creation or model requests; configuration corrected before this sole collection attempt."
+  ]
+}

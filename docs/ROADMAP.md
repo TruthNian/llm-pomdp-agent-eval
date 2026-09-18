@@ -45,7 +45,7 @@ Acceptance remains the environment/reference tests and [published control valida
 
 ## P1 — Make collection inspectable and recoverable
 
-**Status:** implemented in 2.1. Scope is serial, one-attempt collection with local evidence files; no scheduler service or database.
+**Status:** implemented in 2.1. Offline tests, cross-platform CI and a four-episode local model pilot are documented in the [validation record](../studies/framework-v21-validation/README.md), including one bridge timeout. Scope is serial, one-attempt collection with local evidence files; no scheduler service or database.
 
 | Work item | Delivered behavior | Acceptance evidence |
 |---|---|---|
