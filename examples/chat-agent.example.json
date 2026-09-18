@@ -1,0 +1,11 @@
+[
+  {
+    "name": "candidate",
+    "kind": "chat",
+    "model": "replace-with-your-provider-model-id",
+    "endpoint_env": "BENCH_CHAT_ENDPOINT",
+    "api_key_env": "BENCH_API_KEY",
+    "timeout_seconds": 30,
+    "options": {"max_completion_tokens": 4096}
+  }
+]

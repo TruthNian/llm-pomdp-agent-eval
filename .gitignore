@@ -19,3 +19,9 @@ results/incident_eval.json
 .vscode/
 .DS_Store
 Thumbs.db
+
+# V2 evaluations contain hidden seeds, answer keys and unreleased trajectories.
+artifacts/
+private/
+build/
+dist/

@@ -1,0 +1,6 @@
+[
+  {"name": "reference", "kind": "reference"},
+  {"name": "random", "kind": "random"},
+  {"name": "overdiagnose", "kind": "overdiagnose"},
+  {"name": "proxy", "kind": "proxy"}
+]

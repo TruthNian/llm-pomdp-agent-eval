@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pomdp-agent-bench"
+version = "2.0.0"
+description = "Generative, auditable evaluation of agents acting under partial observability"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "Apache-2.0"}
+authors = [{name = "TruthNian"}]
+dependencies = []
+
+[project.scripts]
+pomdp-bench = "pomdp_bench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["pomdp_bench*"]
