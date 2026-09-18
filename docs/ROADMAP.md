@@ -27,7 +27,7 @@ Before adding a feature, record the decision it enables, the failure of the smal
 ```text
 P0: valid measurement kernel [delivered in 2.0]
   → P1: reliable evidence collection [delivered in 2.1; offline acceptance passed]
-  → P2: isolate an intervention mechanism [next research increment]
+  → P2: isolate an intervention mechanism [2.2 study workflow; empirical gate remains open]
   → P3: structurally different tasks requiring discovery and recovery
   → P4: prospective validation against real delegated work
   → P5: scale only the useful, validated parts
@@ -61,6 +61,8 @@ Acceptance remains the environment/reference tests and [published control valida
 **Deliberately deferred:** implicit retries, parallel workers, cross-runtime resume, public raw-run export and provider-checkpoint attestation. Revisit a deferral only with a failure or measured need. See [exact interruption semantics](COLLECTION.md).
 
 ## P2 — Test one mechanism before expanding the factorial design
+
+**Implementation:** 2.2 provides a strict plan format, an equal-word neutral control versus one budget reminder, fresh-seed preparation, counterbalanced adjacent pairs, a conservative seed-level primary interval and execution-censoring bounds. It reuses the existing collector. See [the study contract](STUDIES.md) and the [predeclared live pilot](../studies/verification-reserve-pilot-v1/README.md). An implemented protocol is not yet an identified effect.
 
 **Question:** does an isolated piece of policy assistance change accepted completion and its associated observable failure, on identical cases and budgets?
 
@@ -105,4 +107,4 @@ Profile actual collection, replay, analysis and maintenance costs. Remove avoida
 
 Public development seeds support debugging; private evaluation seeds support prospective collection; held-out structures test a different generalization claim. Retire and publish reviewed manifests/traces with versioned sources and exclusions. Never silently change a released study or erase failed collection attempts. New seeds alone do not establish contamination resistance.
 
-The next development task is **P2.1: predeclare the smallest useful mechanism study**, after P1's release checks. Adding several unrelated families, elaborate orchestration and large model runs at once would make the source of an improvement harder to identify.
+The next research decision is **P2's pilot gate: is the targeted failure present in real-model trajectories?** A ceiling pilot must not automatically grow into a large collection. Keep its negative evidence, reconsider the construct or distribution, and publish a new plan before any follow-up.

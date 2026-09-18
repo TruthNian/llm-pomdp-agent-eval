@@ -11,7 +11,14 @@ from .environment import CONDITIONS
 from .evaluation import load_suite
 from .generator import DOMAINS, FAMILIES, PROFILES, suite
 from .reporting import validate_run
-from .storage import collection_lock, write_json
+from .storage import collection_lock, read_json, write_json
+from .studies import prepare_study, validate_plan
+
+
+def show_study(report):
+    for row in report.get("study_analysis", {}).get("primary_comparisons", []):
+        print(f"{row['agent']}: paired difference={row['observed_success_difference']:.3f}; "
+              f"interval={row['simultaneous_hoeffding_interval']}; {row['decision']}; {row['pilot_gate']}")
 
 
 def main(argv=None) -> int:
@@ -26,6 +33,9 @@ def main(argv=None) -> int:
     generate.add_argument("--families", nargs="+", choices=FAMILIES, default=list(FAMILIES))
     generate.add_argument("--profiles", nargs="+", choices=PROFILES, default=["standard"])
     generate.add_argument("--domains", nargs="+", choices=DOMAINS, default=["incident"])
+    study = commands.add_parser("prepare-study", help="Bind a preregistered two-condition plan and draw fresh seeds; no model calls")
+    study.add_argument("--plan", type=Path, required=True)
+    study.add_argument("--out", type=Path, required=True)
     for name in ("run", "prepare"):
         run = commands.add_parser(name, help="Execute a fresh matrix" if name == "run" else "Freeze a matrix without calling models")
         run.add_argument("--suite", type=Path, required=True)
@@ -44,7 +54,14 @@ def main(argv=None) -> int:
         item.add_argument("run_directory", type=Path)
     args = parser.parse_args(argv)
     try:
-        if args.command == "generate":
+        if args.command == "prepare-study":
+            plan = read_json(args.plan)
+            required = validate_plan(plan)
+            manifest = prepare_study(plan, args.out)
+            print(f"Prepared {manifest['expected_episodes']} episodes for {plan['purpose']} study {plan['study_id']}.")
+            print(f"Independent seeds: {plan['independent_seeds']}; conservative precision requirement: {required}.")
+            print(f"Plan SHA256: {manifest['study']['plan_sha256']}; no model requests made. Resume: {args.out}")
+        elif args.command == "generate":
             if args.count < 1 or args.out.exists():
                 raise ValueError("Use count >= 1 and an unused output file")
             seeds = [secrets.randbits(128) for _ in range(args.count)] if args.fresh else list(range(args.seed, args.seed + args.count))
@@ -73,12 +90,15 @@ def main(argv=None) -> int:
         elif args.command == "resume":
             report = resume_suite(args.run_directory)
             print(f"Collected and validated {report['episodes']} episodes; existing attempts were not retried.")
+            show_study(report)
         elif args.command == "status":
             print(json.dumps(run_status(args.run_directory), indent=2))
         else:
             if args.command == "summarize":
                 with collection_lock(args.run_directory):
-                    count = save_summary(args.run_directory)["episodes"]
+                    report = save_summary(args.run_directory)
+                    count = report["episodes"]
+                    show_study(report)
             else:
                 _, records = validate_run(args.run_directory)
                 count = len(records)

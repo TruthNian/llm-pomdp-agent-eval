@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "framework_version": "2.2.0",
+  "generator_version": "diagnostic-graphs/1",
+  "study_id": "verification-reserve-controls-v1",
+  "purpose": "pilot",
+  "hypothesis": "A reminder to reserve final verification cost changes acceptance for a budget-omission sensitivity control, while reference and proxy controls remain at their expected ceiling and floor.",
+  "intervention": "verification-reserve/1",
+  "primary_outcome": "accepted_completion",
+  "minimum_useful_effect": 0.2,
+  "precision": {"confidence": 0.95, "half_width": 0.1},
+  "independent_seeds": 8,
+  "task_distribution": {"families": ["diagnosis", "cascade"], "profiles": ["standard"], "domains": ["incident"]},
+  "replicates": 1,
+  "agents": [
+    {"name": "reference", "kind": "reference"},
+    {"name": "reserve-probe", "kind": "reserve_probe"},
+    {"name": "proxy", "kind": "proxy"}
+  ],
+  "wall_seconds": 300,
+  "stopping_rule": "fixed_matrix",
+  "failure_policy": "retain_and_bound"
+}

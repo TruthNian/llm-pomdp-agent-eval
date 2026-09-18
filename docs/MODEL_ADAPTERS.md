@@ -34,6 +34,8 @@ Copy `examples/chat-agent.example.json` to a local configuration. Supply one or 
 
 Use options actually supported by the provider. The example does not assert that every endpoint supports `max`. Allowed request options: `temperature`, `top_p`, `max_tokens`, `max_completion_tokens`, `reasoning_effort`, `seed`. Server rejections are recorded; the adapter does not silently downgrade reasoning or remove settings. Set generous enough completion limits for your chosen reasoning mode and record them.
 
+From 2.2, `timeout_seconds` may be any finite positive value; the previous arbitrary 60-second maximum is removed. Each request is still capped by the remaining episode wall budget. Declare the limit before collection and keep it identical across study arms. A larger timeout is an experimental setting, not a silent retry or a guarantee of remote cancellation.
+
 Environment variables contain the full HTTPS endpoint, such as a provider's `/v1/chat/completions` URL, and its key. Do not put secrets in command-line arguments or the configuration file. The runner records environment variable **names**, never their contents. URLs with embedded credentials, query parameters or fragments are rejected. HTTP is allowed only on loopback for local integration tests. Redirects are rejected to avoid forwarding credentials to another host.
 
 The adapter uses a system message requiring a single JSON action, and a user message containing the complete public request. It does not expose function tools or shell execution. The benchmark is therefore evaluating the model with **this particular JSON-action harness**. It does not estimate performance of every provider's optimized agent product.
@@ -63,6 +65,8 @@ The runner executes serially and rotates agent order between cases. It never ret
 Model API calls cost money. Offline validation never calls a provider. Before a large collection, test one seed, inspect adapter errors and verify your model settings. Provider availability, endpoint defaults and model aliases can change: preserve provider-side snapshot IDs where available in your study notes. Current manifests capture requested configurations, not proof of an immutable provider checkpoint.
 
 ## Add a provider or policy
+
+For a plan-bound, two-condition reminder experiment, use the [study workflow](STUDIES.md). It reuses this adapter and the same collector.
 
 An adapter implements:
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.2.0 — 2026-09-18
+
+- Add a frozen single-reminder contrast against an equal-word neutral control, without changing old conditions or generator semantics.
+- Add strict study plans and `prepare-study`: fresh private seeds, complete declared structural distributions, plan/prompt fingerprints and fixed stopping rules.
+- Reuse the existing collector with adjacent counterbalanced pairs; suppress unplanned cross-model primary comparisons.
+- Add seed-level Hoeffding intervals with simultaneous coverage across declared agents, an explicit confirmatory precision gate, and separate execution-censoring identification bounds.
+- Add a public-information budget-omission sensitivity control plus ceiling/floor controls and tests across 96 structural instances.
+- Remove the arbitrary 60-second maximum for explicitly configured request timeouts; remaining episode time still caps every call.
+- Publish the [live feasibility pilot plan](studies/verification-reserve-pilot-v1/README.md) before collection. Small pilots remain exploratory, including at perfect success.
+
+**Comparability:** the two new prompt conditions exist only from 2.2. Old traces remain replayable, but source/version changes require fresh collection directories. This release supports inference about the declared reminder contrast, not training causes or real-work predictive validity.
+
 ## 2.1.0 — 2026-09-18
 
 - Replace the unordered research wish list with dependency gates, explicit deletions/deferrals and executable acceptance criteria; add a Chinese roadmap.

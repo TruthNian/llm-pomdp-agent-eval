@@ -11,7 +11,7 @@ from pathlib import Path
 
 from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
 from .agents import validate_config
-from .environment import CONDITIONS, Environment
+from .environment import CONDITIONS, Environment, validate_condition_version
 from .evaluation import episode_record, recover_interrupted, replay, replay_environment, run_episode, validate_suite
 from .generator import digest
 from .storage import collection_lock, read_json, write_json
@@ -43,6 +43,26 @@ def validate_definition(data, configs, conditions, replicates, wall_seconds):
 def schedule(manifest):
     entries = []
     configs = manifest["agents"]
+    if "study" in manifest:
+        # Adjacent pairs reduce drift; first condition is counterbalanced by seed,
+        # replicate and stable agent index. No hidden answer influences this order.
+        seeds = list(dict.fromkeys(c["seed"] for c in manifest["cases"]))
+        seed_index = {seed: i for i, seed in enumerate(seeds)}
+        for i, case in enumerate(manifest["cases"]):
+            for replicate in range(manifest["replicates"]):
+                order = list(range(len(configs)))
+                offset = (i + replicate) % len(configs)
+                order = order[offset:] + order[:offset]
+                for agent_index in order:
+                    conditions = manifest["conditions"]
+                    if (seed_index[case["seed"]] + replicate + agent_index) % 2:
+                        conditions = list(reversed(conditions))
+                    for condition in conditions:
+                        cid, name = digest(case), configs[agent_index]["name"]
+                        entries.append({"episode_id": digest([cid, name, condition, replicate]),
+                                        "case_id": cid, "agent": name, "condition": condition,
+                                        "replicate": replicate})
+        return entries
     for i, case in enumerate(manifest["cases"]):
         order = configs[i % len(configs):] + configs[:i % len(configs)]
         for replicate in range(manifest["replicates"]):
@@ -55,8 +75,13 @@ def schedule(manifest):
     return entries
 
 
-def prepare_suite(data, configs, conditions, replicates, output: Path, wall_seconds=300):
+def prepare_suite(data, configs, conditions, replicates, output: Path, wall_seconds=300, *, study=None):
     validate_definition(data, configs, conditions, replicates, wall_seconds)
+    if study is not None:
+        from .studies import validate_binding
+        validate_binding(study, data, configs, conditions, replicates, wall_seconds)
+        if study["plan"]["framework_version"] != __version__:
+            raise ValueError("Study framework version differs from collector")
     if output.exists():
         raise ValueError("Output directory already exists; choose a fresh run directory")
     try:
@@ -74,6 +99,8 @@ def prepare_suite(data, configs, conditions, replicates, output: Path, wall_seco
                 "git_revision": revision, "working_tree_dirty": dirty, "source_sha256": source_hashes(),
                 "created_at": datetime.now(timezone.utc).isoformat(), "cases": data["cases"],
                 "expected_episodes": len(data["cases"]) * len(configs) * len(conditions) * replicates}
+    if study is not None:
+        manifest["study"] = study
     manifest["schedule_sha256"] = digest(schedule(manifest))
     output.mkdir(parents=True)
     with collection_lock(output):
@@ -91,9 +118,17 @@ def read_run(directory: Path, *, partial=False):
     manifest = read_json(directory / "private" / "manifest.json")
     if manifest.get("schema_version") != SCHEMA_VERSION or manifest.get("framework_version") not in REPLAY_VERSIONS:
         raise ValueError("Unsupported manifest version")
+    for condition in manifest["conditions"]:
+        validate_condition_version(condition, manifest["framework_version"])
     data = {"generator_version": manifest["generator_version"], "cases": manifest["cases"]}
     validate_definition(data, manifest["agents"], manifest["conditions"], manifest["replicates"],
                         manifest["wall_seconds_per_episode"])
+    if "study" in manifest:
+        from .studies import validate_binding
+        validate_binding(manifest["study"], data, manifest["agents"], manifest["conditions"],
+                         manifest["replicates"], manifest["wall_seconds_per_episode"])
+        if manifest["framework_version"] != manifest["study"]["plan"]["framework_version"]:
+            raise ValueError("Study framework version differs from manifest")
     if digest(data) != manifest["suite_sha256"]:
         raise ValueError("Suite fingerprint mismatch")
     entries = schedule(manifest)
@@ -183,7 +218,10 @@ def run_status(directory: Path):
 def save_summary(directory: Path):
     from .reporting import summarize
     manifest, records = read_run(directory)
-    report = summarize(records)
+    report = summarize(records, compare_agents="study" not in manifest)
+    if "study" in manifest:
+        from .studies import analyze_study
+        report["study_analysis"] = analyze_study(manifest, records)
     report["run"] = {k: v for k, v in manifest.items() if k != "cases"}
     report["complete"] = True
     write_json(directory / "summary.json", report)

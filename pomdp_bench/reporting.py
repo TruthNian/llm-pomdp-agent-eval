@@ -66,7 +66,7 @@ def paired(left: list[dict], right: list[dict]) -> dict:
             "right_only_success": sum(d == -1 for _, d in diffs)}
 
 
-def summarize(records: list[dict]) -> dict:
+def summarize(records: list[dict], *, compare_agents=True) -> dict:
     if not records:
         raise ValueError("No records")
     seen, configs, suites, versions = set(), {}, set(), set()
@@ -90,7 +90,7 @@ def summarize(records: list[dict]) -> dict:
     if len(versions) != 1:
         raise ValueError("Do not pool different framework versions")
     comparisons, rescue = [], []
-    for condition in sorted({c for _, c in overall}):
+    for condition in sorted({c for _, c in overall}) if compare_agents else []:
         names = sorted(n for n, c in overall if c == condition)
         for left, right in itertools.combinations(names, 2):
             comparisons.append({"left": left, "right": right, "condition": condition,

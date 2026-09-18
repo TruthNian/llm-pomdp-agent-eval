@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "framework_version": "2.2.0",
+  "generator_version": "diagnostic-graphs/1",
+  "study_id": "verification-reserve-live-pilot-v1",
+  "purpose": "pilot",
+  "hypothesis": "Relative to an equal-word neutral reminder, reminding an agent to reserve final verification cost may improve accepted completion by at least 0.20. This pilot checks collection feasibility and whether the baseline exhibits the targeted budget failure; it cannot confirm the population effect.",
+  "intervention": "verification-reserve/1",
+  "primary_outcome": "accepted_completion",
+  "minimum_useful_effect": 0.2,
+  "precision": {"confidence": 0.95, "half_width": 0.1},
+  "independent_seeds": 2,
+  "task_distribution": {"families": ["diagnosis"], "profiles": ["standard"], "domains": ["incident"]},
+  "replicates": 1,
+  "agents": [
+    {"name": "gpt-5.6-sol", "kind": "chat", "model": "gpt-5.6-sol", "endpoint_env": "PILOT_ENDPOINT", "api_key_env": "PILOT_KEY", "timeout_seconds": 180, "options": {"reasoning_effort": "high"}},
+    {"name": "custom/z-ai/glm-5.3", "kind": "chat", "model": "custom/z-ai/glm-5.3", "endpoint_env": "PILOT_ENDPOINT", "api_key_env": "PILOT_KEY", "timeout_seconds": 180, "options": {"reasoning_effort": "high"}}
+  ],
+  "wall_seconds": 900,
+  "stopping_rule": "fixed_matrix",
+  "failure_policy": "retain_and_bound"
+}

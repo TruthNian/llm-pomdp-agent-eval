@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import copy
 import json
+import math
 import os
 import random
 import urllib.error
@@ -10,8 +11,10 @@ import urllib.parse
 import urllib.request
 
 from .planning import consistent_candidates, diagnostic_plan
+from .interventions import RESERVE_TEXT
 
 BUILTINS = ("reference", "random", "overdiagnose", "proxy")
+POLICIES = (*BUILTINS, "reserve_probe")
 
 
 class AdapterError(RuntimeError):
@@ -30,7 +33,7 @@ def validate_config(config: dict) -> None:
         raise ValueError("Unknown agent configuration fields")
     if not isinstance(config.get("name"), str) or not config["name"].strip():
         raise ValueError("Every agent needs a nonempty name")
-    if config.get("kind") not in (*BUILTINS, "chat"):
+    if config.get("kind") not in (*POLICIES, "chat"):
         raise ValueError("Unknown agent kind")
     if config["kind"] == "chat":
         for field in ("model", "endpoint_env", "api_key_env"):
@@ -48,8 +51,8 @@ def validate_config(config: dict) -> None:
             elif type(value) not in (int, float):
                 raise ValueError("Sampling and token options must be numeric")
     timeout = config.get("timeout_seconds", 30)
-    if type(timeout) not in (int, float) or not 0 < timeout <= 60:
-        raise ValueError("Request timeout must be in (0,60] seconds")
+    if type(timeout) not in (int, float) or not math.isfinite(timeout) or timeout <= 0:
+        raise ValueError("Request timeout must be finite and positive; the episode wall limit still applies")
     json.dumps(config, allow_nan=False)
 
 
@@ -75,6 +78,8 @@ class ScriptedAgent:
             return {"command": "rollback"}
         if observation["workflow_complete"]:
             last = observation["result"]
+            if self.kind == "reserve_probe" and last.get("kind") == "blocked":
+                return {"command": "finish"}
             return {"command": "finish"} if last.get("kind") == "verify" and last.get("passed") else {"command": "verify"}
         if self.kind == "overdiagnose":
             # Deliberate negative control: inspect the entire checklist twice before acting.
@@ -87,6 +92,19 @@ class ScriptedAgent:
             if n < 2 * len(tests):
                 return {"command": "inspect", "target": tests[n % len(tests)]["id"]}
         possible = consistent_candidates(observation, history)
+        if self.kind == "reserve_probe" and len(possible) == 1:
+            # Constructed sensitivity control: unnecessary checks preserve repair costs,
+            # but reserve final verification ONLY when the public reminder is present.
+            stage = observation["catalogue"]
+            repair = next(c["repair_cost"] for c in stage["candidates"] if c["id"] in possible)
+            reserve = repair + observation["future_cost_bound"]
+            if RESERVE_TEXT in request["task"]["task"]:
+                reserve += request["task"]["verify_cost"]
+            names = {c["id"] for c in stage["candidates"]}
+            irrelevant = min((t for t in stage["tests"] if t["accuracy"] == 1
+                              and set(t["positive_for"]) == names), key=lambda t: (t["cost"], t["id"]))
+            if observation["remaining"] >= reserve + irrelevant["cost"]:
+                return {"command": "inspect", "target": irrelevant["id"]}
         return diagnostic_plan(observation["catalogue"], possible)[1]
 
 

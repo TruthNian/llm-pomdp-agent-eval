@@ -7,7 +7,7 @@ from pathlib import Path
 
 from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
 from .agents import AdapterError, make_agent
-from .environment import Environment
+from .environment import Environment, validate_condition_version
 from .generator import GENERATOR_VERSION, digest, keyed_seed, validate_case
 from .storage import read_json
 
@@ -86,6 +86,7 @@ def run_episode(case: dict, config: dict, condition: str, replicate: int, wall_s
 def replay_environment(trace: dict, case: dict, *, partial=False) -> Environment:
     if trace.get("schema_version") != SCHEMA_VERSION or trace.get("framework_version") not in REPLAY_VERSIONS:
         raise ValueError("Unsupported trace version")
+    validate_condition_version(trace["condition"], trace["framework_version"])
     validate_case(case)
     if trace["case_id"] != digest(case):
         raise ValueError("Trace/case fingerprint mismatch")

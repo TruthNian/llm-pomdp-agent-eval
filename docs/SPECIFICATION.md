@@ -1,8 +1,10 @@
-# Benchmark specification — frameworks 2.0–2.1
+# Benchmark specification — frameworks 2.0–2.2
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
 
 2.1 preserves the environment and prompt semantics below. Its additional collection termination and evidence files are specified in the [collection contract](COLLECTION.md); historical 2.0 traces remain replayable, but cannot be resumed or silently pooled with 2.1.
+
+2.2 adds two explicitly versioned reminder conditions and a [plan-bound study protocol](STUDIES.md). Existing conditions, generator, transitions and acceptance remain unchanged; new study scheduling and inference are separately fingerprinted.
 
 ## Episode
 
@@ -73,6 +75,8 @@ The reference restarts its candidate set at each new phase and does not reuse ev
 ## Conditions
 
 `open` delegates the outcome. `principles` adds abstract evidence, resource, and verification guidance. `procedural` provides explicit candidate-set updating, reliable-test planning, stopping, future-budget reservation, rollback, and finalization rules. All share the same public contract, costs, state and noise streams. Exact prompts live in `pomdp_bench/environment.py` and are saved in each trace.
+
+From 2.2, `neutral_cost_v1` and `reserve_verify_v1` each append one 15-word sentence to `open`. Their sole study contrast tests a verification-budget reminder against a neutral cost-description reminder. Exact texts, controls, primary estimand, counterbalanced ordering and censoring bounds are specified in [STUDIES.md](STUDIES.md).
 
 ## Metrics and comparison
 
