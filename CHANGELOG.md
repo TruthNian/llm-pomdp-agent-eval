@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.1.0 — 2026-09-18
+
+- Replace the unordered research wish list with dependency gates, explicit deletions/deferrals and executable acceptance criteria; add a Chinese roadmap.
+- Add `prepare`, `status` and strict `resume` over one frozen serial matrix, without retrying any started episode.
+- Persist request-boundary checkpoints, immutable starts and trace receipts; preserve completed evidence and conservatively account for interrupted attempts.
+- Use an OS process lock and verify source/Python/platform identity before continuation.
+- Consolidate suite validation, matrix/evidence validation and summary generation; reject mixed-version pooling and validate recorded cost bounds.
+- Preserve 2.0 environment replay and historical study bytes. Add real process-crash, competing-process and commit-boundary tests.
+
+**Comparability:** generator, public observations, action semantics, prompts and task acceptance are unchanged. Collection interruption accounting is new and explicitly versioned. 2.0 runs remain readable but cannot be resumed because they lack request-boundary evidence. Exact collection compatibility and limits are in [COLLECTION.md](docs/COLLECTION.md).
+
 ## 2.0.0 — 2026-09-18
 
 The project now provides a generative evaluation framework for future agents. The original two-model comparison is indexed and frozen as a historical study.

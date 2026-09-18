@@ -58,7 +58,7 @@ python -m pomdp_bench validate artifacts/experiment
 python -m pomdp_bench summarize artifacts/experiment
 ```
 
-The runner executes serially and rotates agent order between cases. It does not retry only failed trajectories. An interrupted run retains completed traces and its expected matrix; validation rejects incompleteness. Automatic resume and rate-limit retry are not implemented. A rerun requires a fresh directory. Archive failed collection attempts and disclose them rather than selecting successful runs.
+The runner executes serially and rotates agent order between cases. It never retries failed trajectories. To inspect the matrix before spending, replace `run` with `prepare`, then use `status` and `resume` on that directory. After an interruption, `resume` preserves completed results, seals any interrupted attempt as a failure, and executes only unstarted entries. Validation still requires the entire matrix. Resume requires the original core source files, framework version, Python and platform. See the [collection contract](COLLECTION.md) for commit boundaries, unknown in-flight usage and compatibility.
 
 Model API calls cost money. Offline validation never calls a provider. Before a large collection, test one seed, inspect adapter errors and verify your model settings. Provider availability, endpoint defaults and model aliases can change: preserve provider-side snapshot IDs where available in your study notes. Current manifests capture requested configurations, not proof of an immutable provider checkpoint.
 

@@ -1,6 +1,8 @@
-# Benchmark specification — framework 2.0.0
+# Benchmark specification — frameworks 2.0–2.1
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
+
+2.1 preserves the environment and prompt semantics below. Its additional collection termination and evidence files are specified in the [collection contract](COLLECTION.md); historical 2.0 traces remain replayable, but cannot be resumed or silently pooled with 2.1.
 
 ## Episode
 

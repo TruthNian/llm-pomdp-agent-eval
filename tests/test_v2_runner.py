@@ -12,7 +12,8 @@ from unittest.mock import patch
 
 from pomdp_bench.agents import AdapterError, ChatAgent, ScriptedAgent, strict_json, validate_config
 from pomdp_bench.cli import main
-from pomdp_bench.evaluation import run_episode, run_suite, write_json
+from pomdp_bench.collection import run_suite
+from pomdp_bench.evaluation import run_episode
 from pomdp_bench.generator import generate, suite
 from pomdp_bench.reporting import paired, summarize, validate_run
 

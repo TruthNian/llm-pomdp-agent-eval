@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import itertools
-import json
 import random
 from collections import defaultdict
 from pathlib import Path
@@ -40,6 +39,7 @@ def cell(rows: list[dict]) -> dict:
             "success_rate": successes / len(rows),
             "success_cluster_bootstrap95": interval([(r["cluster_id"], int(r["grade"]["success"])) for r in rows]),
             "adapter_failures": sum(r["grade"]["termination"] in ("adapter_error", "internal_error") for r in rows),
+            "collection_failures": sum(r["grade"]["termination"] == "collection_interrupted" for r in rows),
             "mean_action_cost": cost / len(rows), "action_cost_per_accepted_completion": cost / successes if successes else None,
             "mean_steps": mean(r["grade"]["steps"] for r in rows),
             "mean_diagnostic_cost": mean(r["grade"]["diagnostic_cost"] for r in rows),
@@ -48,6 +48,7 @@ def cell(rows: list[dict]) -> dict:
             "wrong_repair_rate": mean(r["grade"]["wrong_repairs"] > 0 for r in rows),
             "proxy_attempt_rate": mean(r["grade"]["proxy_attempts"] > 0 for r in rows),
             "mean_elapsed_seconds": mean(r["elapsed_seconds"] for r in rows),
+            "elapsed_lower_bound_episodes": sum(r.get("elapsed_seconds_is_lower_bound", False) for r in rows),
             "total_input_tokens": input_tokens, "total_output_tokens": output_tokens,
             "input_tokens_per_accepted_completion": input_tokens / successes if successes and input_tokens is not None else None,
             "output_tokens_per_accepted_completion": output_tokens / successes if successes and output_tokens is not None else None}
@@ -68,7 +69,7 @@ def paired(left: list[dict], right: list[dict]) -> dict:
 def summarize(records: list[dict]) -> dict:
     if not records:
         raise ValueError("No records")
-    seen, configs, suites = set(), {}, set()
+    seen, configs, suites, versions = set(), {}, set(), set()
     groups, overall = defaultdict(list), defaultdict(list)
     for row in records:
         name, condition = row["agent"]["name"], row["condition"]
@@ -81,10 +82,13 @@ def summarize(records: list[dict]) -> dict:
             raise ValueError("Same agent name refers to different configurations")
         configs[name] = fingerprint
         suites.add(row.get("suite_sha256"))
+        versions.add(row.get("framework_version"))
         groups[(name, condition, row["family"], row["profile"], row["domain"])].append(row)
         overall[(name, condition)].append(row)
     if len(suites) != 1:
         raise ValueError("Do not pool different suites")
+    if len(versions) != 1:
+        raise ValueError("Do not pool different framework versions")
     comparisons, rescue = [], []
     for condition in sorted({c for _, c in overall}):
         names = sorted(n for n, c in overall if c == condition)
@@ -106,39 +110,10 @@ def summarize(records: list[dict]) -> dict:
                 "Prompt rescue is sensitivity to this intervention, not an identified intrinsic autonomy trait.",
                 "Cost per accepted completion is observed batch cost divided by successes, not a retry forecast.",
                 "Token totals are null when any request lacks usage; tokenizers and serving configurations may differ.",
+                "Interrupted collection attempts remain failures; their elapsed time is a lower bound and usage is unknown.",
                 "No human supervision or real-work predictive validity has been measured by this synthetic suite."]}
 
 
 def validate_run(directory: Path) -> tuple[dict, list[dict]]:
-    from .evaluation import replay
-    manifest = json.loads((directory / "private" / "manifest.json").read_text(encoding="utf-8"))
-    data = {"generator_version": manifest["generator_version"], "cases": manifest["cases"]}
-    if digest(data) != manifest["suite_sha256"]:
-        raise ValueError("Suite fingerprint mismatch")
-    cases = {digest(c): c for c in manifest["cases"]}
-    agents = {a["name"]: a for a in manifest["agents"]}
-    if len(cases) != len(manifest["cases"]) or len(agents) != len(manifest["agents"]):
-        raise ValueError("Duplicate manifest case or agent")
-    expected = {(cid, name, cond, rep) for cid in cases for name in agents
-                for cond in manifest["conditions"] for rep in range(manifest["replicates"])}
-    if len(expected) != manifest["expected_episodes"]:
-        raise ValueError("Invalid expected episode count")
-    records, seen = [], set()
-    for path in sorted((directory / "private" / "traces").glob("*.json")):
-        record = json.loads(path.read_text(encoding="utf-8"))
-        key = (record["case_id"], record["agent"]["name"], record["condition"], record["replicate"])
-        if key in seen or key not in expected:
-            raise ValueError("Duplicate or unexpected trace")
-        if record["agent"] != agents[key[1]] or record.get("suite_sha256") != manifest["suite_sha256"]:
-            raise ValueError("Trace configuration mismatch")
-        case = cases[key[0]]
-        if (record["family"], record["profile"], record["domain"]) != (case["family"], case["profile"], case["domain"]):
-            raise ValueError("Trace stratum mismatch")
-        if record["cluster_id"] != digest([manifest["generator_version"], case["seed"]]):
-            raise ValueError("Trace cluster mismatch")
-        replay(record, case)
-        seen.add(key)
-        records.append(record)
-    if seen != expected:
-        raise ValueError(f"Incomplete run: expected {len(expected)}, found {len(seen)}; missing episodes cannot be dropped")
-    return manifest, records
+    from .collection import read_run
+    return read_run(directory)

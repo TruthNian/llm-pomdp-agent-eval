@@ -8,7 +8,9 @@ An open framework for evaluating how agents **discover information, make decisio
 
 The unit of evaluation is an interaction trajectory. Actions reveal evidence, change the world, and consume future options. Successful completion must correspond to an accepted environment state.
 
-**Version 2.0 is a working generative research framework.** It includes two related diagnostic task families, public-observation reference policies, provider-neutral model access, deterministic replay, and failure-inclusive reporting. Its relationship to real-work performance remains an empirical question; no new frontier-model ranking is claimed. The original 72-run GPT/GLM comparison is preserved as a [historical study](studies/2026-gpt56-glm53/README.md).
+**Version 2.1 adds inspectable preparation and failure-preserving resume to the generative research framework.** It includes two related diagnostic task families, public-observation reference policies, provider-neutral model access, deterministic replay, and failure-inclusive reporting. Its relationship to real-work performance remains an empirical question; no new frontier-model ranking is claimed. The original 72-run GPT/GLM comparison is preserved as a [historical study](studies/2026-gpt56-glm53/README.md).
+
+Development follows [explicit stages and acceptance gates](docs/ROADMAP.md): reliable collection → isolated intervention studies → new task structures → external validity → measured acceleration. Requirements are questioned, unnecessary work is removed, and the remaining workflow is simplified before it is automated. For long collections, use [`prepare`, `status` and `resume`](docs/COLLECTION.md); completed and interrupted attempts are never silently replaced.
 
 ## Run without an API key
 

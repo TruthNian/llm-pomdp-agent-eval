@@ -6,10 +6,12 @@ import secrets
 from pathlib import Path
 
 from .agents import BUILTINS
+from .collection import prepare_suite, resume_suite, run_status, run_suite, save_summary
 from .environment import CONDITIONS
-from .evaluation import load_suite, run_suite, write_json
+from .evaluation import load_suite
 from .generator import DOMAINS, FAMILIES, PROFILES, suite
-from .reporting import summarize, validate_run
+from .reporting import validate_run
+from .storage import collection_lock, write_json
 
 
 def main(argv=None) -> int:
@@ -24,18 +26,21 @@ def main(argv=None) -> int:
     generate.add_argument("--families", nargs="+", choices=FAMILIES, default=list(FAMILIES))
     generate.add_argument("--profiles", nargs="+", choices=PROFILES, default=["standard"])
     generate.add_argument("--domains", nargs="+", choices=DOMAINS, default=["incident"])
-    run = commands.add_parser("run", help="Run a complete agent/condition/replicate matrix")
-    run.add_argument("--suite", type=Path, required=True)
-    run.add_argument("--agents", type=Path, help="JSON array of named agent configurations")
-    run.add_argument("--out", type=Path, required=True)
-    run.add_argument("--conditions", nargs="+", choices=CONDITIONS, default=["open"])
-    run.add_argument("--replicates", type=int, default=1)
-    run.add_argument("--wall-seconds", type=float, default=300)
+    for name in ("run", "prepare"):
+        run = commands.add_parser(name, help="Execute a fresh matrix" if name == "run" else "Freeze a matrix without calling models")
+        run.add_argument("--suite", type=Path, required=True)
+        run.add_argument("--agents", type=Path, help="JSON array of named agent configurations")
+        run.add_argument("--out", type=Path, required=True)
+        run.add_argument("--conditions", nargs="+", choices=CONDITIONS, default=["open"])
+        run.add_argument("--replicates", type=int, default=1)
+        run.add_argument("--wall-seconds", type=float, default=300)
     demo = commands.add_parser("demo", help="Offline positive/negative controls; consumes no model tokens")
     demo.add_argument("--out", type=Path, required=True)
     demo.add_argument("--count", type=int, default=12)
-    for command in ("validate", "summarize"):
-        item = commands.add_parser(command, help="Replay and check the entire run before reading statistics")
+    for command in ("validate", "summarize", "resume", "status"):
+        item = commands.add_parser(command, help={"resume": "Collect only unstarted episodes; never retry failures",
+                                                 "status": "Inspect coverage without calling models"}.get(
+                                                     command, "Replay and check the entire matrix"))
         item.add_argument("run_directory", type=Path)
     args = parser.parse_args(argv)
     try:
@@ -46,7 +51,7 @@ def main(argv=None) -> int:
             data = suite(seeds, args.families, args.profiles, args.domains)
             write_json(args.out, data)
             print(f"Generated {len(data['cases'])} cases. Keep this file private during evaluation.")
-        elif args.command in ("run", "demo"):
+        elif args.command in ("run", "demo", "prepare"):
             if args.command == "demo":
                 if args.count < 1:
                     raise ValueError("count must be positive")
@@ -57,18 +62,27 @@ def main(argv=None) -> int:
                 data = load_suite(args.suite)
                 configs = json.loads(args.agents.read_text(encoding="utf-8")) if args.agents else [{"name": "reference", "kind": "reference"}]
                 conditions, replicates, wall = args.conditions, args.replicates, args.wall_seconds
+            if args.command == "prepare":
+                manifest = prepare_suite(data, configs, conditions, replicates, args.out, wall)
+                print(f"Prepared {manifest['expected_episodes']} episodes; no model requests made. Resume: {args.out}")
+                return 0
             report = run_suite(data, configs, conditions, replicates, args.out, wall)
             for row in report["overall"]:
                 print(f"{row['agent']} / {row['condition']}: {row['successes']}/{row['episodes']} accepted")
             print(f"Wrote {args.out / 'summary.json'}; replay with: python -m pomdp_bench validate <run_directory>")
+        elif args.command == "resume":
+            report = resume_suite(args.run_directory)
+            print(f"Collected and validated {report['episodes']} episodes; existing attempts were not retried.")
+        elif args.command == "status":
+            print(json.dumps(run_status(args.run_directory), indent=2))
         else:
-            manifest, records = validate_run(args.run_directory)
             if args.command == "summarize":
-                report = summarize(records)
-                report["run"] = {k: v for k, v in manifest.items() if k != "cases"}
-                report["complete"] = True
-                write_json(args.run_directory / "summary.json", report)
-            print(f"Validated {len(records)} episodes: generator, observations, scores, and complete matrix.")
+                with collection_lock(args.run_directory):
+                    count = save_summary(args.run_directory)["episodes"]
+            else:
+                _, records = validate_run(args.run_directory)
+                count = len(records)
+            print(f"Validated {count} episodes: generator, observations, scores, and complete matrix.")
         return 0
     except (ValueError, KeyError, TypeError, OSError, RuntimeError) as exc:
         parser.exit(2, f"Error: {exc}\n")
