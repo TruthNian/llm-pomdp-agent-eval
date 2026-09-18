@@ -1,6 +1,25 @@
 # Direct HTTP channel: frozen integration validation
 
-**Status: plan published before model calls; results pending.** This is a new integration check, independent of the completed [reminder pilot](../verification-reserve-pilot-v1/README.md). It changes the harness and cannot be pooled with that experiment.
+**Status: all four planned attempts retained and replayed; live integration gate failed.** This is a new integration check, independent of the completed [reminder pilot](../verification-reserve-pilot-v1/README.md). It changes the harness and cannot be pooled with that experiment.
+
+## Recorded result and decision
+
+The [implementation, plan and launcher](https://github.com/TruthNian/llm-pomdp-agent-eval/commit/7dd8727630c2b64836e6974e18bb34ed50fb451a) were public before preparation and collection. The [push workflow](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/runs/35338670776) was created at 11:14:46 UTC; preparation began at 11:15:00 UTC on 2026-09-18. All 14 core file hashes, the plan and launcher match that commit. See the [sanitized evidence](evidence.json) for ordered attempts, request hashes and error categories.
+
+| Configured model | Planned episodes | Accepted tasks | Observed termination |
+|---|---:|---:|---|
+| GPT-5.6 Sol | 2 | 0 | HTTP 401 on each first request |
+| custom/z-ai/glm-5.3 | 2 | 0 | Non-output-text stream content part rejected on each first request |
+
+All four attempts ended before an environment action. There were exactly four benchmark requests and no benchmark retry or replacement. None returned complete usage; their token totals are **unknown**, not zero. All four trajectories replay and their public request fingerprints can be reconstructed from the private cases. Replay verifies faithful failure accounting; it does not turn a failed integration into a successful one.
+
+Post-failure read-only inspection of the installed router module found a usable, unexpired native login with session sharing disabled in the local shell. Its source requires sharing to substitute native authentication for the router caller key. That identifies a missing prerequisite consistent with the HTTP 401 responses; it is not an attestation of the running service's environment or the exact origin of each status. Seeing a model in the local catalogue is insufficient evidence of permission to invoke it through this endpoint.
+
+One separate [diagnostic script](diagnostic_snapshot.py.txt) then made **one constant-output GLM request**, without a benchmark case or score. It returned a completed action, 94 reported input tokens, 6 output tokens and 0 reported reasoning tokens. The original non-text part subtype was not stored, and this simpler request did not reproduce that failure. Its reported model string differed from the configured alias; that observation alone neither proves a substituted model nor attests its identity. The diagnostic is not a fifth benchmark episode or a replacement for either failed GLM trajectory.
+
+**Decision:** ship the tested protocol implementation with this explicit integration limit; do not expand the model study or loosen parsing to make these results disappear. The next live gate requires permission through the intended route and a reviewed protocol-shape diagnosis for the full public-history input. Any compatibility change needs counterexamples proving that tool-bearing content is still rejected, followed by a separately frozen validation. An easy one-action smoke test cannot substitute for multi-turn integration.
+
+Offline acceptance passed: **93 tests**, including **23 channel tests**, four Windows/Linux CI jobs on Python 3.11/3.13, 24 offline demo trajectories, historical replay and 156 immutable archive files. No model ranking, reminder effect or training-cause conclusion follows from this check.
 
 ## Question, delete, simplify
 

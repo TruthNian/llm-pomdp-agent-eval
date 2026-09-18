@@ -15,7 +15,7 @@
 
 [预注册的 8 条真实模型试跑](studies/verification-reserve-pilot-v1/README.md)已完整发布，包含两条接入失败和本机运行时的能力边界遗漏。结果没有证明预算提醒有效；下一步先验证动作通道，再考虑扩大采集。
 
-新的[直接 HTTP 接入验证](studies/direct-channel-validation-v1/README.md)独立冻结 4 条轨迹，先公开源码和计划，再调用模型；它不替换上一轮失败记录。
+新的[直接 HTTP 接入验证](studies/direct-channel-validation-v1/README.md)先公开源码和计划，再执行固定的 4 次尝试。4 条轨迹均在环境动作前结束：两条 HTTP 401、两条流格式拒绝。离线协议测试通过，本机入口仍**未通过多轮验收**；另一次成功的单动作诊断单独报告，不替换这两轮试跑。
 
 ## 无需模型账号即可运行
 

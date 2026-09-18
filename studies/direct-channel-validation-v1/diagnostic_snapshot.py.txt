@@ -1,0 +1,49 @@
+"""One post-failure protocol probe, no benchmark case, answer or score."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+from datetime import datetime, timezone
+
+from pomdp_bench.model_io import AdapterError, HttpAgent, ResponseStream, strict_json
+from pomdp_bench.storage import read_json, write_json
+
+plan = read_json(Path('studies/direct-channel-validation-v1/plan.json'))
+config = plan['agents'][1]
+os.environ['DIRECT_ENDPOINT'] = 'http://127.0.0.1:4202/v1/responses'
+os.environ['DIRECT_KEY'] = (Path.home()/'.codex/codex-router/caller-secret').read_text().strip()
+os.environ['DIRECT_HEADERS'] = json.dumps(plan['transport']['headers'])
+events = []
+original = ResponseStream.line
+
+def typename(value):
+    return value if isinstance(value, str) and re.fullmatch(r'[a-z_.]{1,64}', value) else 'unknown'
+
+def inspect_line(self, line):
+    if not line and self.lines:
+        raw = b'\n'.join(self.lines)
+        if raw != b'[DONE]':
+            event = strict_json(raw)
+            row = {'event_type': typename(event.get('type'))}
+            for field in ('item', 'part'):
+                if isinstance(event.get(field), dict):
+                    row[field+'_type'] = typename(event[field].get('type'))
+            events.append(row)
+    return original(self, line)
+
+ResponseStream.line = inspect_line
+agent = HttpAgent(config)
+started = datetime.now(timezone.utc).isoformat()
+try:
+    agent.act({'protocol_version': 1, 'task': 'Return exactly {"command":"finish"}. This is a protocol check.',
+               'observation': {}, 'history': []}, 180)
+    outcome = 'action'
+except AdapterError as exc:
+    outcome = exc.code
+result = {'purpose': 'One post-failure format diagnostic; no benchmark case or score',
+          'started_at': started, 'model': config['model'], 'events_before_termination': events,
+          'outcome': outcome, 'request_audit': agent.request_audit, 'usage': agent.usage,
+          'diagnostic_script_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
+write_json(Path('artifacts/v23-channel-diagnostic.json'), result, replace=False)
+print(json.dumps(result))

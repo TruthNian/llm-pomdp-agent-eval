@@ -16,7 +16,7 @@ For a single-intervention experiment, use [`prepare-study`](docs/STUDIES.md). Th
 
 The [preregistered eight-episode live pilot](studies/verification-reserve-pilot-v1/README.md) is complete, including two retained bridge failures and a native capability-boundary limitation. It does not establish a reminder effect. The next gate is reliable action-channel isolation, before expanding collection.
 
-The separate [direct-channel validation](studies/direct-channel-validation-v1/README.md) freezes a four-episode integration check of the simpler transport. Its source and plan are published before calls; it does not replace the earlier pilot.
+The separate [direct-channel validation](studies/direct-channel-validation-v1/README.md) published its source and plan before four attempts. All four ended before an environment action: two HTTP 401 responses and two stream-format rejections. Offline protocol tests passed; the installed route remains **unvalidated for multi-turn use**. A later one-action diagnostic is reported separately and does not replace either pilot.
 
 ## Run without an API key
 

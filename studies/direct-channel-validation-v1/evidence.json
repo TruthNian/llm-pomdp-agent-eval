@@ -1,0 +1,257 @@
+{
+  "purpose": "Validate direct HTTP multi-turn collection, not a reminder effect or model ranking",
+  "framework_version": "2.3.0",
+  "preregistration": {
+    "public_commit": "7dd8727630c2b64836e6974e18bb34ed50fb451a",
+    "public_commit_url": "https://github.com/TruthNian/llm-pomdp-agent-eval/commit/7dd8727630c2b64836e6974e18bb34ed50fb451a",
+    "github_push_workflow_created_at": "2026-09-18T11:14:46Z",
+    "github_workflow_url": "https://github.com/TruthNian/llm-pomdp-agent-eval/actions/runs/35338670776",
+    "github_workflow_conclusion": "success",
+    "prepared_at": "2026-09-18T11:15:00.532518+00:00",
+    "plan_sha256": "9eed4fd02a5810b080822618f4802391f5018379f07e3bb5b8ec65315a3787ff",
+    "launch_snapshot_sha256": "3a0901b95efd82310331936bfacead887f109784c9f8c3872c0ae93b8e00aad6",
+    "source_files_match_published_commit": true,
+    "plan_and_launcher_match_published_commit": true
+  },
+  "offline": {
+    "unit_tests_passed": 93,
+    "adapter_tests_passed": 23,
+    "ci_jobs_passed": 4,
+    "demo_episodes_replayed": 24,
+    "frozen_historical_files_verified": 156,
+    "previous_v22_episodes_replayed": 8,
+    "previous_v21_episodes_replayed": 4,
+    "previous_v20_episodes_replayed": 576
+  },
+  "live": {
+    "gate_passed": false,
+    "collection_complete": true,
+    "planned_episodes": 4,
+    "validated_episodes": 4,
+    "successes": 0,
+    "adapter_failures": 4,
+    "benchmark_requests": 4,
+    "requests_with_usage": 0,
+    "token_totals_known": false,
+    "recorded_git_revision": "7dd8727630c2b64836e6974e18bb34ed50fb451a",
+    "recorded_working_tree_dirty": false,
+    "manifest_sha256": "ffa5eb759ebacf93402ef6362b04e636dbca5edae0033ff8bb29d6b4630b8c8c",
+    "suite_sha256": "911eb3fbfe9737c7bfc6927a16c1154375b35dbf2fec2e920b052fffbe896c89",
+    "schedule_sha256": "19e4fad71f78f278ee11698bd101be4c7bdfce7002a8e0fd01970249b2a0c717",
+    "source_sha256": {
+      "__init__.py": "1239f04a4f983deebd230c41341ee55d37cf5ab1d042267270f509fa96a6cf89",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "agents.py": "bc36ab871c6467ddb4d72052834cc51cc37d5e566284e335d53187b817c8b9d3",
+      "cli.py": "b6beeeacd9e166167e9263b7e77e00b969a19fa68f9853ed5d5c1a71d39ae41a",
+      "collection.py": "cf9a7d9a7d5aaeea998cf314aa015a0c41c438d76b3ec16264c1b223cdb3386e",
+      "environment.py": "36e54dab9298e89cb38aec9f9d196ad6d18f6bd482f92dfed2b744907cf4b3f4",
+      "evaluation.py": "a509f89f9b123f73fcf00189b12388302b70b357978eefabb3f31cdb313af32f",
+      "generator.py": "5927978a301c50c703cc3450b03e0774abf803122386744cb5dcab434d6f9d69",
+      "interventions.py": "a111d6dc5cfbba6e8ac0bab1d1f026b906683f28a487183742f7469e8fb89dd0",
+      "model_io.py": "d24e62f9d0ea9d63cbf7d2424462c24a13e0424ad5857cb944a28750310e60c1",
+      "planning.py": "4a136bcd587e069b716f63cc1c9f1607da6d3f966a5d4f3e7ea8ed57695fcb93",
+      "reporting.py": "44e3deed310f967237f55a6bf992af1f7346c1e13c540a3b533a271aad0affd6",
+      "storage.py": "463c36e711458a1e8e401d9d5540ea5dcee5f262cbb8e201217e6f5f20934c84",
+      "studies.py": "44cdf47f92c048c51169bfd4f844a74a1bd9fdbabf9913102a45d7001a2c3602"
+    },
+    "all_public_request_fingerprints_reconstructed": true,
+    "ordered_outcomes": [
+      {
+        "order": 1,
+        "agent": "gpt-5.6-sol",
+        "family": "diagnosis",
+        "condition": "open",
+        "started_at": "2026-09-18T11:15:06.250483+00:00",
+        "trace_sha256": "daf3ea9b15da05c70acb4dc2b4c66b4a5d71069a7d95cb5b6934d6ab07ccb930",
+        "termination": "adapter_error",
+        "success": false,
+        "steps": 0,
+        "action_cost": 0,
+        "elapsed_seconds": 0.314204,
+        "error": "Endpoint HTTP status 401",
+        "request_audit": [
+          {
+            "protocol": "responses",
+            "request_sha256": "703b9a2c373cfbb7c1d84651fa3a1a4dc49c1b1a9d8eb9a986816e51bd65bee5",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 180,
+            "outcome": "http_error"
+          }
+        ],
+        "requests": 1,
+        "requests_with_usage": 0,
+        "input_tokens": null,
+        "output_tokens": null,
+        "reasoning_tokens": null
+      },
+      {
+        "order": 2,
+        "agent": "custom/z-ai/glm-5.3",
+        "family": "diagnosis",
+        "condition": "open",
+        "started_at": "2026-09-18T11:15:06.583060+00:00",
+        "trace_sha256": "8c3f6a278fdf694e66d79d15514869af0394e5ba677fc02d02279907d64abdcd",
+        "termination": "adapter_error",
+        "success": false,
+        "steps": 0,
+        "action_cost": 0,
+        "elapsed_seconds": 1.655152,
+        "error": "Endpoint streamed non-text action content",
+        "request_audit": [
+          {
+            "protocol": "responses",
+            "request_sha256": "e016dbad93721c0c0ad72f65daed4094107113f8898e62fc179a1a67d9578c6a",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 180,
+            "outcome": "protocol_error"
+          }
+        ],
+        "requests": 1,
+        "requests_with_usage": 0,
+        "input_tokens": null,
+        "output_tokens": null,
+        "reasoning_tokens": null
+      },
+      {
+        "order": 3,
+        "agent": "custom/z-ai/glm-5.3",
+        "family": "cascade",
+        "condition": "open",
+        "started_at": "2026-09-18T11:15:08.245462+00:00",
+        "trace_sha256": "5d05f6ad38d58c2d2765e82cdde71e3b220a65c9ac3f2e9c039215e051ffb33b",
+        "termination": "adapter_error",
+        "success": false,
+        "steps": 0,
+        "action_cost": 0,
+        "elapsed_seconds": 1.876669,
+        "error": "Endpoint streamed non-text action content",
+        "request_audit": [
+          {
+            "protocol": "responses",
+            "request_sha256": "96f6510ddd468fac255f978cf3eedde30c0f0a846bc47c0b5a26c658519d6b24",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 180,
+            "outcome": "protocol_error"
+          }
+        ],
+        "requests": 1,
+        "requests_with_usage": 0,
+        "input_tokens": null,
+        "output_tokens": null,
+        "reasoning_tokens": null
+      },
+      {
+        "order": 4,
+        "agent": "gpt-5.6-sol",
+        "family": "cascade",
+        "condition": "open",
+        "started_at": "2026-09-18T11:15:10.135663+00:00",
+        "trace_sha256": "c4140c114d3c7bbc1e639ecbf5c9d93db56ff0b8d89dac09d2979369994f116d",
+        "termination": "adapter_error",
+        "success": false,
+        "steps": 0,
+        "action_cost": 0,
+        "elapsed_seconds": 0.328295,
+        "error": "Endpoint HTTP status 401",
+        "request_audit": [
+          {
+            "protocol": "responses",
+            "request_sha256": "594398b075cf2a3cfe7608d13fcbd8d9ed063187cd931d2076d7e9856510bf9c",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 180,
+            "outcome": "http_error"
+          }
+        ],
+        "requests": 1,
+        "requests_with_usage": 0,
+        "input_tokens": null,
+        "output_tokens": null,
+        "reasoning_tokens": null
+      }
+    ]
+  },
+  "post_failure_diagnostics": {
+    "native_session_read_only_status": {
+      "present": true,
+      "usable": true,
+      "expired": false,
+      "sharingEnabled": false
+    },
+    "native_status_scope": "Router module status in the local shell, after collection; not an attestation of the running service environment",
+    "glm_one_request_probe": {
+      "purpose": "One post-failure format diagnostic; no benchmark case or score",
+      "started_at": "2026-09-18T11:17:56.832609+00:00",
+      "model": "custom/z-ai/glm-5.3",
+      "events_before_termination": [
+        {
+          "event_type": "response.created"
+        },
+        {
+          "event_type": "response.in_progress"
+        },
+        {
+          "event_type": "response.output_item.added",
+          "item_type": "message"
+        },
+        {
+          "event_type": "response.content_part.added",
+          "part_type": "output_text"
+        },
+        {
+          "event_type": "response.output_text.delta"
+        },
+        {
+          "event_type": "response.output_text.delta"
+        },
+        {
+          "event_type": "response.output_text.done"
+        },
+        {
+          "event_type": "response.content_part.done",
+          "part_type": "output_text"
+        },
+        {
+          "event_type": "response.output_item.done",
+          "item_type": "message"
+        },
+        {
+          "event_type": "response.completed"
+        }
+      ],
+      "outcome": "action",
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "3858076ef17673ce008072630bc05fc8fbc27987f8a03192f1bc86b37619aee0",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 180,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        }
+      ],
+      "usage": {
+        "requests": 1,
+        "requests_with_usage": 1,
+        "input_tokens": 94,
+        "output_tokens": 6,
+        "reasoning_tokens": 0,
+        "requests_with_reasoning_usage": 1
+      },
+      "diagnostic_script_sha256": "59c1697f82654ef49201ed78b26e335f15dc4c6f98aed9aa3b11f04e180a0235"
+    },
+    "not_a_replacement": "The constant-output probe has no benchmark case, no score and no multistep validation; it does not change the four failed outcomes"
+  },
+  "decision": "Do not scale collection. Offline adapter acceptance passed; installed-route multistep integration did not.",
+  "limits": [
+    "Private cases and raw traces are not public; these hashes are local consistency evidence, not external attestation.",
+    "Empty client tools and exact-route header do not attest hidden provider capabilities, retries or checkpoint identity.",
+    "Non-text content parts were rejected; the original part subtype was not stored. The simple diagnostic did not reproduce the failure.",
+    "The configured model label differed in the successful diagnostic; aliases do not establish model substitution or identity.",
+    "No population success rate, mechanism effect, model ranking or parameter/post-training cause is identified."
+  ]
+}

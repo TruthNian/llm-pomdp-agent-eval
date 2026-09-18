@@ -19,6 +19,8 @@ Before adding a feature, record the decision it enables, the failure of the smal
 | Repeating an interrupted run is harmless | Remove this as the recovery workflow | P1 preserves completed episodes and interrupted failures without redialing them |
 | Repeated validation implementations are safer | Delete duplicate suite/matrix/summary paths | One definition validator, one evidence validator, one summary builder |
 | A software update can be silently mixed into collection | Reject changed runtime/source on resume and mixed versions in summaries | Historical replay is separate from continuing an experiment |
+| One JSON action requires a complete native agent runtime | Remove the experimental runtime bridge from the preferred path | 2.3 shares one HTTP transport between Chat Completions and Responses; explicit empty tools, complete envelopes and one socket deadline |
+| A listed model or a successful one-action probe establishes readiness | Delete that assumption | The 2.3 fixed pilot retained four first-request failures; a later constant-output probe passed without validating multi-turn input |
 | Concurrent workers, automatic retries, plugin systems and dashboards are prerequisites | Defer them | Add only after a measured bottleneck or a second independent family requires them |
 | A single autonomy score is necessary | Do not introduce one | An application must first declare its utility and show the aggregation is useful |
 
@@ -59,6 +61,14 @@ Acceptance remains the environment/reference tests and [published control valida
 **Exit gate:** full tests, frozen-study checks, offline demo/replay, Windows/Linux CI. A live provider pilot checks transport and configuration separately; it is not a model ranking. Missing usage and uncertain in-flight requests remain unknown. Local hashes are consistency checks, not adversarial attestation.
 
 **Deliberately deferred:** implicit retries, parallel workers, cross-runtime resume, public raw-run export and provider-checkpoint attestation. Revisit a deferral only with a failure or measured need. See [exact interruption semantics](COLLECTION.md).
+
+### P1.7 — Remove unnecessary runtime authority
+
+**Implemented in 2.3; offline acceptance passed, installed-route integration gate failed.** The [direct-channel validation](../studies/direct-channel-validation-v1/README.md) replaces the experimental app-server bridge with an ordinary HTTP call, shared between the two supported API formats. It deletes the native agent subprocess, capability denylist, bridge event queue and second request deadline from that path. Strict response parsing rejects tools mixed with valid text, truncation, ambiguous choices and incomplete streams; public request fingerprints and failure categories make attempts inspectable.
+
+The preregistered four episodes all failed before an environment action: two HTTP 401 responses and two non-text stream-part rejections. They remain in the denominator. Read-only local inspection found native session sharing disabled; a later single GLM constant-output diagnostic passed but did not reproduce the full-input failure. Do not label this route live-validated, infer task weakness, silently enable shared authentication, or add permissive parser fallbacks.
+
+**Next gate:** verify authentication for the actual endpoint before drawing evaluation cases; capture only reviewed structural event metadata in a separate diagnostic; resolve protocol compatibility with positive and negative fixtures; then publish a new fixed multi-turn plan. Preserve the present plan, source commit and outcomes. A portable HTTP adapter does not imply that every subscription router implements its contract.
 
 ## P2 — Test one mechanism before expanding the factorial design
 
@@ -109,4 +119,4 @@ Profile actual collection, replay, analysis and maintenance costs. Remove avoida
 
 Public development seeds support debugging; private evaluation seeds support prospective collection; held-out structures test a different generalization claim. Retire and publish reviewed manifests/traces with versioned sources and exclusions. Never silently change a released study or erase failed collection attempts. New seeds alone do not establish contamination resistance.
 
-The next work is **verify the live action channel before collecting more model evidence**: remove undeclared hosted capabilities, check effective configuration, and distinguish runtime events from valid JSON actions. A revised bridge needs its own frozen source and study plan. Then test whether the task distribution has observable target failures; do not expand the completed pilot or infer mechanisms from its censored contrast. P3's observation/transition design can proceed independently, but it does not close this empirical gate.
+The next work is **satisfy the direct channel's authentication and protocol prerequisites before another multi-turn plan**. The unnecessary native runtime has been removed from the preferred path; the 2.3 result shows that catalogue visibility and a simple smoke test do not prove route readiness. Do not expand either completed pilot or infer mechanisms from execution failures. After the channel passes a separately frozen gate, test whether the task distribution has observable target failures. P3's observation/transition design can proceed independently; it cannot close this integration gate or P4's external-validity gate.

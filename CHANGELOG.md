@@ -8,6 +8,7 @@
 - Preserve request fingerprints, declared tool policy and sanitized failure categories without raw provider bodies, credentials or reasoning.
 - Support explicit environment-only gateway X- headers, including exact-route selection; avoid claiming that local configuration attests upstream behavior.
 - Publish a new [four-episode integration plan](studies/direct-channel-validation-v1/README.md) before collection. Preserve the earlier eight-episode reminder pilot unchanged.
+- Retain and replay all four first-request integration failures (two HTTP 401, two stream-part rejections). Publish a separate successful constant-output diagnostic without substituting it for multi-turn acceptance. Require endpoint authorization and protocol compatibility before further collection.
 
 **Comparability:** task generation, public environment prompts and acceptance are unchanged. The HTTP request and response contract is stricter; existing 2.0–2.2 traces replay, but new collections require 2.3 source/configuration. The new protocol cannot be pooled with earlier native-runtime runs.
 
