@@ -9,6 +9,7 @@
 - Add a public-information budget-omission sensitivity control plus ceiling/floor controls and tests across 96 structural instances.
 - Remove the arbitrary 60-second maximum for explicitly configured request timeouts; remaining episode time still caps every call.
 - Publish the [live feasibility pilot plan](studies/verification-reserve-pilot-v1/README.md) before collection. Small pilots remain exploratory, including at perfect success.
+- Complete and replay all eight live pilot episodes, retaining two bridge failures. Publish the omitted native image-generation switch and full-width primary intervals; stop scaling because feasibility and target-failure evidence are insufficient.
 
 **Comparability:** the two new prompt conditions exist only from 2.2. Old traces remain replayable, but source/version changes require fresh collection directories. This release supports inference about the declared reminder contrast, not training causes or real-work predictive validity.
 

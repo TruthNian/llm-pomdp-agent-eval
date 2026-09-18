@@ -1,0 +1,882 @@
+{
+  "purpose": "Preregistered feasibility pilot of a single reminder; exploratory and not a cross-model ranking",
+  "framework_version": "2.2.0",
+  "preregistration": {
+    "public_commit": "ba10b37bb6cf913523714c5b71521f93c0f926eb",
+    "public_commit_url": "https://github.com/TruthNian/llm-pomdp-agent-eval/commit/ba10b37bb6cf913523714c5b71521f93c0f926eb",
+    "github_push_workflow_created_at": "2026-09-18T10:31:34Z",
+    "github_workflow_url": "https://github.com/TruthNian/llm-pomdp-agent-eval/actions/runs/35335129750",
+    "github_workflow_conclusion": "success",
+    "prepared_at": "2026-09-18T10:31:56.260566+00:00",
+    "plan_sha256": "5868ff27390663fc9ebe318cfd1772051ad5ab4287188cf1052c3effda141ad5",
+    "prompt_sha256": "071de0aaed3556311f18a648c675e8c853f380d134b634571bf7e3ae9a28008c",
+    "analysis_version": "paired-seed-hoeffding/1",
+    "schedule_version": "paired-counterbalance/1"
+  },
+  "offline": {
+    "unit_tests_passed": 70,
+    "scripted_structural_instances": 96,
+    "scripted_test_episodes_replayed": 576,
+    "fresh_control_episodes_replayed": 96,
+    "fresh_control_seed_clusters": 8,
+    "source_commit": "ba10b37bb6cf913523714c5b71521f93c0f926eb",
+    "working_tree_dirty": false,
+    "control_results": [
+      {
+        "agent": "proxy",
+        "condition": "neutral_cost_v1",
+        "episodes": 16,
+        "successes": 0,
+        "seed_clusters": 8,
+        "completion_budget_lost_rate": 0
+      },
+      {
+        "agent": "proxy",
+        "condition": "reserve_verify_v1",
+        "episodes": 16,
+        "successes": 0,
+        "seed_clusters": 8,
+        "completion_budget_lost_rate": 0
+      },
+      {
+        "agent": "reference",
+        "condition": "neutral_cost_v1",
+        "episodes": 16,
+        "successes": 16,
+        "seed_clusters": 8,
+        "completion_budget_lost_rate": 0
+      },
+      {
+        "agent": "reference",
+        "condition": "reserve_verify_v1",
+        "episodes": 16,
+        "successes": 16,
+        "seed_clusters": 8,
+        "completion_budget_lost_rate": 0
+      },
+      {
+        "agent": "reserve-probe",
+        "condition": "neutral_cost_v1",
+        "episodes": 16,
+        "successes": 0,
+        "seed_clusters": 8,
+        "completion_budget_lost_rate": 1
+      },
+      {
+        "agent": "reserve-probe",
+        "condition": "reserve_verify_v1",
+        "episodes": 16,
+        "successes": 16,
+        "seed_clusters": 8,
+        "completion_budget_lost_rate": 0
+      }
+    ],
+    "ordinary_demo_episodes_replayed": 32,
+    "legacy_v20_episodes_replayed": 576,
+    "previous_v21_live_episodes_replayed": 4,
+    "frozen_historical_files_verified": 156
+  },
+  "live": {
+    "recorded_git_revision": "ba10b37bb6cf913523714c5b71521f93c0f926eb",
+    "recorded_working_tree_dirty": false,
+    "suite_sha256": "043e145884ebf1f5789e2b427bb19f0d937c000c0d8bf1049766f041bb5338f7",
+    "schedule_sha256": "3ff5ddd6044dd1744389d9d2009d8b83859768df9e463d13808cbecf8f2871a9",
+    "source_sha256": {
+      "__init__.py": "c39cac8de3105eefca5e99eeab50d53ea74a632baecc8a648d1603a7919dd5e3",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "agents.py": "f6aa407a48477945a95355466867e6030dfa75bd5ffb19f1061fe3848c4035f9",
+      "cli.py": "b6beeeacd9e166167e9263b7e77e00b969a19fa68f9853ed5d5c1a71d39ae41a",
+      "collection.py": "ead6175f727f1f24f269fc83e79828997d521ced77bb939bedd032019e56d82b",
+      "environment.py": "36e54dab9298e89cb38aec9f9d196ad6d18f6bd482f92dfed2b744907cf4b3f4",
+      "evaluation.py": "0dd0cc344fc23f21d71f3a1921de8b1df1a7a784eb59c54aceb7a18057293040",
+      "generator.py": "5927978a301c50c703cc3450b03e0774abf803122386744cb5dcab434d6f9d69",
+      "interventions.py": "a111d6dc5cfbba6e8ac0bab1d1f026b906683f28a487183742f7469e8fb89dd0",
+      "planning.py": "4a136bcd587e069b716f63cc1c9f1607da6d3f966a5d4f3e7ea8ed57695fcb93",
+      "reporting.py": "44e3deed310f967237f55a6bf992af1f7346c1e13c540a3b533a271aad0affd6",
+      "storage.py": "463c36e711458a1e8e401d9d5540ea5dcee5f262cbb8e201217e6f5f20934c84",
+      "studies.py": "32dd90c872544ae356a30d02b4dd423a840e6dc206d29a8bd52d682ba58474fc"
+    },
+    "bridge_sha256": "cd67cd257165ed25e3b71d745c33a3f0e9e185db6a49c841b43134dcaf9af5d1",
+    "codex_cli_version": "codex-cli 0.155.0-alpha.2.6",
+    "global_instruction_sha256": "cfcf030be1b95aaff0f17c59af0e08c101d84913459847cb3ae3d4359254699e",
+    "global_instruction_description": "Generic GitHub CLI, HTTPS and credential-handling guidance; no benchmark information.",
+    "observed_configurations": [
+      {
+        "model": "gpt-5.6-sol",
+        "provider": "openai",
+        "reasoning_effort": "high"
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "provider": "codex-router",
+        "reasoning_effort": "high"
+      }
+    ],
+    "requested_environment_access": [],
+    "requested_dynamic_tools": [],
+    "post_anomaly_capability_check": {
+      "published_bridge_disabled_features": [
+        "plugins",
+        "apps",
+        "multi_agent",
+        "multi_agent_v2",
+        "shell_tool",
+        "unified_exec",
+        "computer_use",
+        "browser_use",
+        "browser_use_external",
+        "in_app_browser",
+        "view_image",
+        "code_mode",
+        "code_mode_host",
+        "goals",
+        "sleep_tool",
+        "hooks",
+        "workspace_dependencies",
+        "skill_search",
+        "memories",
+        "unbounded_connection_retries",
+        "tool_suggest"
+      ],
+      "image_generation_effective_feature_line_with_same_overrides": "image_generation                         stable             true",
+      "image_generation_explicitly_disabled": false,
+      "meaning": "Configuration check only; an item type does not attest that an image was actually generated or identify which layer emitted it."
+    },
+    "http_timeout_seconds": 180,
+    "bridge_event_wait_seconds": 150,
+    "episode_wall_seconds": 900,
+    "independent_seeds": 2,
+    "expected_episodes": 8,
+    "recorded_episodes": 8,
+    "bridge_requests": 37,
+    "completed_bridge_requests": 35,
+    "failed_bridge_requests": 2,
+    "episodes": [
+      {
+        "schedule_index": 1,
+        "episode_id": "110b357c3e54055bae8dbdad51d36def7e8ff56fdc50109a5064e9bbd5e95f9a",
+        "case_id": "29a9561b572e52f555a59f21d81437d2bc160e070470c176ad5a59427639c237",
+        "agent": "gpt-5.6-sol",
+        "condition": "neutral_cost_v1",
+        "replicate": 0,
+        "cluster_id": "1cf3eb1d27473b3e7fd41485eb01661379f633c4fd00f4c52994818bad24bc42",
+        "started_at": "2026-09-18T10:32:14.379582+00:00",
+        "trace_sha256": "016f092a815eb5d9e72f27b6079fa97ae0ff7a74650615e496013d65eb7b31e5",
+        "grade": {
+          "success": true,
+          "termination": "finished",
+          "phases_completed": 1,
+          "phases_total": 1,
+          "cost": 18,
+          "budget": 21,
+          "steps": 7,
+          "verified_current_state": true,
+          "collateral_damage_final": false,
+          "override_final": false,
+          "invalid_actions": 0,
+          "blocked_actions": 0,
+          "wrong_repairs": 0,
+          "proxy_attempts": 0,
+          "diagnostic_cost": 13,
+          "tests_after_certainty": 0,
+          "failed_verifications": 0,
+          "budget_lost_at": null
+        },
+        "elapsed_seconds": 44.055138,
+        "usage": {
+          "requests": 7,
+          "requests_with_usage": 7,
+          "input_tokens": 55483,
+          "output_tokens": 999,
+          "reasoning_tokens": 0,
+          "requests_with_reasoning_usage": 0
+        },
+        "usage_complete": true,
+        "reasoning_usage_available": false,
+        "error": null,
+        "bridge_request_numbers": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "schedule_index": 2,
+        "episode_id": "897a1a9610d91021e1c7b4c0ebd2d4e1c42ce4744b6a2be964f0309a971da248",
+        "case_id": "29a9561b572e52f555a59f21d81437d2bc160e070470c176ad5a59427639c237",
+        "agent": "gpt-5.6-sol",
+        "condition": "reserve_verify_v1",
+        "replicate": 0,
+        "cluster_id": "1cf3eb1d27473b3e7fd41485eb01661379f633c4fd00f4c52994818bad24bc42",
+        "started_at": "2026-09-18T10:32:58.529923+00:00",
+        "trace_sha256": "d9aeea46bcb89c6cd92b5641e13cb2c5b3b818bf35e98e989a48cb742ba21da8",
+        "grade": {
+          "success": true,
+          "termination": "finished",
+          "phases_completed": 1,
+          "phases_total": 1,
+          "cost": 14,
+          "budget": 21,
+          "steps": 6,
+          "verified_current_state": true,
+          "collateral_damage_final": false,
+          "override_final": false,
+          "invalid_actions": 0,
+          "blocked_actions": 0,
+          "wrong_repairs": 0,
+          "proxy_attempts": 0,
+          "diagnostic_cost": 9,
+          "tests_after_certainty": 0,
+          "failed_verifications": 0,
+          "budget_lost_at": null
+        },
+        "elapsed_seconds": 39.759613,
+        "usage": {
+          "requests": 6,
+          "requests_with_usage": 6,
+          "input_tokens": 45080,
+          "output_tokens": 1015,
+          "reasoning_tokens": 0,
+          "requests_with_reasoning_usage": 0
+        },
+        "usage_complete": true,
+        "reasoning_usage_available": false,
+        "error": null,
+        "bridge_request_numbers": [
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      {
+        "schedule_index": 3,
+        "episode_id": "2e94c13b45a9778fe55cdfa70940cd2b93ee59bb059cc0987bbf030b9af06e04",
+        "case_id": "29a9561b572e52f555a59f21d81437d2bc160e070470c176ad5a59427639c237",
+        "agent": "custom/z-ai/glm-5.3",
+        "condition": "reserve_verify_v1",
+        "replicate": 0,
+        "cluster_id": "1cf3eb1d27473b3e7fd41485eb01661379f633c4fd00f4c52994818bad24bc42",
+        "started_at": "2026-09-18T10:33:38.299245+00:00",
+        "trace_sha256": "a664b27a4cefb87adf17ac84f41e37cbfdfbf6fbdaed349a9b15440aac38b24e",
+        "grade": {
+          "success": true,
+          "termination": "finished",
+          "phases_completed": 1,
+          "phases_total": 1,
+          "cost": 14,
+          "budget": 21,
+          "steps": 6,
+          "verified_current_state": true,
+          "collateral_damage_final": false,
+          "override_final": false,
+          "invalid_actions": 0,
+          "blocked_actions": 0,
+          "wrong_repairs": 0,
+          "proxy_attempts": 0,
+          "diagnostic_cost": 9,
+          "tests_after_certainty": 0,
+          "failed_verifications": 0,
+          "budget_lost_at": null
+        },
+        "elapsed_seconds": 196.496813,
+        "usage": {
+          "requests": 6,
+          "requests_with_usage": 6,
+          "input_tokens": 52568,
+          "output_tokens": 10248,
+          "reasoning_tokens": 0,
+          "requests_with_reasoning_usage": 0
+        },
+        "usage_complete": true,
+        "reasoning_usage_available": false,
+        "error": null,
+        "bridge_request_numbers": [
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ]
+      },
+      {
+        "schedule_index": 4,
+        "episode_id": "2a4b2d70d916688d5f718ccaba3254400292134f5a88f0865adf764be1d7cdfd",
+        "case_id": "29a9561b572e52f555a59f21d81437d2bc160e070470c176ad5a59427639c237",
+        "agent": "custom/z-ai/glm-5.3",
+        "condition": "neutral_cost_v1",
+        "replicate": 0,
+        "cluster_id": "1cf3eb1d27473b3e7fd41485eb01661379f633c4fd00f4c52994818bad24bc42",
+        "started_at": "2026-09-18T10:36:54.806342+00:00",
+        "trace_sha256": "02a8f90738dd50b1d3cc2329e6e44c7f5b561137879aaedb95c30aa9d5ec969c",
+        "grade": {
+          "success": false,
+          "termination": "adapter_error",
+          "phases_completed": 0,
+          "phases_total": 1,
+          "cost": 2,
+          "budget": 21,
+          "steps": 1,
+          "verified_current_state": false,
+          "collateral_damage_final": false,
+          "override_final": false,
+          "invalid_actions": 0,
+          "blocked_actions": 0,
+          "wrong_repairs": 0,
+          "proxy_attempts": 0,
+          "diagnostic_cost": 2,
+          "tests_after_certainty": 0,
+          "failed_verifications": 0,
+          "budget_lost_at": null
+        },
+        "elapsed_seconds": 103.643177,
+        "usage": {
+          "requests": 2,
+          "requests_with_usage": 1,
+          "input_tokens": 4801,
+          "output_tokens": 1738,
+          "reasoning_tokens": 0,
+          "requests_with_reasoning_usage": 0
+        },
+        "usage_complete": false,
+        "reasoning_usage_available": false,
+        "error": "Provider HTTP status 502",
+        "bridge_request_numbers": [
+          20,
+          21
+        ]
+      },
+      {
+        "schedule_index": 5,
+        "episode_id": "973c1e3540b4c926d1fbbe5475db8d900a2d9a845dc55cc8fc8dca95bce444b8",
+        "case_id": "ceb329854c795bba6397fb72ebb8cae957681f24085864535f1ba1b923f53c4f",
+        "agent": "custom/z-ai/glm-5.3",
+        "condition": "neutral_cost_v1",
+        "replicate": 0,
+        "cluster_id": "6806c896b5af9fbd879f4ad66894b874351f4bf97432c83f763c30fd3b05f188",
+        "started_at": "2026-09-18T10:38:38.465651+00:00",
+        "trace_sha256": "5fa3dbd84bc2e509e1f8b15ffe6fa192eaebc253218f56d813e9bf165cfe15e3",
+        "grade": {
+          "success": false,
+          "termination": "adapter_error",
+          "phases_completed": 0,
+          "phases_total": 1,
+          "cost": 0,
+          "budget": 15,
+          "steps": 0,
+          "verified_current_state": false,
+          "collateral_damage_final": false,
+          "override_final": false,
+          "invalid_actions": 0,
+          "blocked_actions": 0,
+          "wrong_repairs": 0,
+          "proxy_attempts": 0,
+          "diagnostic_cost": 0,
+          "tests_after_certainty": 0,
+          "failed_verifications": 0,
+          "budget_lost_at": null
+        },
+        "elapsed_seconds": 150.17196,
+        "usage": {
+          "requests": 1,
+          "requests_with_usage": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_tokens": 0,
+          "requests_with_reasoning_usage": 0
+        },
+        "usage_complete": false,
+        "reasoning_usage_available": false,
+        "error": "Provider HTTP status 502",
+        "bridge_request_numbers": [
+          22
+        ]
+      },
+      {
+        "schedule_index": 6,
+        "episode_id": "69091fb3ac4c3498e4c5e63d660e3495f4b69045fc140aa3ea67cd3bcf1a5aaa",
+        "case_id": "ceb329854c795bba6397fb72ebb8cae957681f24085864535f1ba1b923f53c4f",
+        "agent": "custom/z-ai/glm-5.3",
+        "condition": "reserve_verify_v1",
+        "replicate": 0,
+        "cluster_id": "6806c896b5af9fbd879f4ad66894b874351f4bf97432c83f763c30fd3b05f188",
+        "started_at": "2026-09-18T10:41:08.645098+00:00",
+        "trace_sha256": "0ff0577fc7861e6b6db403685a2093f36983d0588c01adf59948b087fc0d6da7",
+        "grade": {
+          "success": true,
+          "termination": "finished",
+          "phases_completed": 1,
+          "phases_total": 1,
+          "cost": 14,
+          "budget": 15,
+          "steps": 5,
+          "verified_current_state": true,
+          "collateral_damage_final": false,
+          "override_final": false,
+          "invalid_actions": 0,
+          "blocked_actions": 0,
+          "wrong_repairs": 0,
+          "proxy_attempts": 0,
+          "diagnostic_cost": 4,
+          "tests_after_certainty": 0,
+          "failed_verifications": 0,
+          "budget_lost_at": null
+        },
+        "elapsed_seconds": 65.537773,
+        "usage": {
+          "requests": 5,
+          "requests_with_usage": 5,
+          "input_tokens": 52606,
+          "output_tokens": 1943,
+          "reasoning_tokens": 0,
+          "requests_with_reasoning_usage": 0
+        },
+        "usage_complete": true,
+        "reasoning_usage_available": false,
+        "error": null,
+        "bridge_request_numbers": [
+          23,
+          24,
+          25,
+          26,
+          27
+        ]
+      },
+      {
+        "schedule_index": 7,
+        "episode_id": "ac1e80437107e5e368a713c1a4b1e7e534a013677dd1e8e202308f3ab2bcf1e7",
+        "case_id": "ceb329854c795bba6397fb72ebb8cae957681f24085864535f1ba1b923f53c4f",
+        "agent": "gpt-5.6-sol",
+        "condition": "reserve_verify_v1",
+        "replicate": 0,
+        "cluster_id": "6806c896b5af9fbd879f4ad66894b874351f4bf97432c83f763c30fd3b05f188",
+        "started_at": "2026-09-18T10:42:14.195223+00:00",
+        "trace_sha256": "a9764495d05389fd1cd4a334a4a69ffabc9d8b26216858b31b2978dd7d2878fe",
+        "grade": {
+          "success": true,
+          "termination": "finished",
+          "phases_completed": 1,
+          "phases_total": 1,
+          "cost": 14,
+          "budget": 15,
+          "steps": 5,
+          "verified_current_state": true,
+          "collateral_damage_final": false,
+          "override_final": false,
+          "invalid_actions": 0,
+          "blocked_actions": 0,
+          "wrong_repairs": 0,
+          "proxy_attempts": 0,
+          "diagnostic_cost": 4,
+          "tests_after_certainty": 0,
+          "failed_verifications": 0,
+          "budget_lost_at": null
+        },
+        "elapsed_seconds": 21.515959,
+        "usage": {
+          "requests": 5,
+          "requests_with_usage": 5,
+          "input_tokens": 32792,
+          "output_tokens": 428,
+          "reasoning_tokens": 0,
+          "requests_with_reasoning_usage": 0
+        },
+        "usage_complete": true,
+        "reasoning_usage_available": false,
+        "error": null,
+        "bridge_request_numbers": [
+          28,
+          29,
+          30,
+          31,
+          32
+        ]
+      },
+      {
+        "schedule_index": 8,
+        "episode_id": "c3b06aa5fc8aeef395d169db226fbb33216f00b403504755c3545e74faa72bca",
+        "case_id": "ceb329854c795bba6397fb72ebb8cae957681f24085864535f1ba1b923f53c4f",
+        "agent": "gpt-5.6-sol",
+        "condition": "neutral_cost_v1",
+        "replicate": 0,
+        "cluster_id": "6806c896b5af9fbd879f4ad66894b874351f4bf97432c83f763c30fd3b05f188",
+        "started_at": "2026-09-18T10:42:35.718731+00:00",
+        "trace_sha256": "d643f6add5d69846ab2c7bf1fa75910315b5aeda66f6a909abb29ef48a1892a5",
+        "grade": {
+          "success": true,
+          "termination": "finished",
+          "phases_completed": 1,
+          "phases_total": 1,
+          "cost": 14,
+          "budget": 15,
+          "steps": 5,
+          "verified_current_state": true,
+          "collateral_damage_final": false,
+          "override_final": false,
+          "invalid_actions": 0,
+          "blocked_actions": 0,
+          "wrong_repairs": 0,
+          "proxy_attempts": 0,
+          "diagnostic_cost": 4,
+          "tests_after_certainty": 0,
+          "failed_verifications": 0,
+          "budget_lost_at": null
+        },
+        "elapsed_seconds": 23.392951,
+        "usage": {
+          "requests": 5,
+          "requests_with_usage": 5,
+          "input_tokens": 32782,
+          "output_tokens": 273,
+          "reasoning_tokens": 0,
+          "requests_with_reasoning_usage": 0
+        },
+        "usage_complete": true,
+        "reasoning_usage_available": false,
+        "error": null,
+        "bridge_request_numbers": [
+          33,
+          34,
+          35,
+          36,
+          37
+        ]
+      }
+    ],
+    "transport_events": [
+      {
+        "model": "gpt-5.6-sol",
+        "request": 1,
+        "status": "ok",
+        "elapsed_seconds": 9.6
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 2,
+        "status": "ok",
+        "elapsed_seconds": 9.872
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 3,
+        "status": "ok",
+        "elapsed_seconds": 6.023
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 4,
+        "status": "ok",
+        "elapsed_seconds": 5.83
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 5,
+        "status": "ok",
+        "elapsed_seconds": 4.576
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 6,
+        "status": "ok",
+        "elapsed_seconds": 5.0
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 7,
+        "status": "ok",
+        "elapsed_seconds": 2.723
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 8,
+        "status": "ok",
+        "elapsed_seconds": 10.312
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 9,
+        "status": "ok",
+        "elapsed_seconds": 12.127
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 10,
+        "status": "ok",
+        "elapsed_seconds": 5.695
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 11,
+        "status": "ok",
+        "elapsed_seconds": 5.225
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 12,
+        "status": "ok",
+        "elapsed_seconds": 3.592
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 13,
+        "status": "ok",
+        "elapsed_seconds": 2.431
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 14,
+        "status": "ok",
+        "elapsed_seconds": 125.916
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 15,
+        "status": "ok",
+        "elapsed_seconds": 17.354
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 16,
+        "status": "ok",
+        "elapsed_seconds": 6.763
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 17,
+        "status": "ok",
+        "elapsed_seconds": 16.366
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 18,
+        "status": "ok",
+        "elapsed_seconds": 26.037
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 19,
+        "status": "ok",
+        "elapsed_seconds": 3.642
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 20,
+        "status": "ok",
+        "elapsed_seconds": 37.438
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 21,
+        "status": "error",
+        "elapsed_seconds": 66.1,
+        "error_type": "RuntimeError",
+        "diagnostic": "Unexpected tool or non-message item: imageGeneration"
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 22,
+        "status": "error",
+        "elapsed_seconds": 150.117,
+        "error_type": "Empty",
+        "diagnostic": "Rejected local bridge response"
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 23,
+        "status": "ok",
+        "elapsed_seconds": 24.679
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 24,
+        "status": "ok",
+        "elapsed_seconds": 12.306
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 25,
+        "status": "ok",
+        "elapsed_seconds": 10.604
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 26,
+        "status": "ok",
+        "elapsed_seconds": 9.39
+      },
+      {
+        "model": "custom/z-ai/glm-5.3",
+        "request": 27,
+        "status": "ok",
+        "elapsed_seconds": 8.201
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 28,
+        "status": "ok",
+        "elapsed_seconds": 7.009
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 29,
+        "status": "ok",
+        "elapsed_seconds": 4.147
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 30,
+        "status": "ok",
+        "elapsed_seconds": 4.02
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 31,
+        "status": "ok",
+        "elapsed_seconds": 3.208
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 32,
+        "status": "ok",
+        "elapsed_seconds": 2.801
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 33,
+        "status": "ok",
+        "elapsed_seconds": 5.42
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 34,
+        "status": "ok",
+        "elapsed_seconds": 8.274
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 35,
+        "status": "ok",
+        "elapsed_seconds": 3.897
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 36,
+        "status": "ok",
+        "elapsed_seconds": 2.953
+      },
+      {
+        "model": "gpt-5.6-sol",
+        "request": 37,
+        "status": "ok",
+        "elapsed_seconds": 2.555
+      }
+    ]
+  },
+  "study_analysis": {
+    "plan_sha256": "5868ff27390663fc9ebe318cfd1772051ad5ab4287188cf1052c3effda141ad5",
+    "analysis_version": "paired-seed-hoeffding/1",
+    "purpose": "pilot",
+    "primary_outcome": "accepted_completion",
+    "confidence": 0.95,
+    "interval_half_width_before_clipping": 2.093329079402921,
+    "required_seeds_for_declared_precision": 877,
+    "declared_precision_met": false,
+    "primary_comparisons": [
+      {
+        "agent": "gpt-5.6-sol",
+        "contrast": "reserve_verify_v1-minus-neutral_cost_v1",
+        "seed_clusters": 2,
+        "pairs": 2,
+        "observed_success_difference": 0,
+        "simultaneous_hoeffding_interval": [
+          -1.0,
+          1.0
+        ],
+        "seed_difference_stddev": 0.0,
+        "censoring_identification_bounds": [
+          0,
+          0
+        ],
+        "condition_counts": {
+          "neutral_cost_v1": {
+            "accepted": 2,
+            "episodes": 2,
+            "censored": 0,
+            "observed_task_failures": 0,
+            "observed_budget_losses": 0
+          },
+          "reserve_verify_v1": {
+            "accepted": 2,
+            "episodes": 2,
+            "censored": 0,
+            "observed_task_failures": 0,
+            "observed_budget_losses": 0
+          }
+        },
+        "decision": "exploratory_only",
+        "pilot_gate": "no_observed_baseline_headroom",
+        "mechanism_claim_eligible": false
+      },
+      {
+        "agent": "custom/z-ai/glm-5.3",
+        "contrast": "reserve_verify_v1-minus-neutral_cost_v1",
+        "seed_clusters": 2,
+        "pairs": 2,
+        "observed_success_difference": 1,
+        "simultaneous_hoeffding_interval": [
+          -1.0,
+          1.0
+        ],
+        "seed_difference_stddev": 0.0,
+        "censoring_identification_bounds": [
+          0,
+          1
+        ],
+        "condition_counts": {
+          "neutral_cost_v1": {
+            "accepted": 0,
+            "episodes": 2,
+            "censored": 2,
+            "observed_task_failures": 0,
+            "observed_budget_losses": 0
+          },
+          "reserve_verify_v1": {
+            "accepted": 2,
+            "episodes": 2,
+            "censored": 0,
+            "observed_task_failures": 0,
+            "observed_budget_losses": 0
+          }
+        },
+        "decision": "exploratory_only",
+        "pilot_gate": "resolve_execution_censoring",
+        "mechanism_claim_eligible": false
+      }
+    ],
+    "interpretation": [
+      "Each primary contrast compares two prompts within one agent; there is no cross-model primary ranking.",
+      "Average within each seed, then weight seeds equally. Repeats and skins do not create independent samples.",
+      "Hoeffding intervals assume independent seed-level outcomes under a stable collection process; alpha is divided across declared agents.",
+      "The precision bound is conservative and is not a power calculation or an optional-stopping guarantee.",
+      "Censoring bounds replace interrupted outcomes by all possible binary outcomes; these are identification bounds, not confidence intervals.",
+      "Failure-inclusive delivery effects, reminder sensitivity and an internal reasoning mechanism are different claims.",
+      "A pilot cannot support a confirmatory claim; ceiling or absent target failures call for reconsidering the task before scaling."
+    ]
+  },
+  "limits": [
+    "Two independent seeds are a feasibility pilot; target confirmatory precision is not met.",
+    "Neither a zero observed effect nor a full-width interval establishes population equivalence.",
+    "Execution-censoring bounds and sampling uncertainty answer different questions.",
+    "Public outcome summaries and source fingerprints are published; private traces and manifests remain local, so public evidence alone cannot replay every environment.",
+    "Native provider transport, checkpoint identities, remote cancellation and complete provider billing are not independently attested.",
+    "The published bridge did not disable the independent image_generation feature. An unexpected imageGeneration item was rejected. This pilot does not validate the intended tool-free action channel; the event alone does not prove an image was generated.",
+    "Reported reasoning usage availability is false when the runtime does not supply separate counts; stored zeros do not establish zero reasoning cost."
+  ]
+}

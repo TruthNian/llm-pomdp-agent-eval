@@ -40,6 +40,8 @@ Environment variables contain the full HTTPS endpoint, such as a provider's `/v1
 
 The adapter uses a system message requiring a single JSON action, and a user message containing the complete public request. It does not expose function tools or shell execution. The benchmark is therefore evaluating the model with **this particular JSON-action harness**. It does not estimate performance of every provider's optimized agent product.
 
+A native agent-runtime bridge can add capabilities even when this HTTP request declares none. The [2.2 pilot](../studies/verification-reserve-pilot-v1/README.md#capability-boundary-correction) retained an unexpected `imageGeneration` event: its experimental bridge disabled environment tools but omitted the independent `image_generation` switch. Rejecting such an event is not evidence that the upstream runtime had no tools. Verify effective capabilities before a new native-runtime study; keep any revised bridge and plan separate from that frozen pilot. The native bridge is not a supported portable adapter.
+
 Accepted response body follows the common shape:
 
 ```json

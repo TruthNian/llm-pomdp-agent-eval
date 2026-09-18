@@ -64,6 +64,8 @@ Acceptance remains the environment/reference tests and [published control valida
 
 **Implementation:** 2.2 provides a strict plan format, an equal-word neutral control versus one budget reminder, fresh-seed preparation, counterbalanced adjacent pairs, a conservative seed-level primary interval and execution-censoring bounds. It reuses the existing collector. See [the study contract](STUDIES.md) and the [predeclared live pilot](../studies/verification-reserve-pilot-v1/README.md). An implemented protocol is not yet an identified effect.
 
+**Pilot decision:** all eight planned trajectories replayed. GPT accepted both arms on both seeds; both GLM neutral episodes were interrupted by the execution channel (an unexpected hosted-tool item and an event timeout). No observed budget failure supports scaling this reminder study. The native bridge also omitted the independent image-generation feature switch. Preserve the result, verify effective capability isolation and transport before any new pilot, and then reconsider task headroom. Both primary intervals span [-1,1]; the apparent GLM delivery gain cannot be interpreted as a budgeting rescue.
+
 **Question:** does an isolated piece of policy assistance change accepted completion and its associated observable failure, on identical cases and budgets?
 
 1. Write a versioned study plan before inspecting evaluation outcomes: hypothesis, primary contrast, minimum useful effect, task distribution, models/settings, budgets, stopping rule and handling of infrastructure failures.
@@ -107,4 +109,4 @@ Profile actual collection, replay, analysis and maintenance costs. Remove avoida
 
 Public development seeds support debugging; private evaluation seeds support prospective collection; held-out structures test a different generalization claim. Retire and publish reviewed manifests/traces with versioned sources and exclusions. Never silently change a released study or erase failed collection attempts. New seeds alone do not establish contamination resistance.
 
-The next research decision is **P2's pilot gate: is the targeted failure present in real-model trajectories?** A ceiling pilot must not automatically grow into a large collection. Keep its negative evidence, reconsider the construct or distribution, and publish a new plan before any follow-up.
+The next work is **verify the live action channel before collecting more model evidence**: remove undeclared hosted capabilities, check effective configuration, and distinguish runtime events from valid JSON actions. A revised bridge needs its own frozen source and study plan. Then test whether the task distribution has observable target failures; do not expand the completed pilot or infer mechanisms from its censored contrast. P3's observation/transition design can proceed independently, but it does not close this empirical gate.

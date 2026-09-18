@@ -14,6 +14,8 @@ Development follows [explicit stages and acceptance gates](docs/ROADMAP.md): rel
 
 For a single-intervention experiment, use [`prepare-study`](docs/STUDIES.md). The [offline example](examples/study-reserve.pilot.json) checks a deliberately budget-blind control, a successful reference and a failing cosmetic-status policy. Study analysis reports a reminder contrast within each agent; it does not automatically rank the models or turn a tiny perfect-success pilot into a precise population claim.
 
+The [preregistered eight-episode live pilot](studies/verification-reserve-pilot-v1/README.md) is complete, including two retained bridge failures and a native capability-boundary limitation. It does not establish a reminder effect. The next gate is reliable action-channel isolation, before expanding collection.
+
 ## Run without an API key
 
 Python 3.11+; no runtime dependencies. From the repository root:
@@ -77,7 +79,7 @@ Calls incur normal provider usage. Credentials stay in environment variables and
 
 The primary endpoint is **accepted completion**: all phases resolved, collateral damage cleared, overrides off, successful verification of the latest state, and explicit termination within budgets.
 
-Reports include:
+Ordinary-run summaries include:
 
 - Success counts and rates by agent, condition, family, profile, and skin.
 - Observed action cost and tokens per accepted completion, including unsuccessful attempts.
@@ -85,6 +87,8 @@ Reports include:
 - Matched agent comparisons and procedural-minus-open prompt sensitivity.
 - Seed-cluster bootstrap intervals that keep repeated runs and semantic skins together.
 - Adapter failures in the denominator; missing usage represented as `null`.
+
+Preregistered studies use the plan-bound `study_analysis` as their primary analysis: seed-level simultaneous Hoeffding intervals and separate execution-censoring bounds. Generic bootstrap fields are descriptive compatibility outputs for these studies.
 
 There is no arbitrary composite intelligence score. Prompt sensitivity describes this intervention; it is not a validated intrinsic autonomy scale. Token counts do not imply equal compute or equal prices. [Metric definitions](docs/SPECIFICATION.md#metrics-and-comparison).
 
