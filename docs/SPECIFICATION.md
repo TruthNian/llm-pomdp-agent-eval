@@ -1,4 +1,4 @@
-# Benchmark specification — frameworks 2.0–2.3
+# Benchmark specification — frameworks 2.0–2.4
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
 
@@ -7,6 +7,8 @@ Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 
 2.2 adds two explicitly versioned reminder conditions and a [plan-bound study protocol](STUDIES.md). Existing conditions, generator, transitions and acceptance remain unchanged; new study scheduling and inference are separately fingerprinted.
 
 2.3 changes the [HTTP action channel](MODEL_ADAPTERS.md): direct Responses support, explicit empty tools, strict completion checks, bounded socket reads and sanitized request audits. Environment semantics remain unchanged; the harness version and source must still be distinguished from earlier collection.
+
+2.4 corrects that channel's protocol assumptions: typed reasoning parts, requested SSE format when media headers are absent, and completed-item assembly with whole-response completion. Scored environment semantics remain unchanged. Earlier failures replay as originally recorded; new collection uses a new frozen source and directory.
 
 ## Episode
 

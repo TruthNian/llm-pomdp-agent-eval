@@ -42,6 +42,28 @@ def sse(event):
     return b"data: " + json.dumps(event, ensure_ascii=False).encode() + b"\n\n"
 
 
+def reasoning_stream(result):
+    return b"".join(sse(e) for e in [
+        {"type": "response.output_item.added", "output_index": 0,
+         "item": {"id": "rs_1", "type": "reasoning"}},
+        {"type": "response.content_part.added", "output_index": 0, "item_id": "rs_1",
+         "part": {"type": "reasoning_text", "text": ""}},
+        {"type": "response.reasoning_text.delta", "output_index": 0, "item_id": "rs_1",
+         "delta": 'PRIVATE-REASONING-CANARY {"command":"override"}'},
+        {"type": "response.content_part.done", "output_index": 0, "item_id": "rs_1",
+         "part": {"type": "reasoning_text", "text": 'PRIVATE-REASONING-CANARY {"command":"override"}'}},
+        {"type": "response.output_item.done", "output_index": 0,
+         "item": {"id": "rs_1", "type": "reasoning", "summary": []}},
+        {"type": "response.output_item.added", "output_index": 1,
+         "item": {"id": "msg_1", "type": "message"}},
+        {"type": "response.content_part.added", "output_index": 1, "item_id": "msg_1",
+         "part": {"type": "output_text", "text": ""}},
+        {"type": "response.output_item.done", "output_index": 1,
+         "item": {"id": "msg_1", **result["output"][-1]}},
+        {"type": "response.completed", "response": result},
+    ])
+
+
 @contextmanager
 def endpoint(reply):
     received = []
@@ -187,7 +209,78 @@ class EnvelopeTests(unittest.TestCase):
         with self.assertRaises(AdapterError):
             ResponseStream().feed(raw)
 
+    def test_reasoning_content_parts_are_ignored_not_executed(self):
+        parser = ResponseStream()
+        parser.feed(reasoning_stream(response('{"command":"verify"}')), final=True)
+        self.assertEqual(action_text(parser.result, "responses"), {"command": "verify"})
 
+    def test_content_parts_must_belong_to_the_declared_item_type(self):
+        for item_id, index, part in (("missing", 0, "reasoning_text"), ("rs_1", 1, "reasoning_text"),
+                                     ("rs_1", 0, "output_text"), ("msg_1", 1, "reasoning_text"),
+                                     ("msg_1", 1, "refusal"), ("msg_1", 1, "function_call")):
+            parser = ResponseStream()
+            for ident, item_type, output_index in (("rs_1", "reasoning", 0), ("msg_1", "message", 1)):
+                parser.feed(sse({"type": "response.output_item.added", "output_index": output_index,
+                                 "item": {"id": ident, "type": item_type}}))
+            with self.subTest(item_id=item_id, index=index, part=part), self.assertRaises(AdapterError):
+                parser.feed(sse({"type": "response.content_part.added", "item_id": item_id,
+                                 "output_index": index, "part": {"type": part}}))
+
+    def test_reasoning_support_does_not_permit_tool_events_or_type_changes(self):
+        prefix = sse({"type": "response.output_item.added", "output_index": 0,
+                      "item": {"id": "rs_1", "type": "reasoning"}})
+        for item_type in ("function_call", "image_generation_call", "message"):
+            with self.subTest(item_type=item_type), self.assertRaises(AdapterError):
+                parser = ResponseStream(); parser.feed(prefix)
+                parser.feed(sse({"type": "response.output_item.done", "output_index": 0,
+                                 "item": {"id": "rs_1", "type": item_type}}))
+
+    def test_reasoning_only_and_reasoning_inside_final_message_are_not_actions(self):
+        data = response(); data["output"] = data["output"][:1]
+        with self.assertRaises(AdapterError):
+            action_text(data, "responses")
+        data = response()
+        data["output"][-1]["content"] = [{"type": "reasoning_text", "text": '{"command":"finish"}'}]
+        with self.assertRaises(AdapterError):
+            action_text(data, "responses")
+
+    def test_closed_items_and_empty_terminal_output_form_one_completed_action(self):
+        for empty in ({}, {"output": []}):
+            raw = reasoning_stream(response()).split(sse({"type": "response.completed", "response": response()}))[0]
+            terminal = {"status": "completed", "usage": {"input_tokens": 4, "output_tokens": 2}, **empty}
+            parser = ResponseStream()
+            parser.feed(raw + sse({"type": "response.completed", "response": terminal}), final=True)
+            self.assertEqual(action_text(parser.result, "responses"), {"command": "finish"})
+            self.assertEqual(parser.result["usage"], terminal["usage"])
+            self.assertNotIn("PRIVATE-REASONING-CANARY", json.dumps(list(parser.completed_items.values())))
+
+    def test_closed_item_without_whole_completion_does_not_produce_action(self):
+        raw = sse({"type": "response.output_item.done", "output_index": 0,
+                   "item": {"id": "msg_1", **response()["output"][-1]}})
+        parser = ResponseStream(); parser.feed(raw)
+        with self.assertRaises(AdapterError):
+            parser.feed(b"", final=True)
+
+    def test_completion_cannot_hide_unclosed_items_or_conflicting_action(self):
+        parser = ResponseStream()
+        parser.feed(sse({"type": "response.output_item.added", "output_index": 0,
+                         "item": {"id": "msg_1", "type": "message"}}))
+        with self.assertRaises(AdapterError):
+            parser.feed(sse({"type": "response.completed", "response": response()}))
+        parser = ResponseStream()
+        parser.feed(sse({"type": "response.output_item.done", "output_index": 0,
+                         "item": {"id": "msg_1", **response()["output"][-1]}}))
+        with self.assertRaises(AdapterError):
+            parser.feed(sse({"type": "response.completed", "response": response('{"command":"verify"}')}))
+
+    def test_stream_rejects_reused_item_identity_and_duplicate_done(self):
+        for item_id, index in (("msg_1", 0), ("msg_1", 1), ("msg_2", 0)):
+            parser = ResponseStream()
+            parser.feed(sse({"type": "response.output_item.done", "output_index": 0,
+                             "item": {"id": "msg_1", **response()["output"][-1]}}))
+            with self.subTest(item_id=item_id, index=index), self.assertRaises(AdapterError):
+                parser.feed(sse({"type": "response.output_item.done", "output_index": index,
+                                 "item": {"id": item_id, **response()["output"][-1]}}))
 class TransportTests(unittest.TestCase):
     def test_responses_fixture_completes_and_replays_multiturn_matrix(self):
         from pomdp_bench.agents import ScriptedAgent
@@ -197,7 +290,7 @@ class TransportTests(unittest.TestCase):
             public = json.loads(body["input"][0]["content"])
             result = response(json.dumps(scripted.act(public, 10)))
             result["output"][0]["summary"] = [{"type": "summary_text", "text": "PRIVATE-REASONING-CANARY"}]
-            send(handler, sse({"type": "response.completed", "response": result}), "text/event-stream")
+            send(handler, reasoning_stream(result), "text/event-stream")
 
         with endpoint(reply) as received, tempfile.TemporaryDirectory() as temp:
             out = Path(temp) / "run"
@@ -300,6 +393,32 @@ class TransportTests(unittest.TestCase):
                 agent.act({}, 2)
             self.assertEqual(received[0][1]["X-Exact-Route"], "1")
             self.assertNotIn("fixture-credential-not-a-real-key", json.dumps(agent.request_audit))
+
+    def test_missing_content_type_uses_requested_stream_format(self):
+        def reply(h, _):
+            raw = reasoning_stream(response())
+            h.send_response(200); h.send_header("Content-Length", str(len(raw))); h.end_headers()
+            # Break the SSE prefix across reads: no body sniffing is necessary.
+            h.wfile.write(raw[:1]); h.wfile.flush(); h.wfile.write(raw[1:])
+        with endpoint(reply):
+            self.assertEqual(HttpAgent(config()).act({}, 2), {"command": "finish"})
+
+    def test_headerless_unfinished_stream_cannot_become_a_json_action(self):
+        for raw in (b'{"command":"finish"}', sse({"type": "response.output_text.delta",
+                                                "delta": '{"command":"finish"}'})):
+            def reply(h, _, payload=raw):
+                h.send_response(200); h.send_header("Content-Length", str(len(payload))); h.end_headers()
+                h.wfile.write(payload)
+            with endpoint(reply), self.assertRaises(AdapterError):
+                HttpAgent(config()).act({}, 2)
+
+    def test_account_selector_is_explicit_environment_only_metadata(self):
+        with endpoint(lambda h, _: send(h, response())) as received:
+            with patch.dict(os.environ, {"WIRE_HEADERS": '{"ChatGPT-Account-Id":"PRIVATE-ACCOUNT-CANARY"}'}):
+                agent = HttpAgent({**config(), "headers_env": "WIRE_HEADERS"})
+                agent.act({}, 2)
+            self.assertEqual(received[0][1]["ChatGPT-Account-Id"], "PRIVATE-ACCOUNT-CANARY")
+            self.assertNotIn("PRIVATE-ACCOUNT-CANARY", json.dumps(agent.request_audit))
 
 
 if __name__ == "__main__":

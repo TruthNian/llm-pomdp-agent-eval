@@ -1,0 +1,367 @@
+{
+  "purpose": "Development protocol debugging; all requests use the public seed-zero observation and have no score",
+  "requests": 8,
+  "probes": [
+    {
+      "name": "v24-glm-shape-before.json",
+      "model": "custom/z-ai/glm-5.3",
+      "started_at": "2026-09-18T11:59:09.507857+00:00",
+      "outcome": "protocol_error",
+      "error": "Endpoint streamed non-text action content",
+      "public_request_sha256": "97385f726891ade0f85dd65039b74bbf16aa606641ba28ad04652cb3d058b67a",
+      "script_sha256": "e74d4961b6a605fc068e3b6d3b11bdc9d2e8ebc847a707e2305f57191b0c5f91",
+      "event_types": {
+        "response.created": 1,
+        "response.in_progress": 1,
+        "response.output_item.added": 1,
+        "response.content_part.added": 1
+      },
+      "item_types": [
+        "reasoning"
+      ],
+      "part_types": [
+        "reasoning_text"
+      ],
+      "closed_shapes": [],
+      "wire": null,
+      "final_output_shape": null,
+      "elapsed_to_artifact_seconds": 2.151
+    },
+    {
+      "name": "v24-gpt-auth-probe.json",
+      "model": "gpt-5.6-sol",
+      "started_at": "2026-09-18T11:59:23.208107+00:00",
+      "outcome": "protocol_error",
+      "error": "Endpoint returned malformed JSON or stream data",
+      "public_request_sha256": "2f39aa125b00ddde16c80974106b5a149283c48507544d831f2285928f17b897",
+      "script_sha256": "e74d4961b6a605fc068e3b6d3b11bdc9d2e8ebc847a707e2305f57191b0c5f91",
+      "event_types": {},
+      "item_types": [],
+      "part_types": [],
+      "closed_shapes": [],
+      "wire": null,
+      "final_output_shape": null,
+      "elapsed_to_artifact_seconds": 17.481
+    },
+    {
+      "name": "v24-gpt-wire-probe.json",
+      "model": "gpt-5.6-sol",
+      "started_at": "2026-09-18T12:00:46.922421+00:00",
+      "outcome": "protocol_error",
+      "error": "Endpoint returned malformed JSON or stream data",
+      "public_request_sha256": "2f39aa125b00ddde16c80974106b5a149283c48507544d831f2285928f17b897",
+      "script_sha256": "03f995a691f99ffb29d10d4921f71d1f5487575b278cbcf971f8ced02979ae71",
+      "event_types": {},
+      "item_types": [],
+      "part_types": [],
+      "closed_shapes": [],
+      "wire": {
+        "status": 200,
+        "media": "",
+        "encoding": "",
+        "length": null,
+        "framing": "sse",
+        "json_error_class": "JSONDecodeError",
+        "json_error_reason": "malformed"
+      },
+      "final_output_shape": null,
+      "elapsed_to_artifact_seconds": 12.176
+    },
+    {
+      "name": "v24-glm-shape-after.json",
+      "model": "custom/z-ai/glm-5.3",
+      "started_at": "2026-09-18T12:03:55.712165+00:00",
+      "outcome": "action",
+      "error": null,
+      "public_request_sha256": "97385f726891ade0f85dd65039b74bbf16aa606641ba28ad04652cb3d058b67a",
+      "script_sha256": "a852a88278a5b7a9cc755f0d6d2d27be376ec65c2ca1734730a5e0580b8e5059",
+      "event_types": {
+        "response.created": 1,
+        "response.in_progress": 1,
+        "response.output_item.added": 2,
+        "response.content_part.added": 2,
+        "response.reasoning_text.delta": 2101,
+        "response.reasoning_text.done": 1,
+        "response.content_part.done": 2,
+        "response.output_item.done": 2,
+        "response.output_text.delta": 5,
+        "response.output_text.done": 1,
+        "response.completed": 1
+      },
+      "item_types": [
+        "message",
+        "reasoning"
+      ],
+      "part_types": [
+        "output_text",
+        "reasoning_text"
+      ],
+      "closed_shapes": [
+        {
+          "event_type": "response.output_item.done",
+          "item_type": "reasoning"
+        },
+        {
+          "event_type": "response.output_item.done",
+          "item_type": "message"
+        },
+        {
+          "event_type": "response.completed"
+        }
+      ],
+      "wire": {
+        "status": 200,
+        "media": "text/event-stream; charset=utf-8",
+        "encoding": "",
+        "length": null,
+        "framing": "sse"
+      },
+      "final_output_shape": null,
+      "elapsed_to_artifact_seconds": 155.933
+    },
+    {
+      "name": "v24-gpt-wire-after.json",
+      "model": "gpt-5.6-sol",
+      "started_at": "2026-09-18T12:04:46.525124+00:00",
+      "outcome": "protocol_error",
+      "error": "Endpoint did not return one unambiguous JSON action",
+      "public_request_sha256": "2f39aa125b00ddde16c80974106b5a149283c48507544d831f2285928f17b897",
+      "script_sha256": "a852a88278a5b7a9cc755f0d6d2d27be376ec65c2ca1734730a5e0580b8e5059",
+      "event_types": {
+        "response.created": 1,
+        "response.in_progress": 1,
+        "response.output_item.added": 3,
+        "response.output_item.done": 3,
+        "response.content_part.added": 1,
+        "response.output_text.delta": 13,
+        "response.output_text.done": 1,
+        "response.content_part.done": 1,
+        "response.completed": 1
+      },
+      "item_types": [
+        "message",
+        "reasoning"
+      ],
+      "part_types": [
+        "output_text"
+      ],
+      "closed_shapes": [
+        {
+          "event_type": "response.output_item.done",
+          "item_type": "reasoning"
+        },
+        {
+          "event_type": "response.output_item.done",
+          "item_type": "reasoning"
+        },
+        {
+          "event_type": "response.output_item.done",
+          "item_type": "message"
+        },
+        {
+          "event_type": "response.completed"
+        }
+      ],
+      "wire": {
+        "status": 200,
+        "media": "",
+        "encoding": "",
+        "length": null,
+        "framing": "sse"
+      },
+      "final_output_shape": null,
+      "elapsed_to_artifact_seconds": 18.418
+    },
+    {
+      "name": "v24-gpt-final-shape.json",
+      "model": "gpt-5.6-sol",
+      "started_at": "2026-09-18T12:06:50.721237+00:00",
+      "outcome": "protocol_error",
+      "error": "Endpoint did not return one unambiguous JSON action",
+      "public_request_sha256": "2f39aa125b00ddde16c80974106b5a149283c48507544d831f2285928f17b897",
+      "script_sha256": "c9eb2213dc8cb54027a82930b60ef4c3fbfc2ad21f1144eb5c8cd909c7d1d8c2",
+      "event_types": {
+        "response.created": 1,
+        "response.in_progress": 1,
+        "response.output_item.added": 2,
+        "response.output_item.done": 2,
+        "response.content_part.added": 1,
+        "response.output_text.delta": 13,
+        "response.output_text.done": 1,
+        "response.content_part.done": 1,
+        "response.completed": 1
+      },
+      "item_types": [
+        "message",
+        "reasoning"
+      ],
+      "part_types": [
+        "output_text"
+      ],
+      "closed_shapes": [
+        {
+          "event_type": "response.output_item.done",
+          "item_type": "reasoning"
+        },
+        {
+          "event_type": "response.output_item.done",
+          "item_type": "message"
+        },
+        {
+          "event_type": "response.completed"
+        }
+      ],
+      "wire": {
+        "status": 200,
+        "media": "",
+        "encoding": "",
+        "length": null,
+        "framing": "sse"
+      },
+      "final_output_shape": [],
+      "elapsed_to_artifact_seconds": 12.112
+    },
+    {
+      "name": "v24-gpt-closed-items.json",
+      "model": "gpt-5.6-sol",
+      "started_at": "2026-09-18T12:08:03.872981+00:00",
+      "outcome": "protocol_error",
+      "error": "Endpoint did not return one unambiguous JSON action",
+      "public_request_sha256": "2f39aa125b00ddde16c80974106b5a149283c48507544d831f2285928f17b897",
+      "script_sha256": "a69945fad50ec627682dfe53b9c76da7efbabc7e9cf4426c9b71aa1b5390bd07",
+      "event_types": {
+        "response.created": 1,
+        "response.in_progress": 1,
+        "response.output_item.added": 2,
+        "response.output_item.done": 2,
+        "response.content_part.added": 1,
+        "response.output_text.delta": 13,
+        "response.output_text.done": 1,
+        "response.content_part.done": 1,
+        "response.completed": 1
+      },
+      "item_types": [
+        "message",
+        "reasoning"
+      ],
+      "part_types": [
+        "output_text"
+      ],
+      "closed_shapes": [
+        {
+          "event_type": "response.output_item.done",
+          "item_type": "reasoning",
+          "item_status": "unknown",
+          "item_role": "unknown",
+          "content_types": []
+        },
+        {
+          "event_type": "response.output_item.done",
+          "item_type": "message",
+          "item_status": "completed",
+          "item_role": "assistant",
+          "content_types": [
+            "output_text"
+          ],
+          "json_object_with_command": true
+        },
+        {
+          "event_type": "response.completed",
+          "output_present": true,
+          "output_count": 0,
+          "status": "completed"
+        }
+      ],
+      "wire": {
+        "status": 200,
+        "media": "",
+        "encoding": "",
+        "length": null,
+        "framing": "sse"
+      },
+      "final_output_shape": [],
+      "elapsed_to_artifact_seconds": 11.616
+    },
+    {
+      "name": "v24-gpt-ready.json",
+      "model": "gpt-5.6-sol",
+      "started_at": "2026-09-18T12:09:51.296531+00:00",
+      "outcome": "action",
+      "error": null,
+      "public_request_sha256": "2f39aa125b00ddde16c80974106b5a149283c48507544d831f2285928f17b897",
+      "script_sha256": "a69945fad50ec627682dfe53b9c76da7efbabc7e9cf4426c9b71aa1b5390bd07",
+      "event_types": {
+        "response.created": 1,
+        "response.in_progress": 1,
+        "response.output_item.added": 2,
+        "response.output_item.done": 2,
+        "response.content_part.added": 1,
+        "response.output_text.delta": 13,
+        "response.output_text.done": 1,
+        "response.content_part.done": 1,
+        "response.completed": 1
+      },
+      "item_types": [
+        "message",
+        "reasoning"
+      ],
+      "part_types": [
+        "output_text"
+      ],
+      "closed_shapes": [
+        {
+          "event_type": "response.output_item.done",
+          "item_type": "reasoning",
+          "item_status": "unknown",
+          "item_role": "unknown",
+          "content_types": []
+        },
+        {
+          "event_type": "response.output_item.done",
+          "item_type": "message",
+          "item_status": "completed",
+          "item_role": "assistant",
+          "content_types": [
+            "output_text"
+          ],
+          "json_object_with_command": true
+        },
+        {
+          "event_type": "response.completed",
+          "output_present": true,
+          "output_count": 0,
+          "status": "completed"
+        }
+      ],
+      "wire": {
+        "status": 200,
+        "media": "",
+        "encoding": "",
+        "length": null,
+        "framing": "sse"
+      },
+      "final_output_shape": [
+        {
+          "type": "reasoning",
+          "status": "unknown",
+          "role": "unknown",
+          "content_types": []
+        },
+        {
+          "type": "message",
+          "status": "completed",
+          "role": "assistant",
+          "content_types": [
+            "output_text"
+          ],
+          "text_characters": 38,
+          "markdown_fence": false,
+          "json_object": true,
+          "command_present": true
+        }
+      ],
+      "elapsed_to_artifact_seconds": 11.765
+    }
+  ],
+  "limits": "Code evolved during these probes. Type metadata is not a retained raw provider response or scored trajectory; no usage comparison is made."
+}

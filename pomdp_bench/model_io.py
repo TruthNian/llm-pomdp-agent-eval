@@ -107,6 +107,8 @@ class ResponseStream:
         self.buffer = b""
         self.lines = []
         self.result = None
+        self.item_types = {}
+        self.completed_items = {}
 
     def feed(self, chunk, final=False):
         self.buffer += chunk
@@ -149,22 +151,51 @@ class ResponseStream:
             raise AdapterError("Endpoint streamed an undeclared event type", "unexpected_tool")
         if self.result is not None:
             raise AdapterError("Endpoint streamed events after completion", "protocol_error")
-        if kind in ("response.content_part.added", "response.content_part.done"):
-            if event.get("part", {}).get("type") != "output_text":
-                raise AdapterError("Endpoint streamed non-text action content", "protocol_error")
         if kind in ("response.output_item.added", "response.output_item.done"):
-            if event.get("item", {}).get("type") not in ("message", "reasoning"):
+            item = event.get("item", {})
+            if item.get("type") not in ("message", "reasoning"):
                 raise AdapterError("Endpoint streamed an undeclared output item", "unexpected_tool")
+            identity = (item.get("id"), event.get("output_index"))
+            if not isinstance(identity[0], str) or not identity[0] or type(identity[1]) is not int or identity[1] < 0:
+                raise AdapterError("Endpoint streamed an invalid item identity", "protocol_error")
+            if identity in self.item_types and self.item_types[identity] != item["type"]:
+                raise AdapterError("Endpoint changed a stream item's type", "protocol_error")
+            if (identity in self.completed_items
+                    or (kind.endswith(".added") and identity in self.item_types)
+                    or any(k != identity and (k[0] == identity[0] or k[1] == identity[1]) for k in self.item_types)):
+                raise AdapterError("Endpoint reused a stream item identity", "protocol_error")
+            self.item_types[identity] = item["type"]
+            if kind.endswith(".done"):
+                # Reasoning is never action content and need not be accumulated.
+                self.completed_items[identity] = item if item["type"] == "message" else {"type": "reasoning"}
+        if kind in ("response.content_part.added", "response.content_part.done"):
+            part = event.get("part", {})
+            expected = {"output_text": "message", "reasoning_text": "reasoning"}.get(part.get("type"))
+            identity = (event.get("item_id"), event.get("output_index"))
+            if expected is None or self.item_types.get(identity) != expected:
+                raise AdapterError("Endpoint streamed content outside its declared item", "protocol_error")
         for item in event.get("response", {}).get("output", []):
             if item.get("type") not in ("message", "reasoning"):
                 raise AdapterError("Endpoint streamed an undeclared output item", "unexpected_tool")
         if kind == "response.completed":
-            if self.result is not None:
-                raise AdapterError("Endpoint returned multiple completions", "protocol_error")
-            self.result = event["response"]
+            terminal = event["response"]
+            if self.item_types.keys() != self.completed_items.keys():
+                raise AdapterError("Endpoint completed with unfinished output items", "incomplete_response")
+            closed = [self.completed_items[k] for k in sorted(self.completed_items, key=lambda k: k[1])]
+            reported = terminal.get("output")
+            if reported is not None and not isinstance(reported, list):
+                raise AdapterError("Endpoint returned an invalid output collection", "protocol_error")
+            # Native streams close each item and send an empty terminal output.
+            # Both item completion and whole-response completion are mandatory.
+            if not reported and closed:
+                terminal = {**terminal, "output": closed}
+            elif reported and closed:
+                if action_text(terminal, "responses") != action_text({**terminal, "output": closed}, "responses"):
+                    raise AdapterError("Endpoint returned conflicting completed actions", "protocol_error")
+            self.result = terminal
 
 
-def exchange(endpoint, key, body, timeout, extra_headers=None):
+def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=False):
     """No redirects, implicit proxies or retries. Bound reads by one deadline."""
     parsed = urllib.parse.urlsplit(endpoint)
     connection_type = http.client.HTTPSConnection if parsed.scheme == "https" else http.client.HTTPConnection
@@ -204,7 +235,9 @@ def exchange(endpoint, key, body, timeout, extra_headers=None):
         if not 200 <= response.status < 300:
             raise AdapterError(f"Endpoint HTTP status {response.status}", "http_error")
         media = response.getheader("Content-Type", "").split(";", 1)[0].strip().lower()
-        stream = ResponseStream() if media == "text/event-stream" else None
+        # A missing media header uses the format we explicitly requested.
+        # Never sniff arbitrary body text or treat a delta as an action.
+        stream = ResponseStream() if media == "text/event-stream" or (not media and streaming) else None
         chunks, size = [], 0
         while not response.isclosed():
             sock.settimeout(remaining())
@@ -264,14 +297,15 @@ class HttpAgent:
         if config.get("headers_env"):
             try:
                 headers = strict_json(os.environ.get(config["headers_env"], ""))
-                if (not isinstance(headers, dict) or any(not isinstance(k, str) or not k.lower().startswith("x-")
+                if (not isinstance(headers, dict) or any(not isinstance(k, str)
+                        or not (k.lower().startswith("x-") or k.lower() == "chatgpt-account-id")
                         or not all(c.isascii() and (c.isalnum() or c == "-") for c in k)
                         or not isinstance(v, str) or not v.isascii() or any(ord(c) < 32 or ord(c) == 127 for c in v)
                         for k, v in headers.items()) or len({k.lower() for k in headers}) != len(headers)):
                     raise ValueError()
                 self.headers = headers
             except (TypeError, ValueError):
-                raise AdapterError("headers_env must contain distinct X- headers with ASCII values", "configuration_error") from None
+                raise AdapterError("headers_env must contain distinct allowed metadata headers with ASCII values", "configuration_error") from None
 
     def act(self, request, timeout):
         body = json.dumps(request_body(self.config, request), ensure_ascii=False, allow_nan=False).encode()
@@ -283,7 +317,8 @@ class HttpAgent:
         self.request_audit.append(audit)
         self.usage["requests"] += 1
         try:
-            data = exchange(self.endpoint, self.key, body, limit, self.headers)
+            data = exchange(self.endpoint, self.key, body, limit, self.headers,
+                            streaming=self.config["kind"] == "responses")
             self.add_usage(data)
             action = action_text(data, self.config["kind"])
             audit["outcome"] = "action"

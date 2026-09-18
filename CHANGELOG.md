@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.4.0 — 2026-09-18
+
+- Correct the 2.3 parser's rejection of documented reasoning content parts; bind parts to declared item identities and ignore reasoning as action content.
+- Use the explicitly requested SSE format when an endpoint omits its media header. Preserve completion checks without guessing from body text.
+- Assemble completed output items when the native terminal envelope omits/repeats no output; require item closure and whole-response completion, and reject conflicting completed actions.
+- Permit an explicit environment-only account selector. The local launcher supplies request-scoped existing authentication without changing shared-session settings or starting an agent runtime.
+- Add positive/negative protocol fixtures and an independent [four-episode validation plan](studies/direct-channel-validation-v2/README.md). Preserve all earlier failure evidence.
+
+**Comparability:** no generator, public prompt, transition or grader changes. Authentication, stream parsing and declared integration limits differ from the prior pilot; do not pool the runs.
+
 ## 2.3.0 — 2026-09-18
 
 - Remove the experimental Codex app-server bridge from the preferred live collection path; add direct Responses support over the same HTTP transport as Chat Completions.

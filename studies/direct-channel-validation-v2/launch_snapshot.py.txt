@@ -1,0 +1,74 @@
+"""Explicit local launcher: existing credentials scoped to these model requests."""
+import base64
+import hashlib
+import json
+import os
+from pathlib import Path
+import secrets
+import sys
+import time
+import tomllib
+
+from pomdp_bench import __version__
+from pomdp_bench.collection import prepare_suite, read_run, resume_suite
+from pomdp_bench.generator import digest, suite
+from pomdp_bench.storage import read_json, write_json
+
+
+def main():
+    mode, plan_path, out = sys.argv[1], Path(sys.argv[2]), Path(sys.argv[3])
+    plan = read_json(plan_path)
+    if plan['framework_version'] != __version__ or mode not in ('prepare', 'collect'):
+        raise ValueError('Use the declared framework and prepare/collect mode')
+    if mode == 'prepare':
+        data = suite([secrets.randbits(128) for _ in range(plan['independent_seeds'])],
+                     plan['families'], plan['profiles'], plan['domains'])
+        manifest = prepare_suite(data, plan['agents'], plan['conditions'], plan['replicates'],
+                                 out, plan['wall_seconds'])
+        write_json(out/'private/validation-plan.json', {'plan': plan, 'plan_sha256': digest(plan),
+                                                       'manifest_sha256': digest(manifest)})
+        print(json.dumps({'prepared': manifest['expected_episodes'], 'plan_sha256': digest(plan)}))
+        return
+    manifest, _ = read_run(out, partial=True)
+    if read_json(out/'private/validation-plan.json') != {
+            'plan': plan, 'plan_sha256': digest(plan), 'manifest_sha256': digest(manifest)}:
+        raise ValueError('Frozen plan or manifest changed')
+    home = Path(os.environ.get('CODEX_HOME', Path.home()/'.codex'))
+    config_path = home/'config.toml'
+    base = tomllib.loads(config_path.read_text(encoding='utf-8'))['model_providers']['codex-router']['base_url']
+    if base.rstrip('/') != plan['transport']['base_url'] or base.rstrip('/') != 'http://127.0.0.1:4202/v1':
+        raise ValueError('Use only the inspected loopback endpoint')
+    if [a['model'] for a in plan['agents']] != ['gpt-5.6-sol', 'custom/z-ai/glm-5.3']:
+        raise ValueError('Credentials are scoped to the two explicitly authorized models')
+    state = home/'codex-router'
+    consent = state/'native-session-consent.json'
+    auth_path = home/'auth.json'
+    # Compare settings bytes locally; never persist their contents or auth hashes.
+    protected = [config_path, consent, auth_path]
+    before = [p.read_bytes() if p.exists() else None for p in protected]
+    auth = json.loads(auth_path.read_text(encoding='utf-8'))['tokens']
+    token = auth['access_token']
+    payload = token.split('.')[1]
+    claims = json.loads(base64.urlsafe_b64decode(payload + '=' * (-len(payload) % 4)))
+    if claims['exp'] <= time.time() + plan['wall_seconds'] * manifest['expected_episodes']:
+        raise ValueError('Existing login needs refresh through Codex before this collection')
+    os.environ['DIRECT_ENDPOINT'] = base.rstrip('/') + '/responses'
+    os.environ['NATIVE_KEY'] = token
+    os.environ['NATIVE_HEADERS'] = json.dumps({**plan['transport']['headers'],
+                                              'ChatGPT-Account-Id': auth['account_id']})
+    os.environ['ROUTER_KEY'] = (state/'caller-secret').read_text().strip()
+    os.environ['ROUTER_HEADERS'] = json.dumps(plan['transport']['headers'])
+    report = resume_suite(out)
+    unchanged = [p.read_bytes() if p.exists() else None for p in protected] == before
+    write_json(out/'private/launcher-check.json', {
+        'settings_and_auth_bytes_unchanged': unchanged,
+        'launcher_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        'authentication': plan['transport']['authentication']}, replace=False)
+    print(json.dumps({'complete': report['complete'], 'episodes': report['episodes'],
+                      'settings_and_auth_bytes_unchanged': unchanged,
+                      'outcomes': [{k: row[k] for k in ('agent', 'episodes', 'successes', 'adapter_failures')}
+                                   for row in report['overall']]}))
+
+
+if __name__ == '__main__':
+    main()

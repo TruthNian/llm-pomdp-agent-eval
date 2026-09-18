@@ -1,0 +1,146 @@
+"""One public development-input request per invocation; no scored episode."""
+from datetime import datetime, timezone
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import sys
+import tomllib
+
+from pomdp_bench.environment import Environment
+from pomdp_bench.generator import generate
+from pomdp_bench.model_io import AdapterError, ResponseStream, action_text, exchange, request_body, strict_json
+from pomdp_bench.storage import write_json
+import pomdp_bench.model_io as model_io
+import http.client
+
+model, output = sys.argv[1], Path(sys.argv[2])
+if output.exists() or model not in ('gpt-5.6-sol', 'custom/z-ai/glm-5.3'):
+    raise ValueError('Choose an allowed model and a new diagnostic output')
+home = Path(os.environ.get('CODEX_HOME', Path.home()/'.codex'))
+base = tomllib.loads((home/'config.toml').read_text(encoding='utf-8'))['model_providers']['codex-router']['base_url']
+if base.rstrip('/') != 'http://127.0.0.1:4202/v1':
+    raise ValueError('Only the inspected loopback route is authorized by this launcher')
+headers = {'x-codex-router-exact-route': '1'}
+if model == 'gpt-5.6-sol':
+    # The user authorized this model. Supply this client's existing session
+    # on this request, without enabling the router's shared-session fallback.
+    auth = json.loads((home/'auth.json').read_text(encoding='utf-8'))['tokens']
+    key = auth['access_token']
+    headers['chatgpt-account-id'] = auth['account_id']
+    del auth
+    auth_mode = 'request_scoped_existing_codex_login'
+else:
+    key = (home/'codex-router/caller-secret').read_text().strip()
+    auth_mode = 'router_caller_key'
+cfg = {'kind': 'responses', 'model': model, 'options': {'reasoning_effort': 'high'}}
+env = Environment(generate(0, 'diagnosis', 'standard', 'incident'), 'open')
+request = {'protocol_version': 1, 'task': env.contract(), 'observation': env.observation(), 'history': []}
+body = json.dumps(request_body(cfg, request), ensure_ascii=False, allow_nan=False).encode()
+events = []
+wire = {}
+original_response = http.client.HTTPConnection.getresponse
+original_read = http.client.HTTPResponse.read1
+original_json = strict_json
+
+def getresponse(self):
+    response = original_response(self)
+    wire.update({'status': response.status, 'media': response.getheader('Content-Type', ''),
+                 'encoding': response.getheader('Content-Encoding', ''), 'length': response.length})
+    return response
+
+def read1(self, *args, **kwargs):
+    chunk = original_read(self, *args, **kwargs)
+    if chunk and 'framing' not in wire:
+        raw = chunk.lstrip()
+        wire['framing'] = ('sse' if raw.startswith((b'data:', b'event:', b':')) else
+                           'json' if raw.startswith((b'{', b'[')) else
+                           'gzip' if raw.startswith(b'\x1f\x8b') else 'other')
+    return chunk
+
+def inspect_json(raw):
+    try:
+        return original_json(raw)
+    except (ValueError, TypeError) as exc:
+        wire['json_error_class'] = type(exc).__name__
+        # A fixed local reason is safe; never copy a provider body.
+        wire['json_error_reason'] = ('duplicate_keys' if str(exc) == 'Duplicate JSON keys' else
+                                    'nonfinite' if str(exc) == 'Nonfinite numbers are not JSON' else 'malformed')
+        raise
+
+http.client.HTTPConnection.getresponse = getresponse
+http.client.HTTPResponse.read1 = read1
+model_io.strict_json = inspect_json
+strict_json = inspect_json
+original = ResponseStream.line
+
+def typename(value):
+    return value if isinstance(value, str) and re.fullmatch(r'[a-z_.]{1,64}', value) else 'unknown'
+
+def inspect_line(self, line):
+    if not line and self.lines:
+        raw = b'\n'.join(self.lines)
+        if raw != b'[DONE]':
+            event = strict_json(raw)
+            row = {'event_type': typename(event.get('type'))}
+            for field in ('item', 'part'):
+                if isinstance(event.get(field), dict):
+                    row[field+'_type'] = typename(event[field].get('type'))
+            if event.get('type') == 'response.output_item.done':
+                item = event['item']
+                row['item_status'] = typename(item.get('status'))
+                row['item_role'] = typename(item.get('role'))
+                row['content_types'] = [typename(x.get('type')) for x in item.get('content', [])]
+                if item.get('type') == 'message':
+                    text = ''.join(x.get('text', '') for x in item.get('content', []) if x.get('type') == 'output_text')
+                    try:
+                        parsed = original_json(text)
+                        row['json_object_with_command'] = isinstance(parsed, dict) and 'command' in parsed
+                    except ValueError:
+                        row['json_object_with_command'] = False
+            if event.get('type') == 'response.completed':
+                final = event.get('response', {})
+                row['output_present'] = 'output' in final
+                row['output_count'] = len(final.get('output', []))
+                row['status'] = typename(final.get('status'))
+            events.append(row)
+    return original(self, line)
+
+ResponseStream.line = inspect_line
+started = datetime.now(timezone.utc).isoformat()
+data = None
+try:
+    data = exchange(base+'/responses', key, body, 180, headers, streaming=True)
+    action_text(data, 'responses')
+    outcome, error = 'action', None
+except AdapterError as exc:
+    outcome, error = exc.code, str(exc)
+shape = []
+if isinstance(data, dict):
+    for item in data.get('output', []):
+        row = {'type': typename(item.get('type')), 'status': typename(item.get('status')),
+               'role': typename(item.get('role')),
+               'content_types': [typename(x.get('type')) for x in item.get('content', [])]}
+        if item.get('type') == 'message':
+            text = ''.join(x.get('text', '') for x in item.get('content', []) if x.get('type') == 'output_text')
+            row['text_characters'] = len(text)
+            row['markdown_fence'] = text.lstrip().startswith('```')
+            try:
+                action = original_json(text)
+                row['json_object'] = isinstance(action, dict)
+                row['command_present'] = isinstance(action, dict) and 'command' in action
+            except ValueError:
+                row['json_object'] = False
+        shape.append(row)
+result = {'purpose': 'One public seed-zero diagnostic request; no task score', 'model': model,
+          'started_at': started, 'auth_mode': auth_mode, 'request_sha256': hashlib.sha256(body).hexdigest(),
+          'events_before_termination': events, 'outcome': outcome, 'error': error,
+          'wire': wire,
+          'final_output_shape': shape,
+          'script_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
+write_json(output, result, replace=False)
+from collections import Counter
+print(json.dumps({k: result[k] for k in ('model', 'outcome', 'error', 'wire', 'final_output_shape')} | {
+    'event_types': dict(Counter(x['event_type'] for x in events)),
+    'closed_shapes': [e for e in events if e['event_type'] in ('response.completed', 'response.output_item.done')]}))

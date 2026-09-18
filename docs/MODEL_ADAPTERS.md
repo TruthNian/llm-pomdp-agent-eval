@@ -1,6 +1,6 @@
 # Model adapters and reproducible runs
 
-Version 2.3 uses one HTTP transport for `chat` and `responses`. Requesting one JSON action does not require launching a native agent runtime. Both formats explicitly send `tools: []` and `tool_choice: none`; the evaluator has no external-tool dispatcher, agent subprocess or conversation-ID chain. This is a client-side contract, not attestation of a proxy or provider's hidden behavior.
+Version 2.4 uses one HTTP transport for `chat` and `responses`. Requesting one JSON action does not require launching a native agent runtime. Both formats explicitly send `tools: []` and `tool_choice: none`; the evaluator has no external-tool dispatcher, agent subprocess or conversation-ID chain. This is a client-side contract, not attestation of a proxy or provider's hidden behavior.
 
 ## Offline check
 
@@ -63,7 +63,17 @@ Use [responses-agent.example.json](../examples/responses-agent.example.json) wit
 
 Each request sends the same system instruction and complete public task/history, with `store: false`, `stream: true`, empty tools and no previous-response ID. The parser accepts a completed JSON envelope or the protocol's server-sent events. It applies only the final completed assistant message, never a text delta. Exactly one completed message containing output text is required; reasoning items are ignored rather than saved. Function calls, hosted-tool output, unrecognized events, failed/incomplete streams and missing terminal envelopes are rejected. See the official [text-generation](https://developers.openai.com/api/docs/guides/text) and [streaming](https://developers.openai.com/api/docs/guides/streaming-responses) protocol guides.
 
-Optional `headers_env` names an environment variable containing a JSON object of distinct `X-` headers, for example a gateway's explicit exact-route selector. It cannot replace authorization, host or content headers. Values must be ASCII without control characters and are not saved to traces; never put credentials directly in configuration files. Requesting an exact route is only as reliable as the gateway implementing that header. The core does not infer one provider's settings from another's.
+Optional `headers_env` names an environment variable containing a JSON object of distinct `X-` headers, for example a gateway's explicit exact-route selector. From 2.4 it also accepts `ChatGPT-Account-Id` for a client's explicitly supplied account selector. It cannot replace authorization, host or content headers. Values must be ASCII without control characters and are not saved to traces; never put credentials directly in configuration files. Requesting an exact route is only as reliable as the gateway implementing that header. The core does not discover login files or infer one provider's settings from another's.
+
+### Version 2.4 protocol correction
+
+The [second direct-channel validation](../studies/direct-channel-validation-v2/README.md) distinguishes legitimate protocol variation from tools and incomplete answers:
+
+- A `reasoning_text` content part belongs to a declared reasoning item. It is ignored, never accumulated as action text. An output-text part must belong to a message item. Unknown parts, mixed item identities and type changes are rejected. The [official event reference](https://developers.openai.com/api/reference/resources/responses/streaming-events#response.content_part.added) documents reasoning parts; 2.3 incorrectly rejected them.
+- If a streaming request receives no media header, use its declared SSE format. Do not sniff arbitrary body text. Explicit JSON envelopes are still supported when labeled as JSON.
+- A native stream may finish each output item and send a final completed response with empty/omitted `output`. Assemble only closed items, require whole-response completion and exactly one valid assistant action. All started items must be closed; duplicate identities, conflicting nonempty terminal actions, unfinished streams and tool items fail. A text delta alone remains insufficient.
+
+The local validation launcher supplies its own existing authorized login for GPT requests and the router caller key for GLM requests. This avoids changing global session-sharing state or launching a native model runtime. That machine-specific credential setup is separate from the portable adapter. Previous failures remain frozen and are not replaced by development probes.
 
 The [direct-channel integration plan and evidence](../studies/direct-channel-validation-v1/README.md) documents the operator's existing local router. Its small launch script supplies environment variables and uses the ordinary collector; it adds no model runtime or HTTP relay. **That installed route did not pass multi-turn integration:** two native requests returned HTTP 401 and two GLM streams contained rejected non-text content parts. A separate one-action probe passed, which is insufficient to override those failures. The two older native bridges remain frozen experimental evidence and are not the preferred live path.
 

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "framework_version": "2.4.0",
+  "purpose": "Validate corrected direct HTTP multi-turn collection; no model ranking or intervention-effect estimate",
+  "independent_seeds": 1,
+  "families": ["diagnosis", "cascade"],
+  "profiles": ["standard"],
+  "domains": ["incident"],
+  "conditions": ["open"],
+  "replicates": 1,
+  "wall_seconds": 1800,
+  "agents": [
+    {"name": "gpt-5.6-sol", "kind": "responses", "model": "gpt-5.6-sol", "endpoint_env": "DIRECT_ENDPOINT", "api_key_env": "NATIVE_KEY", "headers_env": "NATIVE_HEADERS", "timeout_seconds": 240, "options": {"reasoning_effort": "high"}},
+    {"name": "custom/z-ai/glm-5.3", "kind": "responses", "model": "custom/z-ai/glm-5.3", "endpoint_env": "DIRECT_ENDPOINT", "api_key_env": "ROUTER_KEY", "headers_env": "ROUTER_HEADERS", "timeout_seconds": 240, "options": {"reasoning_effort": "high"}}
+  ],
+  "stopping_rule": "Exactly four planned episodes, one attempt each; preserve every failure and do not add or replace samples",
+  "transport": {
+    "base_url": "http://127.0.0.1:4202/v1",
+    "headers": {"x-codex-router-exact-route": "1"},
+    "authentication": {
+      "gpt-5.6-sol": "Existing authorized Codex login supplied on this client's requests, including account selector",
+      "custom/z-ai/glm-5.3": "Existing local router caller key"
+    },
+    "tools": [],
+    "tool_choice": "none",
+    "store": false,
+    "stream": true,
+    "native_agent_runtime": false,
+    "benchmark_retries": 0,
+    "global_session_sharing_changes": false
+  }
+}
