@@ -9,7 +9,7 @@ from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
 from .agents import AdapterError, make_agent
 from .environment import Environment
 from .generator import GENERATOR_VERSION, digest, keyed_seed, validate_case
-from .storage import read_json, write_json
+from .storage import read_json
 
 
 def episode_record(env, config, replicate, elapsed=0, usage=None, error=None, in_flight=False):

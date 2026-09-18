@@ -151,13 +151,17 @@ def read_run(directory: Path, *, partial=False):
             raise ValueError("Unresolved request in a terminal trace")
         replay_environment(record, case, partial=checkpoint)
 
-    records = []
+    records, by_id = [], {}
     for eid, path in sorted(traces.items()):
         record = read_json(path)
         check_record(record, eid)
         records.append(record)
+        by_id[eid] = record
     for eid, path in checkpoints.items():
-        check_record(read_json(path), eid, checkpoint=True)
+        checkpoint = read_json(path)
+        check_record(checkpoint, eid, checkpoint=True)
+        if eid in by_id and checkpoint["events"] != by_id[eid]["events"][:len(checkpoint["events"])]:
+            raise ValueError("Checkpoint is not a prefix of its committed trajectory")
     if not partial and (traces.keys() != expected.keys() or (version and receipts.keys() != expected.keys())):
         raise ValueError(f"Incomplete run: expected {len(expected)}, found {len(traces)}; missing episodes cannot be dropped")
     return manifest, records
