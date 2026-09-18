@@ -30,6 +30,8 @@ Four scripted policies receive the same generated cases:
 
 The reference is optimal within its restricted class of reliable diagnostic trees. The scorer's clairvoyant action-cost lower bound is recorded separately and is never presented as a fair agent baseline.
 
+[Published implementation validation](studies/framework-v2-validation/README.md): 144 generated cases and 576 replayed episodes; reference 144/144, random 4/144, both negative controls 0/144. These are scripted controls, not model scores.
+
 Output contains `summary.json` plus a `private/` manifest and traces. Validation regenerates every case, replays every transition, recomputes grades, and rejects missing or duplicate episodes. Existing run directories are never overwritten. Keep private files inaccessible to evaluated agents.
 
 Optional installation: `python -m pip install -e .` provides the `pomdp-bench` command.

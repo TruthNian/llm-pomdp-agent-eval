@@ -29,6 +29,8 @@ python -m pomdp_bench validate artifacts/demo
 
 参考策略不读取隐藏答案。它在“可靠检测决策树”这个限定策略类内计算最坏情形成本最小的方案，并非全局最优 POMDP 求解器。评分器另行记录知道答案时的动作成本下界。
 
+[已发布的实现验证](studies/framework-v2-validation/README.md)：144 个生成实例、576 条重放轨迹；参考策略 144/144，随机策略 4/144，两个负对照均为 0/144。这些是脚本策略验证结果，不是模型成绩。
+
 输出包含 `summary.json` 和 `private/` 中的运行清单、轨迹。`validate` 会重新生成实例、重放动作、核对评分，并拒绝缺失或重复记录。输出目录存在时拒绝覆盖。评测期间应让代理无法读取私有文件。
 
 也可用 `python -m pip install -e .` 安装 `pomdp-bench` 命令。
