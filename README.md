@@ -8,7 +8,7 @@ An open framework for evaluating how agents **discover information, make decisio
 
 The unit of evaluation is an interaction trajectory. Actions reveal evidence, change the world, and consume future options. Successful completion must correspond to an accepted environment state.
 
-**Version 2.3 simplifies the model action channel.** Direct HTTP access supports Chat Completions and Responses through one transport, explicitly declares no tools, and rejects ambiguous or unfinished output. It removes the experimental native-agent bridge from the preferred live path. Preregistered studies still bind fresh seeds, matched contrasts, failure retention and seed-level uncertainty. The framework's relationship to real-work performance remains an empirical question; no new frontier-model ranking is claimed. The original 72-run GPT/GLM comparison is preserved as a [historical study](studies/2026-gpt56-glm53/README.md).
+**Version 2.4 corrects the model action channel.** One HTTP transport supports Chat Completions and Responses without a native agent runtime. Typed reasoning parts are ignored as actions; completed items can supply an answer without repeating it in the final envelope. Whole-response completion and rejection of tools, ambiguity and truncation remain required. Preregistered studies preserve failures and seed-level uncertainty. Real-work validity remains unproven; the original 72-run comparison is a [historical study](studies/2026-gpt56-glm53/README.md).
 
 Development follows [explicit stages and acceptance gates](docs/ROADMAP.md): reliable collection → isolated intervention studies → new task structures → external validity → measured acceleration. Requirements are questioned, unnecessary work is removed, and the remaining workflow is simplified before it is automated. For long collections, use [`prepare`, `status` and `resume`](docs/COLLECTION.md); completed and interrupted attempts are never silently replaced.
 
@@ -16,7 +16,7 @@ For a single-intervention experiment, use [`prepare-study`](docs/STUDIES.md). Th
 
 The [preregistered eight-episode live pilot](studies/verification-reserve-pilot-v1/README.md) is complete, including two retained bridge failures and a native capability-boundary limitation. It does not establish a reminder effect. The next gate is reliable action-channel isolation, before expanding collection.
 
-The separate [direct-channel validation](studies/direct-channel-validation-v1/README.md) published its source and plan before four attempts. All four ended before an environment action: two HTTP 401 responses and two stream-format rejections. Offline protocol tests passed; the installed route remains **unvalidated for multi-turn use**. A later one-action diagnostic is reported separately and does not replace either pilot.
+The [first direct-channel validation](studies/direct-channel-validation-v1/README.md) retained four first-request failures. In the [independent 2.4 follow-up](studies/direct-channel-validation-v2/README.md), both models completed a cascade task; the other two attempts retained a stream failure and a timeout. **The all-four integration gate remains failed.** All attempts replay, and development probes do not replace earlier failures.
 
 ## Run without an API key
 

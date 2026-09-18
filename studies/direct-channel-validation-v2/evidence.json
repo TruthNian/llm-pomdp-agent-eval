@@ -1,0 +1,348 @@
+{
+  "purpose": "Validate corrected direct HTTP multi-turn collection; no model ranking or intervention-effect estimate",
+  "framework_version": "2.4.0",
+  "preregistration": {
+    "public_commit": "d0c540567107b555aabf04abe3fb32d1e84db924",
+    "public_commit_url": "https://github.com/TruthNian/llm-pomdp-agent-eval/commit/d0c540567107b555aabf04abe3fb32d1e84db924",
+    "github_push_workflow_created_at": "2026-09-18T12:15:15Z",
+    "github_workflow_url": "https://github.com/TruthNian/llm-pomdp-agent-eval/actions/runs/35343688568",
+    "github_workflow_conclusion": "success",
+    "prepared_at": "2026-09-18T12:15:34.875762+00:00",
+    "plan_sha256": "607c7260e7a1339888eb4e430273e28e70944d61f434124caf752ca600d62be1",
+    "launch_snapshot_sha256": "c600a32f81a99b3af1bcb89118e557ba2055f72408409af6d5eede0578d0fb01",
+    "source_plan_launcher_match_published_commit": true
+  },
+  "offline": {
+    "unit_tests_passed": 104,
+    "adapter_tests_passed": 34,
+    "ci_jobs_passed": 4,
+    "demo_episodes_replayed": 24,
+    "frozen_historical_files_verified": 156
+  },
+  "live": {
+    "gate_passed": false,
+    "collection_complete": true,
+    "planned_episodes": 4,
+    "validated_episodes": 4,
+    "successes": 2,
+    "channel_failures": 2,
+    "benchmark_requests": 19,
+    "requests_with_usage": 17,
+    "recorded_git_revision": "d0c540567107b555aabf04abe3fb32d1e84db924",
+    "recorded_working_tree_dirty": false,
+    "manifest_sha256": "ec24d46d275add14748eabad71ce066d189d59cae75e46614bded21eadbc77d3",
+    "suite_sha256": "e93dd428d12a33c2a4ea0762a003c960f7e4bc2f6b68e17dabdf3ae1fe891219",
+    "schedule_sha256": "47d1fd91e5dd493173cffe60c7b09afdf76989e3b4a98f3b15464118db98358f",
+    "source_sha256": {
+      "__init__.py": "622e9199073ab5a28fe6cb3091e479cf58871c92d28f705843e267f26cf0c118",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "agents.py": "bc36ab871c6467ddb4d72052834cc51cc37d5e566284e335d53187b817c8b9d3",
+      "cli.py": "b6beeeacd9e166167e9263b7e77e00b969a19fa68f9853ed5d5c1a71d39ae41a",
+      "collection.py": "cf9a7d9a7d5aaeea998cf314aa015a0c41c438d76b3ec16264c1b223cdb3386e",
+      "environment.py": "36e54dab9298e89cb38aec9f9d196ad6d18f6bd482f92dfed2b744907cf4b3f4",
+      "evaluation.py": "a509f89f9b123f73fcf00189b12388302b70b357978eefabb3f31cdb313af32f",
+      "generator.py": "5927978a301c50c703cc3450b03e0774abf803122386744cb5dcab434d6f9d69",
+      "interventions.py": "a111d6dc5cfbba6e8ac0bab1d1f026b906683f28a487183742f7469e8fb89dd0",
+      "model_io.py": "9942ce3a2a4500c05abb9a9dbb272e4e7adba3b6f4d3e1aab2a0de9cebe5463a",
+      "planning.py": "4a136bcd587e069b716f63cc1c9f1607da6d3f966a5d4f3e7ea8ed57695fcb93",
+      "reporting.py": "44e3deed310f967237f55a6bf992af1f7346c1e13c540a3b533a271aad0affd6",
+      "storage.py": "463c36e711458a1e8e401d9d5540ea5dcee5f262cbb8e201217e6f5f20934c84",
+      "studies.py": "e5856c9aba9328d6363c89f28967a1d3c73925917a65a565f92615e9fba7c6b6"
+    },
+    "all_public_request_fingerprints_reconstructed": true,
+    "launcher_check": {
+      "settings_and_auth_bytes_unchanged": true,
+      "launcher_sha256": "c600a32f81a99b3af1bcb89118e557ba2055f72408409af6d5eede0578d0fb01",
+      "authentication": {
+        "gpt-5.6-sol": "Existing authorized Codex login supplied on this client's requests, including account selector",
+        "custom/z-ai/glm-5.3": "Existing local router caller key"
+      }
+    },
+    "ordered_outcomes": [
+      {
+        "order": 1,
+        "agent": "gpt-5.6-sol",
+        "family": "diagnosis",
+        "condition": "open",
+        "started_at": "2026-09-18T12:15:45.802151+00:00",
+        "trace_sha256": "45f988bb4fe1cbc5cdc108b3f068f15b36a710d989d287ca6bc881de445452dd",
+        "termination": "adapter_error",
+        "success": false,
+        "steps": 1,
+        "action_cost": 2,
+        "elapsed_seconds": 11.720747,
+        "error": "Endpoint stream failed or was incomplete",
+        "request_audit": [
+          {
+            "protocol": "responses",
+            "request_sha256": "bb0e3b0dcb1887da2cadd5f8f3091e816fabf9ccc3077df1e86072bfe2d94158",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": true
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "32d8b707e051626672e4331113458e87ab4e5c97e17e2124557fb6d09d88a216",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "incomplete_response"
+          }
+        ],
+        "requests": 2,
+        "requests_with_usage": 1,
+        "input_tokens": null,
+        "output_tokens": null,
+        "reasoning_tokens": null,
+        "reported_tokens_from_metered_requests": {
+          "input_tokens": 1018,
+          "output_tokens": 299,
+          "reasoning_tokens": 280
+        },
+        "requests_with_reasoning_usage": 1
+      },
+      {
+        "order": 2,
+        "agent": "custom/z-ai/glm-5.3",
+        "family": "diagnosis",
+        "condition": "open",
+        "started_at": "2026-09-18T12:15:57.597501+00:00",
+        "trace_sha256": "6f0597bfc441bceb9ee3fcfa3acde12b3cc903147a86fb26d6abf5c38a3c5bdf",
+        "termination": "adapter_error",
+        "success": false,
+        "steps": 1,
+        "action_cost": 2,
+        "elapsed_seconds": 387.266599,
+        "error": "Endpoint request deadline exceeded",
+        "request_audit": [
+          {
+            "protocol": "responses",
+            "request_sha256": "773aafd6356cfbf2e5c024ac2309257cfa8f148e597878f42b2acf57e7fea452",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": false
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "6183c874d42602737f5389a96f82dfd98fc76cf112271842727aa2b4d081fa3e",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "timeout"
+          }
+        ],
+        "requests": 2,
+        "requests_with_usage": 1,
+        "input_tokens": null,
+        "output_tokens": null,
+        "reasoning_tokens": null,
+        "reported_tokens_from_metered_requests": {
+          "input_tokens": 1040,
+          "output_tokens": 10834,
+          "reasoning_tokens": 10817
+        },
+        "requests_with_reasoning_usage": 1
+      },
+      {
+        "order": 3,
+        "agent": "custom/z-ai/glm-5.3",
+        "family": "cascade",
+        "condition": "open",
+        "started_at": "2026-09-18T12:22:24.877152+00:00",
+        "trace_sha256": "2fc11fcc8131124b6c1a0d58c51c06de74842df945e83a0aaca47539e0d50caa",
+        "termination": "finished",
+        "success": true,
+        "steps": 9,
+        "action_cost": 25,
+        "elapsed_seconds": 195.598903,
+        "error": null,
+        "request_audit": [
+          {
+            "protocol": "responses",
+            "request_sha256": "ab44404557a6105aadf49ea56b093236746d5d3291f8380e7294593ee7f903ce",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": false
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "a9e96fe874e825a15e8a3421ce373a83cc7783c44490af8813caa42be9f8d07c",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": false
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "a5affff4275f535200fd702edbdf673dfbe51ec61a493d0e790372a537bd0511",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": false
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "ffb16c46683e58c08e71d3fa00fc77a8c2d420f52e43ef44c7b3f6d608fa7661",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": false
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "c3e11303b2228db2e6220419b4d7cf1487d4eb609e27efa42bce763225202009",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": false
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "84c1454802e9bb167e7464821934fd461444d2acbf3a4afd87e21d20cdbaf6ed",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": false
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "927842656d9de253230c54527df39ef95bded490a16ce26192873d70c750dba2",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": false
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "c5ce88a5d5d2f5d19fb07ca1a639cb4a7723f6b17398fa7cfd99fbdcc8fcad1e",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": false
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "4fdefd2a1f96f620002217cfe0ed6352f54d718908c984e0914052b24136b18d",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": false
+          }
+        ],
+        "requests": 9,
+        "requests_with_usage": 9,
+        "input_tokens": 27261,
+        "output_tokens": 11396,
+        "reasoning_tokens": 11264,
+        "reported_tokens_from_metered_requests": {
+          "input_tokens": 27261,
+          "output_tokens": 11396,
+          "reasoning_tokens": 11264
+        },
+        "requests_with_reasoning_usage": 9
+      },
+      {
+        "order": 4,
+        "agent": "gpt-5.6-sol",
+        "family": "cascade",
+        "condition": "open",
+        "started_at": "2026-09-18T12:25:40.490580+00:00",
+        "trace_sha256": "f707ee2e5d43019dc08f08828f44e9f49880854f5cc3f364a0092ba3bafc1b90",
+        "termination": "finished",
+        "success": true,
+        "steps": 6,
+        "action_cost": 17,
+        "elapsed_seconds": 34.685675,
+        "error": null,
+        "request_audit": [
+          {
+            "protocol": "responses",
+            "request_sha256": "76a62c56f3ce6b943f582dbfd132cf51a23878cc29ac87f18e809c14467d38a7",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": true
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "953099bf28b03390aa038967c965344326110a2b60f70eb4a268cd334f681237",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": true
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "3f04f4d60f058265bb336fac7c58538a245c08ba47f6678ffa0402b13e73b11c",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": true
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "d8bf4bcf7b84eafa468a28a77f77e859de5d02456bc68247e38e11f79caa6b16",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": true
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "d509f1cbe5ba7aecec3c7898541e65bf8692de64179d3d39cecfd5ff7afbc31b",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": true
+          },
+          {
+            "protocol": "responses",
+            "request_sha256": "c3c16cf665d7ddd489e84289eec2ba92a699a4fdab6f4c6bca557911bde6d559",
+            "declared_tools": [],
+            "tool_choice": "none",
+            "timeout_seconds": 240,
+            "outcome": "action",
+            "reported_model_matches_request": true
+          }
+        ],
+        "requests": 6,
+        "requests_with_usage": 6,
+        "input_tokens": 11545,
+        "output_tokens": 825,
+        "reasoning_tokens": 731,
+        "reported_tokens_from_metered_requests": {
+          "input_tokens": 11545,
+          "output_tokens": 825,
+          "reasoning_tokens": 731
+        },
+        "requests_with_reasoning_usage": 6
+      }
+    ]
+  },
+  "limits": [
+    "Private cases and traces are retained locally; public hashes are consistency checks, not external attestation.",
+    "Transport, authentication and declared timing limits differ from the first pilot; do not pool or estimate a model effect.",
+    "Stream error events are retained as incomplete_response; their raw messages and exact upstream cause are not recorded.",
+    "Request-scoped native login does not attest a provider checkpoint or server-side hidden capabilities.",
+    "One seed supports integration debugging only; development probes are separately reported and unscored."
+  ]
+}

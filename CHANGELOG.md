@@ -7,6 +7,8 @@
 - Assemble completed output items when the native terminal envelope omits/repeats no output; require item closure and whole-response completion, and reject conflicting completed actions.
 - Permit an explicit environment-only account selector. The local launcher supplies request-scoped existing authentication without changing shared-session settings or starting an agent runtime.
 - Add positive/negative protocol fixtures and an independent [four-episode validation plan](studies/direct-channel-validation-v2/README.md). Preserve all earlier failure evidence.
+- Complete and replay all four attempts: both models delivered their cascade task; the two diagnosis attempts retained a stream failure and a request timeout. Report 19 requests, 17 complete usage records and the failed all-four gate.
+- After frozen collection, retain usage when a completed stream contains invalid action JSON. The final release passes 105 tests; live evidence remains bound to its earlier 104-test source commit.
 
 **Comparability:** no generator, public prompt, transition or grader changes. Authentication, stream parsing and declared integration limits differ from the prior pilot; do not pool the runs.
 

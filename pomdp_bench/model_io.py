@@ -190,7 +190,12 @@ class ResponseStream:
             if not reported and closed:
                 terminal = {**terminal, "output": closed}
             elif reported and closed:
-                if action_text(terminal, "responses") != action_text({**terminal, "output": closed}, "responses"):
+                def messages(items):
+                    return [(item.get("role"), item.get("status"), item.get("content"))
+                            for item in items if item.get("type") == "message"]
+                # Compare completed message content before parsing its action.
+                # Invalid action JSON must still reach usage accounting.
+                if messages(reported) != messages(closed):
                     raise AdapterError("Endpoint returned conflicting completed actions", "protocol_error")
             self.result = terminal
 

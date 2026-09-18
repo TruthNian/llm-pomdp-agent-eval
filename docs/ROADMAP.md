@@ -21,6 +21,8 @@ Before adding a feature, record the decision it enables, the failure of the smal
 | A software update can be silently mixed into collection | Reject changed runtime/source on resume and mixed versions in summaries | Historical replay is separate from continuing an experiment |
 | One JSON action requires a complete native agent runtime | Remove the experimental runtime bridge from the preferred path | 2.3 shares one HTTP transport between Chat Completions and Responses; explicit empty tools, complete envelopes and one socket deadline |
 | A listed model or a successful one-action probe establishes readiness | Delete that assumption | The 2.3 fixed pilot retained four first-request failures; a later constant-output probe passed without validating multi-turn input |
+| Strict parsing means requiring one provider's exact envelope layout | Replace incidental layout requirements with completion and identity checks | 2.4 accepts typed reasoning and completed-item streams while rejecting tools, unfinished items and conflicting actions |
+| Native authentication requires global session sharing | Remove the shared-state dependency from the validation launcher | Supply the explicitly authorized login on this client's requests; leave global login/router/consent files unchanged |
 | Concurrent workers, automatic retries, plugin systems and dashboards are prerequisites | Defer them | Add only after a measured bottleneck or a second independent family requires them |
 | A single autonomy score is necessary | Do not introduce one | An application must first declare its utility and show the aggregation is useful |
 
@@ -68,7 +70,15 @@ Acceptance remains the environment/reference tests and [published control valida
 
 The preregistered four episodes all failed before an environment action: two HTTP 401 responses and two non-text stream-part rejections. They remain in the denominator. Read-only local inspection found native session sharing disabled; a later single GLM constant-output diagnostic passed but did not reproduce the full-input failure. Do not label this route live-validated, infer task weakness, silently enable shared authentication, or add permissive parser fallbacks.
 
-**Next gate:** verify authentication for the actual endpoint before drawing evaluation cases; capture only reviewed structural event metadata in a separate diagnostic; resolve protocol compatibility with positive and negative fixtures; then publish a new fixed multi-turn plan. Preserve the present plan, source commit and outcomes. A portable HTTP adapter does not imply that every subscription router implements its contract.
+**Gate carried into 2.4:** verify authentication for the actual endpoint before drawing evaluation cases; capture only reviewed structural event metadata in a separate diagnostic; resolve protocol compatibility with positive and negative fixtures; then publish a new fixed multi-turn plan. Preserve the plan, source commit and outcomes. A portable HTTP adapter does not imply that every subscription router implements its contract.
+
+### P1.8 — Correct the contract, retain the remaining failures
+
+**2.4 protocol corrections delivered; the all-four live gate remains failed.** The [independent follow-up](../studies/direct-channel-validation-v2/README.md) removes three incidental requirements: no reasoning content parts, mandatory repeated media headers, and mandatory repeated answers in the terminal envelope. It retains typed item ownership, whole-response completion, a single unambiguous assistant action and tool rejection. Native authentication is scoped to the current client's requests.
+
+Both models completed their cascade task; the other two attempts failed after one action, through a stream failure/incomplete event and a fixed request deadline. All four replay; 19 requests yielded 17 complete usage reports. Changed private cases, harness and time limits prohibit interpreting the difference from 2.3 as a measured causal gain.
+
+**Stop adding private cases to debug the endpoint.** The remaining transport investigation should use a bounded public-history probe and narrowly allowlisted error metadata, with no scoring or outcome-dependent retry. Preserve known-good protocol fixtures. Large P2 collection remains gated on adequate channel reliability and observable target failures. P3's offline measurement work can proceed independently.
 
 ## P2 — Test one mechanism before expanding the factorial design
 
@@ -101,6 +111,8 @@ Start with one generated dependency-discovery environment. A public probe reveal
 
 **Removal rule:** if the family is equivalent to choosing another label from an already complete catalogue, simplify it back into a diagnostic profile and drop the broader claim.
 
+**Next bounded development iteration:** define the smallest public observation/transition contract with a hidden dependency, a probe that reveals it, and one recoverable revision change. Build a public-information constructive witness and static/no-revision negative controls before any model calls. Only introduce a new generator if these controls demonstrate a structural distinction from the existing catalogue-based tasks. Do not add domains, scheduling, a plugin framework or a new overall score to this prototype.
+
 ## P4 — Test whether the benchmark predicts real outcomes
 
 Freeze an externally scored sample of real delegated tasks and a rubric for acceptance and human intervention time. Score benchmark configurations before revealing those outcomes. Compare prediction with static domain-skill and simple cost baselines; hold out task sources, not merely repeated runs.
@@ -119,4 +131,4 @@ Profile actual collection, replay, analysis and maintenance costs. Remove avoida
 
 Public development seeds support debugging; private evaluation seeds support prospective collection; held-out structures test a different generalization claim. Retire and publish reviewed manifests/traces with versioned sources and exclusions. Never silently change a released study or erase failed collection attempts. New seeds alone do not establish contamination resistance.
 
-The next work is **satisfy the direct channel's authentication and protocol prerequisites before another multi-turn plan**. The unnecessary native runtime has been removed from the preferred path; the 2.3 result shows that catalogue visibility and a simple smoke test do not prove route readiness. Do not expand either completed pilot or infer mechanisms from execution failures. After the channel passes a separately frozen gate, test whether the task distribution has observable target failures. P3's observation/transition design can proceed independently; it cannot close this integration gate or P4's external-validity gate.
+The next implementation work is **P3's minimal discovery/recovery contract and offline controls**, with its removal rule applied before expanding the generator. Keep endpoint diagnosis as a separate bounded public-input activity; the 2.4 live gate remains failed despite two complete tasks. Do not expand the completed pilots or infer model mechanisms from their execution failures. Neither transport corrections nor a new synthetic structure close P2's mechanism gate or P4's external-validity gate.

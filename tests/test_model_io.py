@@ -333,6 +333,15 @@ class TransportTests(unittest.TestCase):
         self.assertEqual(record["usage"]["requests_with_usage"], 1)
         self.assertEqual(record["usage"]["output_tokens"], 7)
 
+    def test_failed_stream_action_keeps_reported_usage(self):
+        raw = reasoning_stream(response("not json"))
+        with endpoint(lambda h, _: send(h, raw, "text/event-stream")):
+            record = run_episode(generate(0), config(), "open", 0)
+        self.assertEqual(record["events"], [])
+        self.assertEqual(record["request_audit"][0]["outcome"], "protocol_error")
+        self.assertEqual(record["usage"]["requests_with_usage"], 1)
+        self.assertEqual(record["usage"]["output_tokens"], 7)
+
     def test_redirect_is_not_followed_or_given_credentials(self):
         with endpoint(lambda h, _: send(h, response())) as target:
             location = os.environ["WIRE_ENDPOINT"]
