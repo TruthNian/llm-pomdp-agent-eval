@@ -197,13 +197,14 @@ For a strict reproduction:
 1. use the recorded Codex CLI build where available;
 2. confirm access to the exact model identifiers;
 3. record date, host OS, CLI version, model identifiers, reasoning setting, timeout, and worker count;
-4. keep the default simulator, prompts, and costs unchanged;
-5. run all 72 trajectories;
-6. preserve trace JSON and final messages;
-7. exclude raw event-stream JSONL from publication unless it has been independently sanitized;
-8. run `harness/analyze_results.py`;
-9. run `tools/verify_release.py`;
-10. report any CLI or model-version drift alongside results.
+4. run on a trusted disposable host; exact reproduction uses `danger-full-access` and disabled approvals;
+5. keep the default simulator, prompts, and costs unchanged;
+6. run all 72 trajectories;
+7. preserve trace JSON and final messages;
+8. exclude raw event-stream JSONL from publication unless it has been independently sanitized;
+9. run `harness/analyze_results.py`;
+10. run `tools/verify_release.py`;
+11. report any CLI or model-version drift alongside results.
 
 ## 10. Interpretation boundary
 

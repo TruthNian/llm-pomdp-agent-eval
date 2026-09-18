@@ -56,6 +56,8 @@ python tools/verify_release.py
 
 以下命令会调用远程模型并消耗大量 token：
 
+> **安全提示：** 为忠实复现实验，runner 默认使用 `danger-full-access` sandbox 并关闭审批。请只在不含无关敏感文件的可信、可丢弃环境中运行。如果本地 Codex 在更严格 sandbox 下仍允许访问 loopback，可传入 `--sandbox-mode workspace-write`。不要把这套合成模拟器连接到真实生产系统。
+
 ```powershell
 python harness/run_incident_eval.py --conditions open,explicit,procedural --models gpt,glm --replicates 3 --replicate-start 1 --workers 4 --timeout 900
 python harness/analyze_results.py

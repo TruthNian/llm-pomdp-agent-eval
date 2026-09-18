@@ -124,6 +124,7 @@ def run_one(
     timeout_seconds: int = 900,
     reasoning_effort: str = "max",
     codex_bin: str = "codex",
+    sandbox_mode: str = "danger-full-access",
 ) -> dict[str, Any]:
     RUNS.mkdir(parents=True, exist_ok=True)
     RESULTS.mkdir(parents=True, exist_ok=True)
@@ -147,7 +148,7 @@ def run_one(
         "--ignore-rules",
         "--skip-git-repo-check",
         "--sandbox",
-        "danger-full-access",
+        sandbox_mode,
         "--model",
         spec.model,
         "--config",
@@ -313,6 +314,15 @@ def main() -> int:
     )
     parser.add_argument("--reasoning-effort", default="max")
     parser.add_argument("--codex-bin", default="codex")
+    parser.add_argument(
+        "--sandbox-mode",
+        default="danger-full-access",
+        choices=("danger-full-access", "workspace-write", "read-only"),
+        help=(
+            "Codex subprocess sandbox. The default reproduces the original experiment; "
+            "use a stricter mode if it still permits loopback access in your environment."
+        ),
+    )
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--timeout", type=int, default=900)
     args = parser.parse_args()
@@ -345,6 +355,7 @@ def main() -> int:
                 args.timeout,
                 args.reasoning_effort,
                 args.codex_bin,
+                args.sandbox_mode,
             ): spec
             for spec in specs
         }

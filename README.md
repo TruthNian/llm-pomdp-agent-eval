@@ -101,6 +101,8 @@ Outputs are written to:
 
 This invokes remote models and can consume substantial tokens. Review the runner and confirm model access before starting.
 
+> **Safety:** Exact reproduction defaults to `--sandbox danger-full-access` with approvals disabled, matching the published run. Execute it only on a trusted, disposable host or account with no unrelated sensitive files. If your Codex installation permits loopback access under a stricter sandbox, pass `--sandbox-mode workspace-write`. Never connect this synthetic harness to production systems.
+
 ```bash
 python harness/run_incident_eval.py \
   --conditions open,explicit,procedural \
