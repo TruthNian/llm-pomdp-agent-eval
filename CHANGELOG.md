@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.3.0 — 2026-09-18
+
+- Remove the experimental Codex app-server bridge from the preferred live collection path; add direct Responses support over the same HTTP transport as Chat Completions.
+- Explicitly request no tools and no response chaining. Reject tool-bearing, truncated, ambiguous or unfinished output instead of accepting the first JSON-looking text.
+- Enforce one active-socket deadline, including slow headers and body reads; reject redirects, oversized responses and truncated HTTP bodies. No implicit proxy discovery or benchmark retries.
+- Preserve request fingerprints, declared tool policy and sanitized failure categories without raw provider bodies, credentials or reasoning.
+- Support explicit environment-only gateway X- headers, including exact-route selection; avoid claiming that local configuration attests upstream behavior.
+- Publish a new [four-episode integration plan](studies/direct-channel-validation-v1/README.md) before collection. Preserve the earlier eight-episode reminder pilot unchanged.
+
+**Comparability:** task generation, public environment prompts and acceptance are unchanged. The HTTP request and response contract is stricter; existing 2.0–2.2 traces replay, but new collections require 2.3 source/configuration. The new protocol cannot be pooled with earlier native-runtime runs.
+
 ## 2.2.0 — 2026-09-18
 
 - Add a frozen single-reminder contrast against an equal-word neutral control, without changing old conditions or generator semantics.

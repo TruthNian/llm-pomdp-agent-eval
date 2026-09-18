@@ -9,7 +9,7 @@ from collections import defaultdict
 from statistics import mean, stdev
 
 from . import GENERATOR_VERSION, __version__
-from .agents import validate_config
+from .agents import validate_agent_version, validate_config
 from .environment import PROMPTS
 from .generator import DOMAINS, FAMILIES, PROFILES, digest, suite
 from .interventions import CONTROL, CONTRAST, INTERVENTION_ID, TREATMENT
@@ -33,10 +33,11 @@ def required_seeds(confidence, half_width, comparisons):
 def validate_plan(plan):
     if not isinstance(plan, dict) or set(plan) != PLAN_FIELDS:
         raise ValueError("Study plan has missing or unknown fields")
-    fixed = {"schema_version": 1, "framework_version": "2.2.0", "generator_version": GENERATOR_VERSION,
+    fixed = {"schema_version": 1, "generator_version": GENERATOR_VERSION,
              "intervention": INTERVENTION_ID, "primary_outcome": "accepted_completion",
              "stopping_rule": "fixed_matrix", "failure_policy": "retain_and_bound"}
-    if type(plan["schema_version"]) is not int or any(plan[k] != v for k, v in fixed.items()):
+    if (type(plan["schema_version"]) is not int or plan["framework_version"] not in ("2.2.0", "2.3.0")
+            or any(plan[k] != v for k, v in fixed.items())):
         raise ValueError("Unsupported study version, intervention, outcome or collection policy")
     if not isinstance(plan["study_id"], str) or not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,79}", plan["study_id"]):
         raise ValueError("study_id must be a short lowercase identifier")
@@ -73,6 +74,7 @@ def validate_plan(plan):
         raise ValueError("Declare named agent configurations")
     for agent in agents:
         validate_config(agent)
+        validate_agent_version(agent, plan["framework_version"])
     if len({a["name"] for a in agents}) != len(agents):
         raise ValueError("Study agent names must be unique")
     required = required_seeds(precision["confidence"], precision["half_width"], len(agents))

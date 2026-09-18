@@ -1,0 +1,53 @@
+"""Machine-local launcher only: use the normal HTTP adapter and collector."""
+import json
+import os
+from pathlib import Path
+import secrets
+import sys
+import tomllib
+from urllib.parse import urlsplit
+
+from pomdp_bench import __version__
+from pomdp_bench.collection import prepare_suite, read_run, resume_suite
+from pomdp_bench.generator import digest, suite
+from pomdp_bench.storage import read_json, write_json
+
+
+def main():
+    mode, plan_path, out = sys.argv[1], Path(sys.argv[2]), Path(sys.argv[3])
+    plan = read_json(plan_path)
+    if plan['framework_version'] != __version__ or mode not in ('prepare', 'collect'):
+        raise ValueError('Use the declared framework and prepare/collect mode')
+    if mode == 'prepare':
+        data = suite([secrets.randbits(128) for _ in range(plan['independent_seeds'])],
+                     plan['families'], plan['profiles'], plan['domains'])
+        manifest = prepare_suite(data, plan['agents'], plan['conditions'], plan['replicates'],
+                                 out, plan['wall_seconds'])
+        write_json(out/'private/validation-plan.json', {'plan': plan, 'plan_sha256': digest(plan),
+                                                       'manifest_sha256': digest(manifest)})
+        print(json.dumps({'prepared': manifest['expected_episodes'], 'plan_sha256': digest(plan)}))
+        return
+    manifest, _ = read_run(out, partial=True)
+    expected = {'plan': plan, 'plan_sha256': digest(plan), 'manifest_sha256': digest(manifest)}
+    if read_json(out/'private/validation-plan.json') != expected:
+        raise ValueError('Frozen plan or manifest changed')
+    codex_directory = Path(os.environ.get('CODEX_HOME', Path.home()/'.codex'))
+    local = tomllib.loads((codex_directory/'config.toml').read_text(encoding='utf-8'))
+    base = local['model_providers']['codex-router']['base_url'].rstrip('/')
+    url = urlsplit(base)
+    if (url.scheme != 'http' or url.hostname != '127.0.0.1' or url.path != '/v1'
+            or url.username or url.password or url.query or url.fragment):
+        raise ValueError('This local launcher requires the existing plain loopback router endpoint')
+    state = Path(os.environ.get('MODEL_ROUTER_STATE_DIR', os.environ.get('CODEX_ROUTER_STATE_DIR',
+                                                                         codex_directory/'codex-router')))
+    os.environ['DIRECT_ENDPOINT'] = base + '/responses'
+    os.environ['DIRECT_KEY'] = (state/'caller-secret').read_text(encoding='utf-8').strip()
+    os.environ['DIRECT_HEADERS'] = json.dumps(plan['transport']['headers'])
+    report = resume_suite(out)
+    print(json.dumps({'complete': report['complete'], 'episodes': report['episodes'],
+                      'outcomes': [{k: row[k] for k in ('agent', 'episodes', 'successes', 'adapter_failures')}
+                                   for row in report['overall']]}))
+
+
+if __name__ == '__main__':
+    main()

@@ -8,13 +8,15 @@ An open framework for evaluating how agents **discover information, make decisio
 
 The unit of evaluation is an interaction trajectory. Actions reveal evidence, change the world, and consume future options. Successful completion must correspond to an accepted environment state.
 
-**Version 2.2 adds preregistered single-reminder studies to the generative research framework.** Plans bind fresh seeds, a neutral control, counterbalanced pairs, failure retention and seed-level uncertainty before collection. The framework includes two related diagnostic families, public-observation reference policies, provider-neutral model access and replay. Its relationship to real-work performance remains an empirical question; no new frontier-model ranking is claimed. The original 72-run GPT/GLM comparison is preserved as a [historical study](studies/2026-gpt56-glm53/README.md).
+**Version 2.3 simplifies the model action channel.** Direct HTTP access supports Chat Completions and Responses through one transport, explicitly declares no tools, and rejects ambiguous or unfinished output. It removes the experimental native-agent bridge from the preferred live path. Preregistered studies still bind fresh seeds, matched contrasts, failure retention and seed-level uncertainty. The framework's relationship to real-work performance remains an empirical question; no new frontier-model ranking is claimed. The original 72-run GPT/GLM comparison is preserved as a [historical study](studies/2026-gpt56-glm53/README.md).
 
 Development follows [explicit stages and acceptance gates](docs/ROADMAP.md): reliable collection → isolated intervention studies → new task structures → external validity → measured acceleration. Requirements are questioned, unnecessary work is removed, and the remaining workflow is simplified before it is automated. For long collections, use [`prepare`, `status` and `resume`](docs/COLLECTION.md); completed and interrupted attempts are never silently replaced.
 
 For a single-intervention experiment, use [`prepare-study`](docs/STUDIES.md). The [offline example](examples/study-reserve.pilot.json) checks a deliberately budget-blind control, a successful reference and a failing cosmetic-status policy. Study analysis reports a reminder contrast within each agent; it does not automatically rank the models or turn a tiny perfect-success pilot into a precise population claim.
 
 The [preregistered eight-episode live pilot](studies/verification-reserve-pilot-v1/README.md) is complete, including two retained bridge failures and a native capability-boundary limitation. It does not establish a reminder effect. The next gate is reliable action-channel isolation, before expanding collection.
+
+The separate [direct-channel validation](studies/direct-channel-validation-v1/README.md) freezes a four-episode integration check of the simpler transport. Its source and plan are published before calls; it does not replace the earlier pilot.
 
 ## Run without an API key
 
@@ -63,7 +65,7 @@ Wrong repairs cause reversible collateral damage. A dashboard override can show 
 
 ## Connect future models
 
-The runner accepts arbitrary named agents; scoring embeds no model names or two-model assumption. The built-in `chat` adapter speaks the common Chat Completions JSON format and sends only the public task, current observation, and observation/action history. It gives the model no shell, filesystem, manifest, seed, or grader access.
+The runner accepts arbitrary named agents; scoring embeds no model names or two-model assumption. The `chat` and `responses` adapters send only the public task, current observation, and observation/action history, with no tool dispatcher or native agent runtime. They provide no shell, filesystem, manifest, seed, or grader access. See the [Responses configuration](examples/responses-agent.example.json) for that protocol.
 
 1. Copy [the example configuration](examples/chat-agent.example.json) and specify your model identifier and supported options.
 2. Set `BENCH_CHAT_ENDPOINT` to the full HTTPS chat-completions endpoint and `BENCH_API_KEY` in your local environment.

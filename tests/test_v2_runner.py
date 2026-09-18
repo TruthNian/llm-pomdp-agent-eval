@@ -99,7 +99,8 @@ class HttpAdapterTests(unittest.TestCase):
                 request = json.loads(body["messages"][1]["content"])
                 received.append(request)
                 action = scripted.act(request, 10)
-                payload = {"choices": [{"message": {"content": json.dumps(action)}}],
+                self.server.received_bodies.append(body)
+                payload = {"choices": [{"finish_reason": "stop", "message": {"role": "assistant", "content": json.dumps(action)}}],
                            "usage": {"prompt_tokens": 10, "completion_tokens": 4}}
                 raw = json.dumps(payload).encode()
                 self.send_response(200)
@@ -109,6 +110,7 @@ class HttpAdapterTests(unittest.TestCase):
                 self.wfile.write(raw)
 
         server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        server.received_bodies = []
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
         config = {"name": "http-fixture", "kind": "chat", "model": "fixture", "endpoint_env": "TEST_ENDPOINT", "api_key_env": "TEST_KEY"}
@@ -118,6 +120,7 @@ class HttpAdapterTests(unittest.TestCase):
                 trace = run_episode(generate(4, "cascade"), config, "open", 0)
             self.assertTrue(trace["grade"]["success"], trace)
             self.assertGreater(len(received), 3)
+            self.assertTrue(all(b["tools"] == [] and b["tool_choice"] == "none" for b in server.received_bodies))
             self.assertEqual(trace["usage"]["input_tokens"], 10 * len(received))
             serialized = json.dumps(received)
             self.assertNotIn('"truths"', serialized)

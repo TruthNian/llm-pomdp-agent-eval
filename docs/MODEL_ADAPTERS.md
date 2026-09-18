@@ -1,5 +1,7 @@
 # Model adapters and reproducible runs
 
+Version 2.3 uses one HTTP transport for `chat` and `responses`. Requesting one JSON action does not require launching a native agent runtime. Both formats explicitly send `tools: []` and `tool_choice: none`; the evaluator has no external-tool dispatcher, agent subprocess or conversation-ID chain. This is a client-side contract, not attestation of a proxy or provider's hidden behavior.
+
 ## Offline check
 
 ```bash
@@ -46,12 +48,32 @@ Accepted response body follows the common shape:
 
 ```json
 {
-  "choices": [{"message": {"content": "{\"command\":\"verify\"}"}}],
+  "choices": [{"finish_reason": "stop", "message": {"role": "assistant", "content": "{\"command\":\"verify\"}"}}],
   "usage": {"prompt_tokens": 100, "completion_tokens": 8}
 }
 ```
 
 Reasoning usage under `completion_tokens_details.reasoning_tokens` is retained when present. Usage counts remain explicitly incomplete when unavailable. Provider error bodies, headers, reasoning text and raw responses are not written to traces. Malformed JSON terminates the episode as an adapter error; invalid but parseable actions consume environment steps. These are distinct failure modes.
+
+From 2.3, the Chat Completions response must contain exactly one assistant choice with `finish_reason: stop`. Tool/function calls, refusal content and truncation are rejected even when the same envelope contains valid JSON text. Duplicate JSON keys and multiple JSON values are rejected. This intentionally rejects ambiguous responses previously accepted by taking the first text field. Historical traces still replay, but new collection needs a new directory and version.
+
+## Direct Responses interface
+
+Use [responses-agent.example.json](../examples/responses-agent.example.json) with `kind: responses` and an endpoint ending in `/responses`. Supported options are `reasoning_effort`, `max_output_tokens`, `temperature` and `top_p`; no silent conversion from Chat-specific token or seed options is performed. The declared reasoning effort maps to the protocol's `reasoning.effort` field.
+
+Each request sends the same system instruction and complete public task/history, with `store: false`, `stream: true`, empty tools and no previous-response ID. The parser accepts a completed JSON envelope or the protocol's server-sent events. It applies only the final completed assistant message, never a text delta. Exactly one completed message containing output text is required; reasoning items are ignored rather than saved. Function calls, hosted-tool output, unrecognized events, failed/incomplete streams and missing terminal envelopes are rejected. See the official [text-generation](https://developers.openai.com/api/docs/guides/text) and [streaming](https://developers.openai.com/api/docs/guides/streaming-responses) protocol guides.
+
+Optional `headers_env` names an environment variable containing a JSON object of distinct `X-` headers, for example a gateway's explicit exact-route selector. It cannot replace authorization, host or content headers. Values must be ASCII without control characters and are not saved to traces; never put credentials directly in configuration files. Requesting an exact route is only as reliable as the gateway implementing that header. The core does not infer one provider's settings from another's.
+
+The [direct-channel integration plan and evidence](../studies/direct-channel-validation-v1/README.md) documents the operator's existing local router. Its small launch script supplies environment variables and uses the ordinary collector; it adds no model runtime or HTTP relay. The two older native bridges remain frozen experimental evidence and are not the preferred live path.
+
+## One request deadline and inspectable failures
+
+The shared transport has no redirects, automatic retries or implicit environment-proxy discovery. It verifies HTTPS using Python's default TLS context; an explicitly configured gateway can be the endpoint. One deadline covers the active socket exchange, including slow response headers and body reads; a deadline watchdog shuts down the local socket. DNS resolution and OS connection establishment are not an externally enforced process timeout, and local shutdown does not prove upstream cancellation. Every response is bounded to 2 MB, including stream bytes, and a body shorter than its declared content length is incomplete.
+
+`request_audit` records the public request body's SHA-256, protocol, declared empty-tool policy, selected timeout, outcome code and whether a supplied response model label matches the requested string. An alias mismatch is evidence to inspect, not proof of model substitution or a silently rewritten request. No header values, credentials, provider body or reasoning is included. The hash is local provenance, not provider attestation. A crash during a request can leave only the earlier audit prefix and an in-flight checkpoint; the existing interruption rules preserve that uncertainty.
+
+Outcome codes distinguish HTTP, transport, deadline, size, incomplete-response, unexpected-item and JSON/protocol failures. Messages say **endpoint** HTTP status because a local intermediary can generate an error itself. Reported usage from a fully received envelope is retained even when its action is rejected; absent usage remains unknown. These errors still terminate the attempt and remain in the denominator.
 
 ## Private suite, shared conditions
 

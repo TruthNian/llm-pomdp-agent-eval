@@ -1,0 +1,11 @@
+[
+  {
+    "name": "your-responses-model",
+    "kind": "responses",
+    "model": "your-model-id",
+    "endpoint_env": "BENCH_RESPONSES_ENDPOINT",
+    "api_key_env": "BENCH_API_KEY",
+    "timeout_seconds": 180,
+    "options": {"reasoning_effort": "high"}
+  }
+]

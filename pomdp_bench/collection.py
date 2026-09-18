@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
-from .agents import validate_config
+from .agents import validate_agent_version, validate_config
 from .environment import CONDITIONS, Environment, validate_condition_version
 from .evaluation import episode_record, recover_interrupted, replay, replay_environment, run_episode, validate_suite
 from .generator import digest
@@ -120,6 +120,8 @@ def read_run(directory: Path, *, partial=False):
         raise ValueError("Unsupported manifest version")
     for condition in manifest["conditions"]:
         validate_condition_version(condition, manifest["framework_version"])
+    for config in manifest["agents"]:
+        validate_agent_version(config, manifest["framework_version"])
     data = {"generator_version": manifest["generator_version"], "cases": manifest["cases"]}
     validate_definition(data, manifest["agents"], manifest["conditions"], manifest["replicates"],
                         manifest["wall_seconds_per_episode"])

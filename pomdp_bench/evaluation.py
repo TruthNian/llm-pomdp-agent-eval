@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 
 from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
-from .agents import AdapterError, make_agent
+from .agents import AdapterError, make_agent, validate_agent_version
 from .environment import Environment, validate_condition_version
 from .generator import GENERATOR_VERSION, digest, keyed_seed, validate_case
 from .storage import read_json
@@ -38,6 +38,8 @@ def run_episode(case: dict, config: dict, condition: str, replicate: int, wall_s
     def snapshot():
         record = episode_record(env, config, replicate, time.monotonic() - started,
                                 agent.usage if agent else None, error, in_flight)
+        if isinstance(getattr(agent, "request_audit", None), list):
+            record["request_audit"] = copy.deepcopy(agent.request_audit)
         # Storage failures must stop collection, never masquerade as model failures.
         if checkpoint:
             checkpoint(record)
@@ -87,6 +89,7 @@ def replay_environment(trace: dict, case: dict, *, partial=False) -> Environment
     if trace.get("schema_version") != SCHEMA_VERSION or trace.get("framework_version") not in REPLAY_VERSIONS:
         raise ValueError("Unsupported trace version")
     validate_condition_version(trace["condition"], trace["framework_version"])
+    validate_agent_version(trace["agent"], trace["framework_version"])
     validate_case(case)
     if trace["case_id"] != digest(case):
         raise ValueError("Trace/case fingerprint mismatch")

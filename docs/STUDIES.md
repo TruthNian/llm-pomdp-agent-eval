@@ -1,4 +1,4 @@
-# Preregistered reminder studies — framework 2.2
+# Preregistered reminder studies — framework 2.2 and later
 
 The first P2 experiment asks whether a **specific reminder to reserve final verification cost** changes accepted completion relative to an equal-word neutral reminder. It does not identify training causes, an intrinsic autonomy trait, or a unique internal reasoning mechanism.
 
@@ -89,3 +89,5 @@ Do not automatically escalate a ceiling pilot into hundreds of calls, switch the
 ## Compatibility
 
 2.0 and 2.1 conditions and traces remain readable. The two new conditions are valid only from framework 2.2; relabeling them as an older experiment is rejected. Existing studies remain frozen. `prepare-study` embeds the versioned plan in the same collection format rather than changing the environment generator or adding another persistence system.
+
+Framework 2.3 accepts existing 2.2 plans for replay and requires 2.3 plans for new preparation. The reminder texts, generator and primary analysis are unchanged. The new `responses` adapter and optional HTTP header configuration cannot be relabeled as a pre-2.3 experiment. Changing the action channel is a harness change: it requires fresh collection and cannot repair or replace the earlier pilot's failed episodes.
