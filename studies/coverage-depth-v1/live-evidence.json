@@ -1,0 +1,472 @@
+{
+  "framework_version": "2.6.0",
+  "generator_version": "dependency-cover-depth/1",
+  "run_git_revision": "2715f1330456f439c31d71f00f8867120a813635",
+  "working_tree_dirty_at_prepare": false,
+  "source_sha256": {
+    "__init__.py": "39a39bd0b8cb55832ffefe3a92d0c3bc4dcd7a7050c9237878a9fa8fe34964de",
+    "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "agents.py": "69dd472fc074bc48592ebe93d78a5e223ecb343556db46bad23ae9f79f7f98ca",
+    "cli.py": "38ff4cad67a57d9d6304867f0801898259b316d6edba3f0f3351cdc5c306399c",
+    "collection.py": "8a025a2e8b51e5ce25234daf3b848e730cbf291648b6fdab48c39cd74d36460a",
+    "coverage.py": "961fdbf6b82ef8fb313a26babfa4f92d9973049066a6212affdf1dc9cae9e5ea",
+    "discovery.py": "5d4d1e82d3297915413bee3f6c7dd8f757e2b6c033f56e1067de14ea4b64a62e",
+    "discovery_controls.py": "6e04efa6315c360e3590d8befcae6fdbe78b760a656f62e6b885fa685df42cfb",
+    "environment.py": "36e54dab9298e89cb38aec9f9d196ad6d18f6bd482f92dfed2b744907cf4b3f4",
+    "evaluation.py": "677fc23405db830c2d09754b6ecc8f008ce92920d1a9f1b7edfd1499b910182d",
+    "generator.py": "5927978a301c50c703cc3450b03e0774abf803122386744cb5dcab434d6f9d69",
+    "interventions.py": "a111d6dc5cfbba6e8ac0bab1d1f026b906683f28a487183742f7469e8fb89dd0",
+    "model_io.py": "1494e3a03f422ef102a89f333c6969c9d5e2a77cf7d82253cd1492a9940ee70d",
+    "planning.py": "4a136bcd587e069b716f63cc1c9f1607da6d3f966a5d4f3e7ea8ed57695fcb93",
+    "reporting.py": "1f5815087e25d4726f3719c7427de5e0ad76ded74b43f42a57a0e4633caca35a",
+    "storage.py": "463c36e711458a1e8e401d9d5540ea5dcee5f262cbb8e201217e6f5f20934c84",
+    "studies.py": "42785fbf96a8caccd07c2dca2e3ec2197251431a26830d77f046f379f46f02ee",
+    "worlds.py": "d706035215bb89f0032e5382d8edf8e6a1d9be567502f6ae27495aad013f59e1"
+  },
+  "source_matches_export_checkout": true,
+  "expected_episodes": 4,
+  "retained_episodes": 4,
+  "manifest_sha256": "cbcca5a3bd7e93622f96560170399458847b23098470666b87d8eae32bc1d893",
+  "suite_sha256": "4515dc4475c5dba01c944e8772fc5f7066e20d8b667cdd4679b87614e5492f2c",
+  "outcomes": [
+    {
+      "case_id": "54f91bbfe5848af6d7bca86e52053c7959f041dafa2cf870e2c2b875819ac037",
+      "public_development_seed": 0,
+      "scale": "depth24",
+      "condition": "open",
+      "agent": {
+        "name": "gpt-5.6-sol",
+        "kind": "responses",
+        "model": "gpt-5.6-sol",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "NATIVE_KEY",
+        "headers_env": "NATIVE_HEADERS",
+        "timeout_seconds": 600,
+        "max_response_bytes": 16000000,
+        "options": {
+          "reasoning_effort": "high"
+        }
+      },
+      "grade": {
+        "success": false,
+        "termination": "adapter_error",
+        "cost": 288,
+        "budget": 625,
+        "steps": 1,
+        "verified_current_state": false,
+        "goals_completed": 0,
+        "goals_total": 96,
+        "inspection_cost": 288,
+        "invalid_actions": 0,
+        "blocked_actions": 0,
+        "work_spent": 0,
+        "redundant_probes": 0,
+        "failed_verifications": 0,
+        "external_changes": 0
+      },
+      "elapsed_seconds": 603.146478,
+      "sanitized_error": "Endpoint request deadline exceeded",
+      "trace_sha256": "76cc4ef5c8ac82ddc706b3917094a3d6f743b73f2e5223c6cc1e3999c1b64621",
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "189b09dae88e4d39775372402cdf36aed01e6f31855b693a275afaa1b6b9b581",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "3815d5891c070a55f79779825b0d58b6798938a996aef470751d17de82d56561",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "timeout"
+        }
+      ],
+      "usage_complete": false,
+      "reported_usage": {
+        "requests": 2,
+        "requests_with_usage": 1,
+        "input_tokens": 2779,
+        "output_tokens": 73,
+        "reasoning_tokens": 58,
+        "requests_with_reasoning_usage": 1
+      },
+      "total_input_tokens": null,
+      "total_output_tokens": null
+    },
+    {
+      "case_id": "54f91bbfe5848af6d7bca86e52053c7959f041dafa2cf870e2c2b875819ac037",
+      "public_development_seed": 0,
+      "scale": "depth24",
+      "condition": "solver_assisted",
+      "agent": {
+        "name": "gpt-5.6-sol",
+        "kind": "responses",
+        "model": "gpt-5.6-sol",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "NATIVE_KEY",
+        "headers_env": "NATIVE_HEADERS",
+        "timeout_seconds": 600,
+        "max_response_bytes": 16000000,
+        "options": {
+          "reasoning_effort": "high"
+        }
+      },
+      "grade": {
+        "success": true,
+        "termination": "finished",
+        "cost": 625,
+        "budget": 625,
+        "steps": 9,
+        "verified_current_state": true,
+        "goals_completed": 96,
+        "goals_total": 96,
+        "inspection_cost": 576,
+        "invalid_actions": 0,
+        "blocked_actions": 0,
+        "work_spent": 47,
+        "redundant_probes": 0,
+        "failed_verifications": 0,
+        "external_changes": 1,
+        "solver_calls": 2,
+        "solver_search_states": 49441,
+        "solver_limit_failures": 0
+      },
+      "elapsed_seconds": 43.971286,
+      "sanitized_error": null,
+      "trace_sha256": "b33dd37807e7efb8fcd8ce38bdb70015a32a985df91876ea1773c798a01b6708",
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "3bf77148cd29759d0d918dec275c2132a1ba118831fef78fc9d640ada6b713ad",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "cc1587bada14c106bbcc37eb22eb561bcb630d1d17d9d4de900de47bd4bd88e2",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "26305ec47d46c4b147be5237894a3b50f4cff77dce141fe41a15f66e77e753fe",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "a382815734afb36f23235b3791623107d7fc1fd3254a9cc38818cff787caa4d8",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "1ba2a11f59794ac19cc7e20cc1ca7dba66e5ac6ab486468dde2564e8c00c1999",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "f7ee20b69d3c5f4bf294d1932dafccc13a9ca21657a324d9b476c1e5cc5c2e57",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "09e87b5619ea06b4e5ac40d51953ca4735f3f19093cea832078555b322f64e7a",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "493fe80c48e95a2e44910ad9cf048da057378ce1353255433b364853e45176c2",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "418386ccba1665bc654d0f25976290a14120e50683ba619a26fb19d414d7c195",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        }
+      ],
+      "usage_complete": true,
+      "reported_usage": {
+        "requests": 9,
+        "requests_with_usage": 9,
+        "input_tokens": 405648,
+        "output_tokens": 761,
+        "reasoning_tokens": 415,
+        "requests_with_reasoning_usage": 9
+      },
+      "total_input_tokens": 405648,
+      "total_output_tokens": 761
+    },
+    {
+      "case_id": "54f91bbfe5848af6d7bca86e52053c7959f041dafa2cf870e2c2b875819ac037",
+      "public_development_seed": 0,
+      "scale": "depth24",
+      "condition": "open",
+      "agent": {
+        "name": "custom/z-ai/glm-5.3",
+        "kind": "responses",
+        "model": "custom/z-ai/glm-5.3",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "ROUTER_KEY",
+        "headers_env": "ROUTER_HEADERS",
+        "timeout_seconds": 600,
+        "max_response_bytes": 16000000,
+        "options": {
+          "reasoning_effort": "high"
+        }
+      },
+      "grade": {
+        "success": false,
+        "termination": "adapter_error",
+        "cost": 288,
+        "budget": 625,
+        "steps": 1,
+        "verified_current_state": false,
+        "goals_completed": 0,
+        "goals_total": 96,
+        "inspection_cost": 288,
+        "invalid_actions": 0,
+        "blocked_actions": 0,
+        "work_spent": 0,
+        "redundant_probes": 0,
+        "failed_verifications": 0,
+        "external_changes": 0
+      },
+      "elapsed_seconds": 602.00885,
+      "sanitized_error": "Endpoint request deadline exceeded",
+      "trace_sha256": "98d0ace6808276fac8430ed43220a84c6f44473e69f6db95e1938b0bd0aaaf04",
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "f13debb128a9f6aa60b2be4ae567379c5fd8be498f39ec1453d2d6174c5b0fb7",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "67d0f8c44f6c58e70d15c193ce7d9b5b5f932eaa667acf0877c08d4d8dddcd2a",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "timeout"
+        }
+      ],
+      "usage_complete": false,
+      "reported_usage": {
+        "requests": 2,
+        "requests_with_usage": 1,
+        "input_tokens": 3109,
+        "output_tokens": 19,
+        "reasoning_tokens": 6,
+        "requests_with_reasoning_usage": 1
+      },
+      "total_input_tokens": null,
+      "total_output_tokens": null
+    },
+    {
+      "case_id": "54f91bbfe5848af6d7bca86e52053c7959f041dafa2cf870e2c2b875819ac037",
+      "public_development_seed": 0,
+      "scale": "depth24",
+      "condition": "solver_assisted",
+      "agent": {
+        "name": "custom/z-ai/glm-5.3",
+        "kind": "responses",
+        "model": "custom/z-ai/glm-5.3",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "ROUTER_KEY",
+        "headers_env": "ROUTER_HEADERS",
+        "timeout_seconds": 600,
+        "max_response_bytes": 16000000,
+        "options": {
+          "reasoning_effort": "high"
+        }
+      },
+      "grade": {
+        "success": true,
+        "termination": "finished",
+        "cost": 625,
+        "budget": 625,
+        "steps": 9,
+        "verified_current_state": true,
+        "goals_completed": 96,
+        "goals_total": 96,
+        "inspection_cost": 576,
+        "invalid_actions": 0,
+        "blocked_actions": 0,
+        "work_spent": 47,
+        "redundant_probes": 0,
+        "failed_verifications": 0,
+        "external_changes": 1,
+        "solver_calls": 2,
+        "solver_search_states": 49441,
+        "solver_limit_failures": 0
+      },
+      "elapsed_seconds": 144.021659,
+      "sanitized_error": null,
+      "trace_sha256": "8a09d58dddba68d8e8205a05963b24819aeef17b2ab3033da9794b420feca3d3",
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "dbd105487df5517f49d49b9a07207249163c65679bb382a291192fdc21d77424",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "ffc63e1cfca8ea77ced75c128de300b300e65fc3b2540b42e770dad4fbf1ee06",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "a9213be8eda99599e1ff1420cabc17318f38f867829bf0dd946368bfc9e933ca",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "d3d6ac41d9189e094accc7cfff525cdbf58c5752e522720f28f03216ae58b821",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "e9cd322e3ec4473b20f6885abf290ca4ab3b8b3328533ac1f8d640285a04cdd5",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "8c0ee798cc48b55bf4bcd5b9028a54a913a0b01cb6efefa3ef2ef5552def2d4e",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "04d49c6992229701727f777c5da0cba5af2c8e1130c0da14a83946905093f842",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "ce0ec6f9509269497a3bafb343147fdfd2febb1f475d889f53f4ad794f4f3763",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "9387372d9a070c7a20fc5bbb4e36b2e7dc3f09bbf5ca763e063512b538e71e30",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        }
+      ],
+      "usage_complete": true,
+      "reported_usage": {
+        "requests": 9,
+        "requests_with_usage": 9,
+        "input_tokens": 468256,
+        "output_tokens": 10354,
+        "reasoning_tokens": 9951,
+        "requests_with_reasoning_usage": 9
+      },
+      "total_input_tokens": 468256,
+      "total_output_tokens": 10354
+    }
+  ],
+  "plan_binding": {
+    "plan_sha256": "bfc81c54b4827ab08cb9650290a27352b02ddfe79c05a83f6886fdf445bbf0fe",
+    "manifest_sha256": "cbcca5a3bd7e93622f96560170399458847b23098470666b87d8eae32bc1d893"
+  },
+  "launcher_check": {
+    "settings_and_auth_bytes_unchanged": true
+  }
+}

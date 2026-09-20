@@ -238,8 +238,10 @@ counts, not elapsed time or billing.
 
 `cover_solver` is a deliberately simple positive control that consumes the
 available action; it performs no independent search. Its success already shows
-that this tool-equipped workflow admits a fixed policy. Use the
-[four-attempt public pilot](../studies/coverage-depth-v1/README.md) to inspect
-strong-model configurations, not to infer broad agent difficulty. The next
+that this tool-equipped workflow admits a fixed policy. The
+[completed four-attempt public pilot](../studies/coverage-depth-v1/README.md)
+retains two open request-deadline failures and two assisted successes; all four
+replay. One public case and censored open capability do not establish a ranking,
+causal rescue or broad agent difficulty. The next
 durable construct must survive useful-tool baselines without depending solely
 on unaided combinatorial work. Remove unsupported breadth claims when it does not.

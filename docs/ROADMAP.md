@@ -173,14 +173,26 @@ The [four-attempt plan](../studies/coverage-depth-v1/README.md) declares direct 
 assisted strong-model configurations before requests, and reserves two untuned
 parameter combinations. They are not independent task families.
 
-**Next gate:** use the complete pilot to decide whether to retire broad difficulty
-claims for this tool-equipped structure. If the workflow remains a fixed
-probe/solve/build sequence, retain it as an auditable search/tool-use control and
-prototype an information/action structure where tool use still leaves consequential
-decisions. Require a public-information witness and rescue ablations before more
-model calls. Never increase catalogue size solely to exhaust model or solver limits.
-Private discrimination and real-work gates remain open. Preserve the third
-candidate's full distribution for a separate reference/budget experiment.
+**P3.3b public pilot completed:** all four attempts replay; both open next-action
+requests after probing hit their 600-second deadline, while both assisted
+configurations complete with the fixed 9-action/2-call sequence. Keep the failed
+deliveries and censored capability evidence. Twenty of 22 requests provide usage.
+This does not pass a model-discrimination gate or identify a causal rescue.
+
+**P3.3c next, in order:**
+
+1. Test losslessly reconstructable public history to remove repeated observation/
+   catalogue payloads. Assisted input totals were 405,648 and 468,256 tokens;
+   compression savings and behavioral equivalence have not yet been measured.
+   Preserve old encodings, replay and source bindings; freeze any new model check.
+2. Retain coverage as an auditable search/tool-use control. Prototype a constrained
+   information-acquisition problem where useful solvers still leave consequential
+   choices. Current all-row probing and announced changes admit a fixed workflow.
+3. Require a public-information witness, competent tool-equipped baselines and
+   rescue ablations before model calls. Do not raise catalogue size or deadlines
+   merely to force an apparent ranking. Reserved parameter combinations are not
+   mandatory future expansions; private discrimination and real-work gates remain
+   open. Preserve the third candidate's distribution for a separate reference study.
 
 ## P4 — Test whether the benchmark predicts real outcomes
 

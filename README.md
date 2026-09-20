@@ -8,12 +8,12 @@ An open framework for evaluating how agents **discover information, make decisio
 
 The unit of evaluation is an interaction trajectory. Actions reveal evidence, change the world, and consume future options. Successful completion must correspond to an accepted environment state.
 
-**Version 2.5 adds a structural difficulty ladder and selective recovery.** Agents discover overlapping operations, plan under finite work allowances, and rebuild only invalidated goals. Four scales reach 48 goals and 96 alternatives. Exact public-information controls distinguish global planning from competent local heuristics; [strong-model calibration](studies/coverage-calibration-v1/README.md) is separate from this implementation evidence. Real-work validity remains unproven; the original 72-run comparison is a [historical study](studies/2026-gpt56-glm53/README.md).
+**Version 2.6 adds experimental depth profiles and an explicit solver ablation.** Agents discover overlapping operations, plan under finite work allowances, and rebuild invalidated goals. Four earlier scales are preserved; two experimental profiles reach 96 goals and 288 alternatives. An optional solver action separates combination search from tool-equipped workflow. Real-work validity remains unproven; the original 72-run comparison is a [historical study](studies/2026-gpt56-glm53/README.md).
 
 High and discriminating difficulty is a [core maintenance contract](docs/DIFFICULTY.md): measure ceiling/floor effects, preserve immutable anchors, and version new scales as models improve. A larger task name or longer transcript does not establish difficulty.
 
 **Calibration finding:** in the [completed follow-up](studies/coverage-calibration-v2/README.md),
-Sol solved the current top scale on one public seed; GLM's corresponding run hit
+Sol solved the original 2.5 top scale on one public seed; GLM's corresponding run hit
 a transport-size limit. Frontier headroom remains unproven. The
 [reproducible solver screen](studies/coverage-search-v1/README.md) retains all 180
 searches and investigates deeper combinations before promoting new scales.
@@ -21,15 +21,19 @@ searches and investigates deeper combinations before promoting new scales.
 The [2.5.3 candidate qualification](studies/coverage-qualification-v1/README.md)
 retains 252 planned controls: 232 executed/replayed, 20 explicitly unavailable.
 Two deeper structures pass the offline reference and rescue checks; the third
-exhausts the reference budget on 10/12 seeds. None is yet model-calibrated.
+exhausts the reference budget on 10/12 seeds. Private-seed model discrimination remains unestablished.
 
 **2.6 exposes the useful-tool test:** the two passing structures are explicitly
 experimental depth18/depth24 profiles. An optional, limited solve action returns
 plans from revealed data while leaving execution/recovery/verification to the
 model. A fixed tool-consumer script solves all 24 qualified cases; broad
 agent-difficulty claims therefore need a stronger construct. The
-[four-attempt plan](studies/coverage-depth-v1/README.md) separates direct and
-assisted configurations; tool compute is not treated as free model reasoning.
+[completed four-attempt pilot](studies/coverage-depth-v1/README.md) records two
+open request-deadline failures and two assisted successes, both with 9 actions
+and 2 solver calls. All four replay; 22 public request hashes verify. This one
+public case does not establish cognitive inability, a causal rescue or a ranking.
+Assisted input usage is substantial; deleting repeated history data and testing
+consequential information choices are the next development gates.
 
 Development follows [explicit stages and acceptance gates](docs/ROADMAP.md): reliable collection → isolated intervention studies → new task structures → external validity → measured acceleration. Requirements are questioned, unnecessary work is removed, and the remaining workflow is simplified before it is automated. For long collections, use [`prepare`, `status` and `resume`](docs/COLLECTION.md); completed and interrupted attempts are never silently replaced.
 

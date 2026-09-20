@@ -13,6 +13,12 @@
   difficulty. Freeze a four-attempt strong-model pilot and untuned parameter
   combinations before further calibration.
 - Reuse the collector/HTTP/replay path and centralize known-version feature gates.
+- Publish all 48 registered offline controls and all four real-model attempts.
+  Both open attempts hit the 600-second request deadline after probing; both
+  assisted configurations complete with 9 actions and 2 solver calls. All four
+  replay, all 22 public request hashes verify, and 20 requests have complete usage.
+  Narrow broad difficulty claims and prioritize public-history redundancy and
+  consequential information choices; no population ranking or causal rescue is established.
 
 **Comparability:** old generators and open behavior are preserved. Experimental
 metadata is a new version, not new independent data. Solver availability changes
