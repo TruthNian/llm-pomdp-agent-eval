@@ -225,10 +225,11 @@ def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=Fals
     parsed = urllib.parse.urlsplit(endpoint)
     connection_type = http.client.HTTPSConnection if parsed.scheme == "https" else http.client.HTTPConnection
     deadline = time.monotonic() + timeout
+    deadline_fired = threading.Event()
 
     def remaining():
         value = deadline - time.monotonic()
-        if value <= 0:
+        if deadline_fired.is_set() or value <= 0:
             raise TimeoutError()
         return value
 
@@ -236,6 +237,7 @@ def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=Fals
     live_socket = [None]
 
     def expire():
+        deadline_fired.set()
         sock = live_socket[0] or connection.sock
         if sock is not None:
             try:
@@ -286,7 +288,7 @@ def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=Fals
     except TimeoutError:
         raise AdapterError("Endpoint request deadline exceeded", "timeout") from None
     except (OSError, http.client.HTTPException):
-        if time.monotonic() >= deadline:
+        if deadline_fired.is_set() or time.monotonic() >= deadline:
             raise AdapterError("Endpoint request deadline exceeded", "timeout") from None
         raise AdapterError("Endpoint transport failed", "transport_error") from None
     except (ValueError, KeyError, TypeError, AttributeError):

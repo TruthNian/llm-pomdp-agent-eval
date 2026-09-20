@@ -2,6 +2,7 @@
 from contextlib import contextmanager
 import copy
 import hashlib
+import http.client
 import json
 import os
 from pathlib import Path
@@ -463,6 +464,25 @@ class TransportTests(unittest.TestCase):
             with self.assertRaises(AdapterError) as result:
                 HttpAgent(config()).act({}, .18)
             self.assertEqual(result.exception.code, "timeout")
+
+    def test_watchdog_shutdown_is_timeout_even_before_next_clock_tick(self):
+        from pomdp_bench.model_io import exchange
+        for fire_watchdog in (True, False):
+            with self.subTest(fire_watchdog=fire_watchdog), \
+                    patch("pomdp_bench.model_io.threading.Timer") as timer, \
+                    patch("pomdp_bench.model_io.time.monotonic", return_value=10.0), \
+                    patch("pomdp_bench.model_io.http.client.HTTPConnection") as connection:
+                def disconnect():
+                    if fire_watchdog:
+                        timer.call_args.args[1]()
+                    raise http.client.RemoteDisconnected()
+                connection.return_value.getresponse.side_effect = disconnect
+                with self.assertRaises(AdapterError) as result:
+                    exchange("http://127.0.0.1/responses", "fixture-key", b"{}", .18)
+                self.assertEqual(result.exception.code, "timeout" if fire_watchdog else "transport_error")
+                if fire_watchdog:
+                    connection.return_value.sock.shutdown.assert_called_once()
+                connection.return_value.close.assert_called_once()
 
     def test_response_size_limit_counts_stream_bytes(self):
         with endpoint(lambda h, _: send(h, b":" + b"x" * MAX_RESPONSE_BYTES + b"\n\n", "text/event-stream")):

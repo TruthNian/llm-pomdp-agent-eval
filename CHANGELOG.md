@@ -2,6 +2,10 @@
 
 ## 2.9.2
 
+- Attribute watchdog socket shutdown to deadline expiry even if the next clock
+  read precedes the computed deadline; keep genuine disconnects distinct. A
+  deterministic regression covers the Windows timing race found in publication CI.
+
 - Rejected `verify`/`finish` actions now advance scheduled arrivals like every
   other rejected action. The earlier stable-boundary exception incorrectly
   allowed malformed final actions to skip incoming orders.
