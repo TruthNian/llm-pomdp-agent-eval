@@ -1,5 +1,6 @@
 """Reproduce the three pinned fixtures from authenticated Git clones; no imports."""
 import difflib
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -17,6 +18,10 @@ TASKS = {
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--out", type=Path, required=True, help="Fresh directory; never overwrite released fixtures")
+    args = parser.parse_args()
+    args.out.mkdir(parents=True, exist_ok=False)
     for task, (local, repo, fix, issue, pr, extra) in TASKS.items():
         checkout = ROOT / "artifacts" / (local + "-upstream")
         def git(*args):
@@ -27,6 +32,11 @@ def main():
         selected += [n for n in names if "/" not in n and n.startswith(("LICENSE", "COPYING", "README", "pyproject.toml"))]
         selected += [n for n in extra if n in names]
         files = {n: git("show", base + ":" + n).decode("utf-8") for n in sorted(set(selected))}
+        generated = {}
+        if task == "urllib3_read":
+            # Upstream's VCS build backend normally creates this untracked file.
+            generated["src/urllib3/_version.py"] = '__version__ = "0+benchmark"\n'
+            files.update(generated)
         changed = git("diff", "--name-only", base, fix, "--", "src/").decode().splitlines()
         actions = []
         for name in changed:
@@ -49,9 +59,11 @@ def main():
                       "fix_pull_request": f"https://github.com/{repo}/pull/{pr}",
                       "base_commit": base, "fix_commit": fix,
                       "selection": "Complete package Python source/type stubs, root licenses/metadata, selected pre-fix docs/tests; no future fix in workspace",
-                      "file_sha256": {n: hashlib.sha256(t.encode()).hexdigest() for n, t in files.items()},
+                      "file_sha256": {n: hashlib.sha256(t.encode()).hexdigest() for n, t in files.items() if n not in generated},
+                      "generated_files": generated,
+                      "generated_file_sha256": {n: hashlib.sha256(t.encode()).hexdigest() for n, t in generated.items()},
                       "upstream_patch_sha256": hashlib.sha256(patch).hexdigest()}
-        destination = ROOT / "pomdp_bench/repair_data" / task
+        destination = args.out / task
         destination.mkdir(exist_ok=False)
         for name, data in (("base.json", files), ("provenance.json", provenance), ("upstream-actions.json", actions)):
             (destination / name).write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")

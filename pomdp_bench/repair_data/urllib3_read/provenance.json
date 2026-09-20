@@ -48,5 +48,11 @@
     "src/urllib3/util/wait.py": "fe987c22b511deca8faa2d0ea29420254947e30ce419e3390a2c80ed7186b662",
     "test/test_response.py": "8de296c5d9ebed6b63c0901fadaae409daf0a44118769811b3df1ac2fa8d0dc0"
   },
-  "upstream_patch_sha256": "d72fa1838f00bdedfee27875ea8505848732b60f889c0c31fe9d0b79b6b23520"
+  "upstream_patch_sha256": "d72fa1838f00bdedfee27875ea8505848732b60f889c0c31fe9d0b79b6b23520",
+  "generated_files": {
+    "src/urllib3/_version.py": "__version__ = \"0+benchmark\"\n"
+  },
+  "generated_file_sha256": {
+    "src/urllib3/_version.py": "9c55022f70ac5c8658cde471eceef6069c33ece2884bfb35e692297ef0277cc5"
+  }
 }

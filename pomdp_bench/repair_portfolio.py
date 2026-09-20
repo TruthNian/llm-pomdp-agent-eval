@@ -38,7 +38,8 @@ def make_case(image, task):
     data = ROOT / task
     files = json.loads((data / "base.json").read_text(encoding="utf-8"))
     provenance = json.loads((data / "provenance.json").read_text(encoding="utf-8"))
-    if {n: hashlib.sha256(t.encode()).hexdigest() for n, t in files.items()} != provenance["file_sha256"]:
+    expected = {**provenance["file_sha256"], **provenance.get("generated_file_sha256", {})}
+    if {n: hashlib.sha256(t.encode()).hexdigest() for n, t in files.items()} != expected:
         raise ValueError("Pinned upstream source changed")
     return {"generator_version": VERSION, "family": "repository_repair", "profile": task,
             "domain": "python_repository", "source_task_id": provenance["issue"],

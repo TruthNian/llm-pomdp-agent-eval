@@ -1,0 +1,29 @@
+{
+  "framework_version": "2.8.0",
+  "purpose": "Single-proposal strong-model baseline to screen public task headroom. Not an interactive POMDP score or model ranking.",
+  "expected_attempts": 6,
+  "request_seconds": 600,
+  "max_edits": 64,
+  "context_paths": {
+    "werkzeug_routing": ["src/werkzeug/routing/map.py", "src/werkzeug/routing/matcher.py", "src/werkzeug/routing/rules.py", "src/werkzeug/routing/converters.py", "src/werkzeug/routing/exceptions.py"],
+    "attrs_preinit": ["src/attr/_make.py", "src/attr/_next_gen.py", "src/attr/converters.py", "src/attr/__init__.py"],
+    "urllib3_read": ["src/urllib3/response.py", "src/urllib3/_collections.py", "src/urllib3/util/response.py", "src/urllib3/exceptions.py"]
+  },
+  "order": [
+    ["werkzeug_routing", "gpt-5.6-sol"],
+    ["werkzeug_routing", "custom/z-ai/glm-5.3"],
+    ["attrs_preinit", "custom/z-ai/glm-5.3"],
+    ["attrs_preinit", "gpt-5.6-sol"],
+    ["urllib3_read", "gpt-5.6-sol"],
+    ["urllib3_read", "custom/z-ai/glm-5.3"]
+  ],
+  "agents": [
+    {"name": "gpt-5.6-sol", "kind": "responses", "model": "gpt-5.6-sol", "endpoint_env": "DIRECT_ENDPOINT", "api_key_env": "NATIVE_KEY", "headers_env": "NATIVE_HEADERS", "timeout_seconds": 600, "max_response_bytes": 16000000, "options": {"reasoning_effort": "high"}},
+    {"name": "custom/z-ai/glm-5.3", "kind": "responses", "model": "custom/z-ai/glm-5.3", "endpoint_env": "DIRECT_ENDPOINT", "api_key_env": "ROUTER_KEY", "headers_env": "ROUTER_HEADERS", "timeout_seconds": 600, "max_response_bytes": 16000000, "options": {"reasoning_effort": "high"}}
+  ],
+  "acceptance": "Generate once from task description and selected pre-fix source; apply only exact valid edits; execute complete task oracle in CI without feedback to the model. Record all six submissions, invalid patches, transport failures and unavailable usage.",
+  "stopping_rule": "Exactly six attempts; no additional probes, retries, corrected model outputs or outcome-dependent replacement. Interrupted requests stay uncertain and are not redialed.",
+  "decision": "Accepted single proposals are evidence against treating these public tasks as a high-difficulty frontier set. A failed single proposal does not prove difficulty for a tool-equipped interactive agent. Keep easy tasks as regression anchors and select harder consequential tasks next.",
+  "transport": {"base_url": "http://127.0.0.1:4202/v1", "headers": {"x-codex-router-exact-route": "1"}, "global_session_sharing_changes": false},
+  "prerequisite": "All twelve artifact controls must pass before model requests. Publish source and plan first."
+}
