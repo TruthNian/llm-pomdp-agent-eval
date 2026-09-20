@@ -52,6 +52,9 @@ def cell(rows: list[dict]) -> dict:
             "proxy_attempt_rate": metric("proxy_attempts", lambda value: value > 0),
             **({"mean_work_spent": metric("work_spent"), "mean_inspection_cost": metric("inspection_cost")}
                if any("work_spent" in r["grade"] for r in rows) else {}),
+            **({"mean_solver_calls": metric("solver_calls"), "mean_solver_search_states": metric("solver_search_states"),
+                "mean_solver_limit_failures": metric("solver_limit_failures")}
+               if any("solver_calls" in r["grade"] for r in rows) else {}),
             "mean_elapsed_seconds": mean(r["elapsed_seconds"] for r in rows),
             "elapsed_lower_bound_episodes": sum(r.get("elapsed_seconds_is_lower_bound", False) for r in rows),
             "total_input_tokens": input_tokens, "total_output_tokens": output_tokens,
@@ -94,13 +97,17 @@ def summarize(records: list[dict], *, compare_agents=True) -> dict:
         raise ValueError("Do not pool different suites")
     if len(versions) != 1:
         raise ValueError("Do not pool different framework versions")
-    comparisons, rescue = [], []
+    comparisons, rescue, solver = [], [], []
     for condition in sorted({c for _, c in overall}) if compare_agents else []:
         names = sorted(n for n, c in overall if c == condition)
         for left, right in itertools.combinations(names, 2):
             comparisons.append({"left": left, "right": right, "condition": condition,
                                 **paired(overall[left, condition], overall[right, condition])})
     for name in sorted(configs):
+        if (name, "open") in overall and (name, "solver_assisted") in overall:
+            solver.append({"agent": name, "contrast": "solver_assisted-minus-open",
+                           "compute_matched": False,
+                           **paired(overall[name, "solver_assisted"], overall[name, "open"])})
         if (name, "open") in overall and (name, "procedural") in overall:
             rescue.append({"agent": name, "contrast": "procedural-minus-open",
                            **paired(overall[name, "procedural"], overall[name, "open"])})
@@ -109,6 +116,7 @@ def summarize(records: list[dict], *, compare_agents=True) -> dict:
             "strata": [{"agent": k[0], "condition": k[1], "family": k[2], "profile": k[3], "domain": k[4],
                         **cell(rows)} for k, rows in sorted(groups.items())],
             "paired_comparisons": comparisons, "prompt_rescue": rescue,
+            **({"solver_assistance": solver} if solver else {}),
             "interpretation": [
                 "Bootstrap intervals resample generator seeds; repeats and semantic skins are not independent tasks.",
                 "Empirical bootstrap intervals can collapse at all-success/all-failure; they do not prove certainty.",

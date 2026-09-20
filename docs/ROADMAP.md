@@ -164,12 +164,23 @@ structure does not: 10 initial searches exceed the one-million-state limit.
 The optimized exact-capacity path preserves all 180 earlier outcomes, state
 counts and selected plans while removing repeated row scans.
 
-**P3.3b next:** freeze an experimental generator version for the two passing
-structures and connect it to the same collector, keeping released anchors.
-Declare direct-model and solver-assisted tracks before strong-model calibration
-and reserve unseen structures before tuning. Passing offline controls is not
-model-discrimination evidence. Preserve the third candidate's full distribution
-for a separately declared reference/budget experiment; never remove its failed seeds.
+**P3.3b implemented in 2.6:** freeze the two passing streams as experimental
+`dependency-cover-depth/1` and reuse the same collector. Add a model-chosen solve
+action with public-data-only inputs, finite calls and deterministic search effort.
+Old anchors remain unchanged. A fixed tool-consumer script completes all 24
+qualified cases, exposing how much this structure depends on unaided search.
+The [four-attempt plan](../studies/coverage-depth-v1/README.md) declares direct and
+assisted strong-model configurations before requests, and reserves two untuned
+parameter combinations. They are not independent task families.
+
+**Next gate:** use the complete pilot to decide whether to retire broad difficulty
+claims for this tool-equipped structure. If the workflow remains a fixed
+probe/solve/build sequence, retain it as an auditable search/tool-use control and
+prototype an information/action structure where tool use still leaves consequential
+decisions. Require a public-information witness and rescue ablations before more
+model calls. Never increase catalogue size solely to exhaust model or solver limits.
+Private discrimination and real-work gates remain open. Preserve the third
+candidate's full distribution for a separate reference/budget experiment.
 
 ## P4 — Test whether the benchmark predicts real outcomes
 

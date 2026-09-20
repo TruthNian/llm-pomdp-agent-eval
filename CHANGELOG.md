@@ -1,5 +1,23 @@
 # Changelog
 
+## 2.6.0 — 2026-09-20
+
+- Register only two qualified experimental depth profiles under
+  `dependency-cover-depth/1`, preserving their original graph streams and all
+  four released anchors. The failed third candidate remains unregistered.
+- Add model-chosen, quota-limited `solve` under `solver_assisted`, using revealed
+  information only. Plans do not execute work or validate completion. Replay
+  includes deterministic search results and effort; search exhaustion is unknown.
+- Keep conditions and compute accounting separate. A fixed tool-consumer control
+  solves the qualified public cases; this narrows claims about general agent
+  difficulty. Freeze a four-attempt strong-model pilot and untuned parameter
+  combinations before further calibration.
+- Reuse the collector/HTTP/replay path and centralize known-version feature gates.
+
+**Comparability:** old generators and open behavior are preserved. Experimental
+metadata is a new version, not new independent data. Solver availability changes
+the action space and compute budget. Do not pool conditions or previous pilots.
+
 ## 2.5.3 — 2026-09-20
 
 - Simplify exact-capacity reference search to precomputed goal/row conflict

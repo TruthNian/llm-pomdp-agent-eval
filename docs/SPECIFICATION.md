@@ -1,4 +1,4 @@
-# Diagnostic benchmark specification — frameworks 2.0–2.5
+# Diagnostic benchmark specification — frameworks 2.0–2.6
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
 
@@ -6,6 +6,12 @@ Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 
 [planning/recovery and difficulty contract](DIFFICULTY.md). The rules below still
 describe diagnostics only. The new family reuses collection/replay, uses `open`,
 and reports nonapplicable diagnostic metrics as null. Suites do not mix generators.
+
+2.6 registers experimental `dependency-cover-depth/1` and adds an explicit
+`solver_assisted` condition for coverage only, specified in the same difficulty
+contract. Diagnostic conditions and semantics below remain unchanged. Old
+coverage anchors and the open contract are preserved; the new tool condition
+has separately versioned actions, quota and public search-effort observations.
 
 2.1 preserves the environment and prompt semantics below. Its additional collection termination and evidence files are specified in the [collection contract](COLLECTION.md); historical 2.0 traces remain replayable, but cannot be resumed or silently pooled with 2.1.
 

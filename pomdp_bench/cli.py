@@ -7,13 +7,13 @@ from pathlib import Path
 
 from .agents import BUILTINS
 from .collection import prepare_suite, resume_suite, run_status, run_suite, save_summary
-from .environment import CONDITIONS
+from .worlds import CONDITIONS
 from .evaluation import load_suite
 from .generator import DOMAINS, FAMILIES, PROFILES, suite
 from .reporting import validate_run
 from .storage import collection_lock, read_json, write_json
 from .studies import prepare_study, validate_plan
-from .coverage import SCALES, suite as coverage_suite
+from .coverage import SCALES, DEPTH_SCALES, suite as coverage_suite
 
 
 def show_study(report):
@@ -37,7 +37,8 @@ def main(argv=None) -> int:
     coverage = commands.add_parser("generate-cover", help="Versioned planning scales; PRIVATE cases, no model calls")
     coverage.add_argument("--out", type=Path, required=True)
     coverage.add_argument("--count", type=int, default=12)
-    coverage.add_argument("--scales", nargs="+", choices=SCALES, default=["hard"])
+    coverage.add_argument("--scales", nargs="+", choices=(*SCALES, *DEPTH_SCALES))
+    coverage.add_argument("--experimental", action="store_true", help="Use qualified depth profiles; model difficulty remains uncalibrated")
     coverage_seed = coverage.add_mutually_exclusive_group()
     coverage_seed.add_argument("--seed", type=int, default=0, help="Public development seed start")
     coverage_seed.add_argument("--fresh", action="store_true")
@@ -75,7 +76,7 @@ def main(argv=None) -> int:
             if args.count < 1 or args.out.exists():
                 raise ValueError("Use count >= 1 and an unused output file")
             seeds = [secrets.randbits(128) for _ in range(args.count)] if args.fresh else list(range(args.seed, args.seed + args.count))
-            data = (coverage_suite(seeds, args.scales, recovery=not args.stable, slack=args.slack)
+            data = (coverage_suite(seeds, args.scales, recovery=not args.stable, slack=args.slack, experimental=args.experimental)
                     if args.command == "generate-cover" else suite(seeds, args.families, args.profiles, args.domains))
             write_json(args.out, data)
             print(f"Generated {len(data['cases'])} cases. Keep this file private during evaluation.")

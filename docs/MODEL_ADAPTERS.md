@@ -2,6 +2,12 @@
 
 Version 2.4 uses one HTTP transport for `chat` and `responses`. Requesting one JSON action does not require launching a native agent runtime. Both formats explicitly send `tools: []` and `tool_choice: none`; the evaluator has no external-tool dispatcher, agent subprocess or conversation-ID chain. This is a client-side contract, not attestation of a proxy or provider's hidden behavior.
 
+From 2.6, coverage's optional `solver_assisted` condition exposes
+`{"command":"solve"}` as an [environment action](DIFFICULTY.md).
+It still uses the ordinary JSON response channel and empty provider tools.
+Its declared public-data search consumes additional local compute, recorded
+separately from model tokens; open and assisted conditions are not compute-matched.
+
 ## Offline check
 
 ```bash

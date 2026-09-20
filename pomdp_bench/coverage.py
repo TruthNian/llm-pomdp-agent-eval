@@ -6,21 +6,43 @@ import math
 import random
 from functools import lru_cache
 
-from . import __version__
+from . import __version__, version_at_least
 from .generator import digest, keyed_seed
 
 VERSION = "dependency-cover/1"
+DEPTH_VERSION = "dependency-cover-depth/1"
+COVER_VERSIONS = (VERSION, DEPTH_VERSION)
 # Goals, maximum goals per operation, alternative operations. Labels are scales,
 # not empirically established frontier-model difficulty rankings.
 SCALES = {"sanity": (6, 2, 9), "challenge": (18, 3, 36),
           "hard": (32, 4, 64), "extreme": (48, 6, 96)}
 POLICIES = ("cover_reference", "cover_greedy", "cover_rarest", "cover_no_recovery")
+ASSISTED_POLICIES = ("cover_solver",)
+# Preserve the exact graph streams qualified offline, including their original
+# sampler labels. Renaming evaluator metadata does not create independent cases.
+DEPTH_SCALES = {"depth18": (72, 4, 216), "depth24": (96, 4, 288)}
+SOLVER_NODE_LIMIT = 1_000_000
+
+
+class SearchLimit(RuntimeError):
+    def __init__(self, nodes):
+        super().__init__("Public reference search limit reached; no infeasibility claim")
+        self.nodes = nodes
 
 
 def generate(seed, profile="hard", *, recovery=True, slack=0):
     if profile not in SCALES:
         raise ValueError("Invalid coverage seed, scale or recovery flag")
     return _generate(seed, profile, SCALES[profile], VERSION, recovery=recovery, slack=slack)
+
+
+def generate_depth(seed, profile="depth18", *, recovery=True, slack=0):
+    if profile not in DEPTH_SCALES:
+        raise ValueError("Unknown experimental depth scale")
+    shape = DEPTH_SCALES[profile]
+    original = "probe-" + "-".join(map(str, shape))
+    case = _generate(seed, original, shape, "dependency-cover-exploration/0", recovery=recovery, slack=slack)
+    return {**case, "generator_version": DEPTH_VERSION, "profile": profile}
 
 
 def _generate(seed, profile, shape, version, *, recovery=True, slack=0):
@@ -64,15 +86,18 @@ def _generate(seed, profile, shape, version, *, recovery=True, slack=0):
             "budget": probes + sum(limits) + len(epochs), "max_steps": probes + sum(limits) + 12}
 
 
-def suite(seeds, profiles=("hard",), *, recovery=True, slack=0):
+def suite(seeds, profiles=None, *, recovery=True, slack=0, experimental=False):
+    profiles = (("depth18",) if experimental else ("hard",)) if profiles is None else profiles
     if not seeds or len(set(seeds)) != len(seeds) or not profiles or len(set(profiles)) != len(profiles):
         raise ValueError("Use nonempty unique seeds and scales")
-    return {"generator_version": VERSION, "cases": [generate(s, p, recovery=recovery, slack=slack)
-                                                     for s in seeds for p in profiles]}
+    generator = generate_depth if experimental else generate
+    return {"generator_version": DEPTH_VERSION if experimental else VERSION,
+            "cases": [generator(s, p, recovery=recovery, slack=slack) for s in seeds for p in profiles]}
 
 
 def validate_case(case):
-    if digest(case) != digest(generate(case["seed"], case["profile"], recovery=case["recovery"], slack=case["slack"])):
+    generator = generate_depth if case["generator_version"] == DEPTH_VERSION else generate
+    if digest(case) != digest(generator(case["seed"], case["profile"], recovery=case["recovery"], slack=case["slack"])):
         raise ValueError("Coverage case differs from its versioned generator")
 
 
@@ -92,7 +117,7 @@ def cover_plan(catalogue, missing, slots, *, node_limit=1_000_000):
         nonlocal nodes
         nodes += 1
         if nodes > node_limit:
-            raise RuntimeError("Public reference search limit reached; no infeasibility claim")
+            raise SearchLimit(nodes)
         if not left:
             return ()
         if not remaining:
@@ -143,7 +168,7 @@ def _tight_cover(rows, goal_count, width, node_limit):
             return None
         nodes += 1
         if nodes > node_limit:
-            raise RuntimeError("Public reference search limit reached; no infeasibility claim")
+            raise SearchLimit(nodes)
         if not left:
             return ()
         bits, choices, best = left, 0, len(rows) + 1
@@ -173,8 +198,10 @@ def _tight_cover(rows, goal_count, width, node_limit):
 
 class CoverageEnvironment:
     def __init__(self, case, condition="open", noise_seed=0, framework_version=__version__):
-        if condition != "open":
-            raise ValueError("Coverage supports only the open contract; diagnostic prompts do not apply")
+        if condition not in ("open", "solver_assisted"):
+            raise ValueError("Coverage supports open and solver_assisted; diagnostic prompts do not apply")
+        if condition == "solver_assisted" and not version_at_least(framework_version, "2.6.0"):
+            raise ValueError("Solver assistance requires framework 2.6")
         self.case = copy.deepcopy(case)
         self.framework_version = framework_version
         self.condition = condition
@@ -188,6 +215,9 @@ class CoverageEnvironment:
         self.last_result = {"kind": "start"}
         self.metrics = {"invalid_actions": 0, "blocked_actions": 0, "work_spent": 0,
                         "redundant_probes": 0, "failed_verifications": 0, "external_changes": 0}
+        self.solver_limit = 2 if case["recovery"] else 1
+        if condition == "solver_assisted":
+            self.metrics.update(solver_calls=0, solver_search_states=0, solver_limit_failures=0)
 
     def contract(self):
         result = {"protocol_version": 1, "family": "dependency_cover", "contract_version": VERSION,
@@ -220,10 +250,22 @@ class CoverageEnvironment:
                 "build_example": {"command": "build", "target": ["replace-with-observed-operation-ID"]},
                 "verify_example": {"command": "verify"}, "finish_example": {"command": "finish"},
                 "rule": "Return exactly one JSON object using command and, where required, target."}
+        if self.condition == "solver_assisted":
+            result["contract_version"] = "dependency-cover-actions/3"
+            result["actions"]["solve"] = (
+                "no target; suggest minimum additional work from currently revealed catalogue, uncovered goals "
+                "and remaining work only. Does not probe, build or verify. Consumes one step and one solver call, "
+                "zero action points. Calls never refill. A plan applies to the reported revision. "
+                "no_plan_in_revealed_catalogue is not global infeasibility; search_limit is unknown.")
+            result["response_format"]["solve_example"] = {"command": "solve"}
+            result["solver"] = {"calls_per_episode": self.solver_limit,
+                                "search_state_limit_per_call": SOLVER_NODE_LIMIT,
+                                "algorithm": "public-cover-search/1",
+                                "search_states": "Visited search states, including the first over-limit state on exhaustion."}
         return result
 
     def observation(self):
-        return {"epoch": self.epoch, "revision": self.revision,
+        result = {"epoch": self.epoch, "revision": self.revision,
                 "remaining": self.case["budget"] - self.spent,
                 "steps_remaining": self.case["max_steps"] - len(self.history),
                 "inspections_remaining": self.case["inspection_budget"] - self.inspections,
@@ -231,6 +273,9 @@ class CoverageEnvironment:
                 "goals": self.case["goals"][:], "covered": sorted(self.covered),
                 "operations": self.case["operations"][:], "catalogue": copy.deepcopy(self.catalogue),
                 "result": copy.deepcopy(self.last_result)}
+        if self.condition == "solver_assisted":
+            result["solver_calls_remaining"] = self.solver_limit - self.metrics["solver_calls"]
+        return result
 
     def lower_bound(self):
         missing = len(set(self.case["goals"]) - self.covered)
@@ -258,6 +303,8 @@ class CoverageEnvironment:
                 rows, cost = target, len(target)
             elif command in ("verify", "status", "finish") and set(action) == {"command"}:
                 cost = int(command == "verify")
+            elif command == "solve" and self.condition == "solver_assisted" and set(action) == {"command"}:
+                cost = 0
         if cost is None:
             self.metrics["invalid_actions"] += 1
             result = {"kind": "invalid"}
@@ -265,15 +312,30 @@ class CoverageEnvironment:
                 result["message"] = ("Use command plus target where required: probe takes a known ID or all; "
                                      "build takes a nonempty array of distinct freshly probed IDs; "
                                      "verify, status and finish take no target.")
+                if self.condition == "solver_assisted":
+                    result["message"] += " solve also takes no target."
         elif (self.spent + cost > self.case["budget"]
               or command == "probe" and self.inspections + cost > self.case["inspection_budget"]
-              or command == "build" and self.work + cost > self.case["work_limits"][self.epoch]):
+              or command == "build" and self.work + cost > self.case["work_limits"][self.epoch]
+              or command == "solve" and self.metrics["solver_calls"] >= self.solver_limit):
             self.metrics["blocked_actions"] += 1
             result = {"kind": "blocked", "message": "Resource limit; no changes applied"}
         else:
             self.spent += cost
             result = {"kind": command}
-            if command == "probe":
+            if command == "solve":
+                public = self.observation()
+                self.metrics["solver_calls"] += 1
+                try:
+                    plan, states = cover_plan(public["catalogue"], set(public["goals"]) - set(public["covered"]),
+                                              public["work_remaining"], node_limit=SOLVER_NODE_LIMIT)
+                    status = "found" if plan is not None else "no_plan_in_revealed_catalogue"
+                except SearchLimit as exc:
+                    plan, states, status = None, exc.nodes, "search_limit"
+                    self.metrics["solver_limit_failures"] += 1
+                self.metrics["solver_search_states"] += states
+                result.update(status=status, plan=plan, revision=public["revision"], search_states=states)
+            elif command == "probe":
                 self.inspections += cost
                 self.metrics["redundant_probes"] += sum(row in self.catalogue for row in rows)
                 for row in rows:
@@ -320,7 +382,7 @@ class CoverageEnvironment:
 
 
 def policy_action(kind, request):
-    if kind not in POLICIES:
+    if kind not in (*POLICIES, *ASSISTED_POLICIES):
         raise ValueError("Unknown coverage policy")
     observation, history = request["observation"], request["history"]
     if kind == "cover_no_recovery" and observation["epoch"]:
@@ -334,6 +396,13 @@ def policy_action(kind, request):
         return {"command": "probe", "target": "all"}
     if observation["work_remaining"] <= 0:
         return {"command": "finish"}
+    if kind == "cover_solver":
+        result = observation["result"]
+        if result.get("kind") == "solve":
+            if result.get("status") == "found" and result.get("revision") == observation["revision"] and result.get("plan"):
+                return {"command": "build", "target": result["plan"]}
+            return {"command": "finish"}
+        return {"command": "solve"} if observation.get("solver_calls_remaining", 0) else {"command": "finish"}
     if kind in ("cover_reference", "cover_no_recovery"):
         plan, _ = cover_plan(observation["catalogue"], missing, observation["work_remaining"])
         return {"command": "build", "target": plan} if plan else {"command": "finish"}

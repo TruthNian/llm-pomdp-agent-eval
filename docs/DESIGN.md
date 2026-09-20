@@ -94,6 +94,15 @@ competent heuristic comparisons, rescue ablations, strong-model ceiling/floor
 checks and immutable anchors before extending the ladder. Neither size nor
 scripted-control separation by itself establishes frontier headroom.
 
+Framework 2.6 makes useful-tool availability an explicit ablation. The coverage
+solver reads the same revealed rows as the model and returns a suggestion only;
+its calls and deterministic search effort are reported separately. The simple
+tool-consumer policy already succeeds across the qualified depth cases. This
+limits coverage's claim as a general agent benchmark: unaided combinatorial
+search and tool-equipped workflow are distinct constructs. A future family must
+leave consequential information/action decisions after useful computation is
+available, rather than relying on ever larger catalogues alone.
+
 Each family needs a public-information positive control and designed failures. A cosmetic-success policy must fail. A state-mutating action after acceptance must require re-verification. A generated instance must be reproducible, solvable under its declared budget, and blind to answer-bearing metadata.
 
 Fresh seeds help prevent exact-instance memorization. They do not prevent a model from learning the public generator's structure. Structural profiles, held-out generator variants, and external tasks are separate tests. A profile becomes held-out by the experimental protocol, not by its name.

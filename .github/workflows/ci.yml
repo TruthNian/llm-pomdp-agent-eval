@@ -50,5 +50,9 @@ jobs:
         run: python -m pomdp_bench run --suite artifacts/cover-suite.json --agents examples/coverage-agents.json --out artifacts/cover
       - name: Replay structural difficulty controls
         run: python -m pomdp_bench validate artifacts/cover
+      - name: Reproduce experimental depth and solver controls
+        run: python studies/coverage-depth-v1/controls.py artifacts/depth-controls
+      - name: Replay experimental solver controls
+        run: python -m pomdp_bench validate artifacts/depth-controls/solver_assisted
       - name: Verify recomputed outputs
         run: python tools/verify_release.py

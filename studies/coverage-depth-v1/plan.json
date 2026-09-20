@@ -1,0 +1,34 @@
+{
+  "framework_version": "2.6.0",
+  "generator_version": "dependency-cover-depth/1",
+  "purpose": "Public development pilot: distinguish direct combination search from workflow execution with an explicit exact solver. Not a model ranking or population difficulty study.",
+  "development_seeds": [0],
+  "scales": ["depth24"],
+  "conditions": ["open", "solver_assisted"],
+  "replicates": 1,
+  "expected_episodes": 4,
+  "wall_seconds": 1800,
+  "agents": [
+    {"name": "gpt-5.6-sol", "kind": "responses", "model": "gpt-5.6-sol", "endpoint_env": "DIRECT_ENDPOINT", "api_key_env": "NATIVE_KEY", "headers_env": "NATIVE_HEADERS", "timeout_seconds": 600, "max_response_bytes": 16000000, "options": {"reasoning_effort": "high"}},
+    {"name": "custom/z-ai/glm-5.3", "kind": "responses", "model": "custom/z-ai/glm-5.3", "endpoint_env": "DIRECT_ENDPOINT", "api_key_env": "ROUTER_KEY", "headers_env": "ROUTER_HEADERS", "timeout_seconds": 600, "max_response_bytes": 16000000, "options": {"reasoning_effort": "high"}}
+  ],
+  "solver_assistance": {
+    "action": {"command": "solve"},
+    "calls_per_episode": 2,
+    "search_state_limit_per_call": 1000000,
+    "inputs": "Current revealed catalogue, uncovered public goals and remaining work only",
+    "effect": "Returns a revision-tagged plan or explicit no-plan/search-limit result. Never probes, builds or verifies.",
+    "cost": "One step and one solver call; zero operational points. Search states reported separately; conditions do not match total compute."
+  },
+  "primary_description": "Report all four acceptance outcomes, actions, work, solver calls/states, elapsed time, request failures and usage availability. Report within-model solver_assisted-minus-open descriptively; one seed gives no uncertainty interval.",
+  "order": "Existing collector order: open Sol, open GLM, solver_assisted Sol, solver_assisted GLM. No randomization; serving/time drift is not controlled.",
+  "stopping_rule": "Exactly four episodes, one attempt each; no additional seeds, retries, replacement attempts or setting changes after preparation. Publish plan and source before requests.",
+  "failure_policy": "Retain task, schema, transport, search-limit and deadline failures. Unknown usage stays unknown. Censored open results cannot establish a cognitive boundary or a causal solver rescue.",
+  "interpretation": "A fixed script already completes all 12 qualified seeds when given this solver. Assisted success tests use of the available tool and workflow, not autonomous algorithm invention. Perfect public-pilot results do not establish general saturation; failures do not establish population discrimination.",
+  "reserved_parameter_combinations": [
+    {"goals": 120, "width": 5, "alternatives": 360},
+    {"goals": 120, "width": 3, "alternatives": 240}
+  ],
+  "reservation_scope": "Not generated, solved, tuned or sent to models in this pilot. These are parameter holdouts within the same sampler, not independent task families or guarantees of hardness/solvability within the reference budget. Their future evaluation requires a separate frozen plan.",
+  "transport": {"base_url": "http://127.0.0.1:4202/v1", "headers": {"x-codex-router-exact-route": "1"}, "native_agent_runtime": false, "tools": [], "benchmark_retries": 0, "global_session_sharing_changes": false}
+}

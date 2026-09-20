@@ -8,7 +8,7 @@ import secrets
 from collections import defaultdict
 from statistics import mean, stdev
 
-from . import GENERATOR_VERSION, __version__
+from . import GENERATOR_VERSION, __version__, version_at_least
 from .agents import validate_agent_version, validate_config
 from .environment import PROMPTS
 from .generator import DOMAINS, FAMILIES, PROFILES, digest, suite
@@ -36,7 +36,7 @@ def validate_plan(plan):
     fixed = {"schema_version": 1, "generator_version": GENERATOR_VERSION,
              "intervention": INTERVENTION_ID, "primary_outcome": "accepted_completion",
              "stopping_rule": "fixed_matrix", "failure_policy": "retain_and_bound"}
-    if (type(plan["schema_version"]) is not int or plan["framework_version"] not in ("2.2.0", "2.3.0", "2.4.0", "2.5.0", "2.5.1", "2.5.2", "2.5.3")
+    if (type(plan["schema_version"]) is not int or not version_at_least(plan["framework_version"], "2.2.0")
             or any(plan[k] != v for k, v in fixed.items())):
         raise ValueError("Unsupported study version, intervention, outcome or collection policy")
     if not isinstance(plan["study_id"], str) or not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,79}", plan["study_id"]):

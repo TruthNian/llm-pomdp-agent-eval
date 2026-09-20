@@ -133,7 +133,8 @@ non-revising policy. A control failure alone is insufficient construct evidence.
 
 The family reuses the existing prepare/start/checkpoint/receipt/resume/replay
 implementation and the same HTTP adapters. One suite contains one generator;
-only `open` applies. Diagnostic-only measurements are `null`, not fabricated
+`open` applies throughout and 2.6 additionally supports `solver_assisted`.
+Diagnostic-only measurements are `null`, not fabricated
 zeroes. Success, resource cost, work, inspections, time, usage availability and
 infrastructure failures are reported separately, by scale. Do not pool default
 scales into an arbitrary autonomy score. The prototype and all earlier studies
@@ -180,8 +181,8 @@ The [subsequent complete recovery check](../studies/coverage-qualification-v1/RE
 uses the existing one-million-state reference allowance. Two candidate structures
 pass the offline controls on 12 public seeds each. The denser 96/4/384 structure
 retains ten reference-limit failures and twenty unavailable dependent controls.
-It has not passed; its failed seeds remain part of the distribution. All three
-remain outside the released ladder pending the next version/calibration gates.
+It has not passed; its failed seeds remain part of the distribution. From 2.6,
+only the two passing structures enter the explicitly experimental ladder below.
 
 Version 2.5.2 allows a declared response byte limit so long reasoning streams need
 not hit an undeclared experimental constraint. It does not change task difficulty,
@@ -189,3 +190,56 @@ upgrade earlier failures into successes, or establish live reliability at the
 larger limit. Keep transport settings fixed within a planned comparison.
 Difficulty and discrimination are necessary; real-work predictive validity
 remains a separate P4 gate.
+
+## Framework 2.6: experimental depth and solver ablation
+
+`dependency-cover-depth/1` contains depth18 (72 goals, width 4, 216 alternatives,
+18 initial/17 recovery builds) and depth24 (96/4/288, 24/23 builds).
+The old four scales and their generation remain unchanged. The new generator
+reuses the exact `dependency-cover-exploration/0` streams for
+`probe-72-4-216` and `probe-96-4-288`, replacing evaluator version/profile
+metadata only. This preserves the offline qualification; it does not create
+independent samples. The failed 96/4/384 candidate is not registered.
+
+```bash
+python -m pomdp_bench generate-cover --experimental --count 12 --scales depth18 depth24 --out artifacts/depth.json
+python -m pomdp_bench run --suite artifacts/depth.json --conditions solver_assisted --agents examples/coverage-solver-agent.json --out artifacts/depth-controls
+python -m pomdp_bench validate artifacts/depth-controls
+```
+
+The explicit experimental flag prevents silently substituting a new difficulty
+distribution. These labels describe initial build counts, not a calibrated model
+ranking. Suites still contain only one generator version.
+
+**New condition:** `solver_assisted` uses `dependency-cover-actions/3`.
+The only additional action is `{"command":"solve"}`, with no target. The model
+chooses when to call it. Input is exactly the currently revealed catalogue,
+uncovered public goals and remaining work. It returns `found` with a minimum
+additional-work plan, `no_plan_in_revealed_catalogue`, or `search_limit`,
+plus revision and visited search-state count. No probing, building, verification
+or hidden-state inspection is performed on the model's behalf.
+
+Calls are limited to two per changing episode and one per stable episode, with
+no refill. Each costs one step and one call, zero action points. Each search has
+a one-million-state allowance; exhaustion counts the first over-limit state
+(1,000,001) and consumes the call. Quota exhaustion blocks without new search.
+Malformed actions consume a step but not a call. Calling before probing can
+waste the allowance; no-plan from incomplete rows is not global infeasibility.
+External changes invalidate the old catalogue and old plan's revision; the
+model must obtain new evidence. Search results never establish PASS.
+
+The old `open` contract, observations and grades remain identical to 2.5.3 and
+reject solve. Assisted observations add remaining calls; assisted grades add
+calls, search states and limit failures. These counts are absent in open,
+not fabricated zero-compute measurements. Summary contrasts keep conditions
+separate and mark total compute as unmatched. Whole-episode elapsed time includes
+environment search; replay recomputes deterministic action results and state
+counts, not elapsed time or billing.
+
+`cover_solver` is a deliberately simple positive control that consumes the
+available action; it performs no independent search. Its success already shows
+that this tool-equipped workflow admits a fixed policy. Use the
+[four-attempt public pilot](../studies/coverage-depth-v1/README.md) to inspect
+strong-model configurations, not to infer broad agent difficulty. The next
+durable construct must survive useful-tool baselines without depending solely
+on unaided combinatorial work. Remove unsupported breadth claims when it does not.

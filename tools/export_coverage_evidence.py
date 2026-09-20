@@ -31,7 +31,8 @@ def export_run(directory):
         usage = trace["usage"]
         complete = usage is not None and usage["requests"] == usage["requests_with_usage"]
         rows.append({"case_id": trace["case_id"], "public_development_seed": cases[trace["case_id"]]["seed"],
-                     "scale": trace["profile"], "agent": trace["agent"], "grade": trace["grade"],
+                     "scale": trace["profile"], "condition": trace["condition"],
+                     "agent": trace["agent"], "grade": trace["grade"],
                      "elapsed_seconds": trace["elapsed_seconds"], "sanitized_error": trace["error"],
                      "trace_sha256": digest(trace), "request_audit": audits,
                      "usage_complete": complete, "reported_usage": usage,

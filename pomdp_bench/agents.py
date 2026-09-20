@@ -8,10 +8,11 @@ import random
 from .model_io import AdapterError, ChatAgent, ResponsesAgent, response_byte_limit, strict_json
 from .planning import consistent_candidates, diagnostic_plan
 from .interventions import RESERVE_TEXT
-from .coverage import POLICIES as COVER_POLICIES, policy_action as cover_action
+from . import version_at_least
+from .coverage import POLICIES as COVER_POLICIES, ASSISTED_POLICIES, policy_action as cover_action
 
 BUILTINS = ("reference", "random", "overdiagnose", "proxy")
-POLICIES = (*BUILTINS, "reserve_probe", *COVER_POLICIES)
+POLICIES = (*BUILTINS, "reserve_probe", *COVER_POLICIES, *ASSISTED_POLICIES)
 
 
 def validate_config(config: dict) -> None:
@@ -52,10 +53,12 @@ def validate_config(config: dict) -> None:
 
 
 def validate_agent_version(config, version):
-    if "max_response_bytes" in config and version not in ("2.5.2", "2.5.3"):
+    if "max_response_bytes" in config and not version_at_least(version, "2.5.2"):
         raise ValueError("Explicit response byte limits require framework 2.5.2")
-    if config["kind"] in COVER_POLICIES and version not in ("2.5.0", "2.5.1", "2.5.2", "2.5.3"):
+    if config["kind"] in COVER_POLICIES and not version_at_least(version, "2.5.0"):
         raise ValueError("Coverage policies require framework 2.5")
+    if config["kind"] in ASSISTED_POLICIES and not version_at_least(version, "2.6.0"):
+        raise ValueError("Solver consumer policy requires framework 2.6")
     if version in ("2.0.0", "2.1.0", "2.2.0") and (config["kind"] == "responses" or "headers_env" in config):
         raise ValueError("This HTTP configuration requires framework 2.3 or later")
 

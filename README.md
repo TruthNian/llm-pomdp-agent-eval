@@ -23,6 +23,14 @@ retains 252 planned controls: 232 executed/replayed, 20 explicitly unavailable.
 Two deeper structures pass the offline reference and rescue checks; the third
 exhausts the reference budget on 10/12 seeds. None is yet model-calibrated.
 
+**2.6 exposes the useful-tool test:** the two passing structures are explicitly
+experimental depth18/depth24 profiles. An optional, limited solve action returns
+plans from revealed data while leaving execution/recovery/verification to the
+model. A fixed tool-consumer script solves all 24 qualified cases; broad
+agent-difficulty claims therefore need a stronger construct. The
+[four-attempt plan](studies/coverage-depth-v1/README.md) separates direct and
+assisted configurations; tool compute is not treated as free model reasoning.
+
 Development follows [explicit stages and acceptance gates](docs/ROADMAP.md): reliable collection → isolated intervention studies → new task structures → external validity → measured acceleration. Requirements are questioned, unnecessary work is removed, and the remaining workflow is simplified before it is automated. For long collections, use [`prepare`, `status` and `resume`](docs/COLLECTION.md); completed and interrupted attempts are never silently replaced.
 
 For a single-intervention experiment, use [`prepare-study`](docs/STUDIES.md). The [offline example](examples/study-reserve.pilot.json) checks a deliberately budget-blind control, a successful reference and a failing cosmetic-status policy. Study analysis reports a reminder contrast within each agent; it does not automatically rank the models or turn a tiny perfect-success pilot into a precise population claim.

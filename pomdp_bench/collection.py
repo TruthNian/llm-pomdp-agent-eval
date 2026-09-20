@@ -11,9 +11,8 @@ from pathlib import Path
 
 from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
 from .agents import validate_agent_version, validate_config
-from .environment import CONDITIONS, validate_condition_version
-from .coverage import VERSION as COVER_VERSION, POLICIES as COVER_POLICIES
-from .worlds import Environment, validate_case_version
+from .coverage import COVER_VERSIONS, POLICIES as COVER_POLICIES, ASSISTED_POLICIES
+from .worlds import Environment, validate_case_version, CONDITIONS, validate_condition_version
 from .evaluation import episode_record, recover_interrupted, replay, replay_environment, run_episode, validate_suite
 from .generator import digest
 from .storage import collection_lock, read_json, write_json
@@ -37,11 +36,14 @@ def validate_definition(data, configs, conditions, replicates, wall_seconds):
     if (not isinstance(conditions, list) or not conditions or len(set(conditions)) != len(conditions)
             or set(conditions) - set(CONDITIONS)):
         raise ValueError("Unknown or duplicate conditions")
-    if data["generator_version"] == COVER_VERSION:
-        if conditions != ["open"] or any(c["kind"] not in (*COVER_POLICIES, "reference", "chat", "responses") for c in configs):
-            raise ValueError("Coverage requires open and coverage/reference/HTTP agents")
-    elif any(c["kind"] in COVER_POLICIES for c in configs):
-        raise ValueError("Coverage policies require a coverage suite")
+    if data["generator_version"] in COVER_VERSIONS:
+        if (set(conditions) - {"open", "solver_assisted"}
+                or any(c["kind"] not in (*COVER_POLICIES, *ASSISTED_POLICIES, "reference", "chat", "responses") for c in configs)):
+            raise ValueError("Coverage requires open/solver_assisted and coverage/reference/HTTP agents")
+        if conditions != ["solver_assisted"] and any(c["kind"] in ASSISTED_POLICIES for c in configs):
+            raise ValueError("Solver consumer policy requires only solver_assisted")
+    elif "solver_assisted" in conditions or any(c["kind"] in (*COVER_POLICIES, *ASSISTED_POLICIES) for c in configs):
+        raise ValueError("Coverage policies and solver assistance require a coverage suite")
     if (type(replicates) is not int or replicates < 1 or type(wall_seconds) not in (int, float)
             or not math.isfinite(wall_seconds) or wall_seconds <= 0):
         raise ValueError("Replicates and wall limit must be positive")

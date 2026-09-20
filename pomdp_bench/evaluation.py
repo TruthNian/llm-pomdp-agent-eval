@@ -7,10 +7,9 @@ from pathlib import Path
 
 from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
 from .agents import AdapterError, make_agent, validate_agent_version
-from .environment import validate_condition_version
 from .generator import digest, keyed_seed
 from .storage import read_json
-from .worlds import Environment, VERSIONS, validate_case, validate_case_version
+from .worlds import Environment, VERSIONS, validate_case, validate_case_version, validate_condition_version
 
 
 def episode_record(env, config, replicate, elapsed=0, usage=None, error=None, in_flight=False):
