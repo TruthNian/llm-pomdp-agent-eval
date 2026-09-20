@@ -16,7 +16,7 @@ from pomdp_bench import __version__
 from pomdp_bench.cli import main
 from pomdp_bench.collection import prepare_suite, resume_suite, read_run, run_suite
 from pomdp_bench.coverage import CoverageEnvironment, POLICIES, SCALES, cover_plan, generate, policy_action, suite
-from pomdp_bench.evaluation import run_episode, replay, recover_interrupted, validate_suite
+from pomdp_bench.evaluation import episode_record, run_episode, replay, recover_interrupted, validate_suite
 from pomdp_bench.generator import suite as diagnostic_suite
 from pomdp_bench.reporting import summarize
 from pomdp_bench.worlds import validate_case
@@ -175,6 +175,24 @@ class CoverageTransitionTests(unittest.TestCase):
 
 
 class CoverageCollectionTests(unittest.TestCase):
+    def test_legacy_action_contract_and_invalid_feedback_replay_unchanged(self):
+        case = generate(0, "sanity")
+        env = CoverageEnvironment(case, framework_version="2.5.0")
+        env.step({"action": "probe", "target": "all"})
+        self.assertEqual(env.observation()["result"], {"kind": "invalid"})
+        self.assertNotIn("response_format", env.contract())
+        while not env.done:
+            env.step(policy_action("cover_reference", request(env)))
+        trace = episode_record(env, {"name": "ref", "kind": "reference"}, 0)
+        trace["framework_version"] = "2.5.0"
+        self.assertTrue(replay(trace, case)["success"])
+        current = CoverageEnvironment(case)
+        self.assertIn("response_format", current.contract())
+        self.assertIn("message", current.step({"action": "probe", "target": "all"})["result"])
+        trace["framework_version"] = __version__
+        with self.assertRaises(ValueError):
+            replay(trace, case)
+
     def test_http_adapter_supports_public_multiturn_batch_actions(self):
         requests = []
 

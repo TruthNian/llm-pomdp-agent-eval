@@ -1,0 +1,19 @@
+{
+  "purpose": "Separate fixed two-request constant-output diagnostic; not evaluation or replacement runs",
+  "rows": [
+    {
+      "max_output_tokens": 16384,
+      "http_status": 400,
+      "mentions_max_output_tokens": false,
+      "mentions_unsupported": false,
+      "elapsed_seconds": 0.465
+    },
+    {
+      "max_output_tokens": null,
+      "http_status": 200,
+      "complete_response": true,
+      "elapsed_seconds": 1.853
+    }
+  ],
+  "settings_and_auth_bytes_unchanged": true
+}

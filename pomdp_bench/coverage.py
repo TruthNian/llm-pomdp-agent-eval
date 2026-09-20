@@ -6,6 +6,7 @@ import math
 import random
 from functools import lru_cache
 
+from . import __version__
 from .generator import digest, keyed_seed
 
 VERSION = "dependency-cover/1"
@@ -107,10 +108,11 @@ def cover_plan(catalogue, missing, slots, *, node_limit=1_000_000):
 
 
 class CoverageEnvironment:
-    def __init__(self, case, condition="open", noise_seed=0):
+    def __init__(self, case, condition="open", noise_seed=0, framework_version=__version__):
         if condition != "open":
             raise ValueError("Coverage supports only the open contract; diagnostic prompts do not apply")
         self.case = copy.deepcopy(case)
+        self.framework_version = framework_version
         self.condition = condition
         self.epoch = self.spent = self.revision = self.inspections = self.work = 0
         self.verified_revision = None
@@ -124,7 +126,7 @@ class CoverageEnvironment:
                         "redundant_probes": 0, "failed_verifications": 0, "external_changes": 0}
 
     def contract(self):
-        return {"protocol_version": 1, "family": "dependency_cover", "contract_version": VERSION,
+        result = {"protocol_version": 1, "family": "dependency_cover", "contract_version": VERSION,
                 "task": "Deliver all goals under the inspection and work limits. Discover operation coverage, "
                         "choose a feasible combination, build, verify and finish.",
                 "success": "All goals covered, PASS at the latest state revision, explicit finish within all limits.",
@@ -147,6 +149,14 @@ class CoverageEnvironment:
                 "width": self.case["width"], "work_limits": self.case["work_limits"][:],
                 "inspection_budget": self.case["inspection_budget"], "budget": self.case["budget"],
                 "max_steps": self.case["max_steps"]}
+        if self.framework_version != "2.5.0":
+            result["contract_version"] = "dependency-cover-actions/2"
+            result["response_format"] = {
+                "probe_example": {"command": "probe", "target": "all"},
+                "build_example": {"command": "build", "target": ["replace-with-observed-operation-ID"]},
+                "verify_example": {"command": "verify"}, "finish_example": {"command": "finish"},
+                "rule": "Return exactly one JSON object using command and, where required, target."}
+        return result
 
     def observation(self):
         return {"epoch": self.epoch, "revision": self.revision,
@@ -187,6 +197,10 @@ class CoverageEnvironment:
         if cost is None:
             self.metrics["invalid_actions"] += 1
             result = {"kind": "invalid"}
+            if self.framework_version != "2.5.0":
+                result["message"] = ("Use command plus target where required: probe takes a known ID or all; "
+                                     "build takes a nonempty array of distinct freshly probed IDs; "
+                                     "verify, status and finish take no target.")
         elif (self.spent + cost > self.case["budget"]
               or command == "probe" and self.inspections + cost > self.case["inspection_budget"]
               or command == "build" and self.work + cost > self.case["work_limits"][self.epoch]):

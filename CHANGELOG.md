@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.5.1 — 2026-09-20
+
+- Preserve all four first calibration failures and 12 reconstructed request
+  fingerprints; do not call transport or output-format failures cognitive difficulty.
+- Add `dependency-cover-actions/2` with explicit JSON examples and schema feedback.
+  Historical 2.5.0 traces replay with their original prompts and observations.
+- A separate two-request public diagnostic found HTTP 400 with an optional output
+  cap and a completed response without it. Delete that cap in a separately frozen
+  follow-up with explicit larger time budgets; keep original attempts unchanged.
+
+**Comparability:** generated graphs, work budgets and acceptance are unchanged;
+action prompts/feedback and live request settings differ. Do not pool pilots or
+attribute their difference to a model capability improvement.
+
 ## 2.5.0 — 2026-09-20
 
 - Make high, adjustable and empirically discriminating difficulty a core acceptance

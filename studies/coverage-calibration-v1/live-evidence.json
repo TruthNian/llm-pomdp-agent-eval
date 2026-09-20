@@ -1,0 +1,348 @@
+{
+  "framework_version": "2.5.0",
+  "generator_version": "dependency-cover/1",
+  "run_git_revision": "b86620f5ffe1454c53da3b198e6845c6a7bbd2e7",
+  "working_tree_dirty_at_prepare": false,
+  "source_sha256": {
+    "__init__.py": "583f0a206395eb96d0442e74ec9e078986c3078ed6048b47bcf125f81d1ea301",
+    "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "agents.py": "4147a5ee64c9454ec23e149781386bb53e6b4cdca3338e3aad64edee7475c144",
+    "cli.py": "5df60fb12f49d402804883cb1eb379df0b67aa31b1ce226589a38131090b3d10",
+    "collection.py": "c399d228e2b60eeca72e4ef81554c5c7d0f29c1a979b3cce0a4d87e731e43db2",
+    "coverage.py": "d1071067abf86b5be76c9b1f450dc3b59257e4a35cbb9a3388bf6149a4e4009d",
+    "discovery.py": "5d4d1e82d3297915413bee3f6c7dd8f757e2b6c033f56e1067de14ea4b64a62e",
+    "discovery_controls.py": "6e04efa6315c360e3590d8befcae6fdbe78b760a656f62e6b885fa685df42cfb",
+    "environment.py": "36e54dab9298e89cb38aec9f9d196ad6d18f6bd482f92dfed2b744907cf4b3f4",
+    "evaluation.py": "9d1b238bdb53513ad8f7e079654c08dfcc22eac40ddfc2f98d16330d38f9d974",
+    "generator.py": "5927978a301c50c703cc3450b03e0774abf803122386744cb5dcab434d6f9d69",
+    "interventions.py": "a111d6dc5cfbba6e8ac0bab1d1f026b906683f28a487183742f7469e8fb89dd0",
+    "model_io.py": "0814edf2d33c80ddb0fa790a4d633f9dade0369ba1faba79fca858b71cd67f68",
+    "planning.py": "4a136bcd587e069b716f63cc1c9f1607da6d3f966a5d4f3e7ea8ed57695fcb93",
+    "reporting.py": "244ef5439dada37e32b33823600cf362a92f5f05bde8b7458a7a042782ed7218",
+    "storage.py": "463c36e711458a1e8e401d9d5540ea5dcee5f262cbb8e201217e6f5f20934c84",
+    "studies.py": "4564278986b9183a7d8496269935ca69a83485a2fbc887c7f10e644d7f5666a3",
+    "worlds.py": "03c39b2ed758a366c4a8d38b72219c77a186815d8431e43da37732319f9318ce"
+  },
+  "source_matches_export_checkout": true,
+  "expected_episodes": 4,
+  "retained_episodes": 4,
+  "manifest_sha256": "4a0b21c40f901e089cfb9cde18ad1d152d0820a5c96407aec35494f51551b131",
+  "suite_sha256": "77698df38db396c5ef197ef826a8f1bfe7e3b9dd386a01699becdfc3e01aafbf",
+  "outcomes": [
+    {
+      "case_id": "a13598f550d29a39e1a1bc34c3bc12b970efc99e1896006374894c05199d662b",
+      "public_development_seed": 0,
+      "scale": "extreme",
+      "agent": {
+        "name": "custom/z-ai/glm-5.3",
+        "kind": "responses",
+        "model": "custom/z-ai/glm-5.3",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "ROUTER_KEY",
+        "headers_env": "ROUTER_HEADERS",
+        "timeout_seconds": 240,
+        "options": {
+          "reasoning_effort": "high",
+          "max_output_tokens": 16384
+        }
+      },
+      "grade": {
+        "success": false,
+        "termination": "adapter_error",
+        "cost": 96,
+        "budget": 209,
+        "steps": 1,
+        "verified_current_state": false,
+        "goals_completed": 0,
+        "goals_total": 48,
+        "inspection_cost": 96,
+        "invalid_actions": 0,
+        "blocked_actions": 0,
+        "work_spent": 0,
+        "redundant_probes": 0,
+        "failed_verifications": 0,
+        "external_changes": 0
+      },
+      "elapsed_seconds": 182.045732,
+      "sanitized_error": "Endpoint stream failed or was incomplete",
+      "trace_sha256": "5eafeb224824b236b96d8c91f4789689c2ad0c75a7d3736d1c50631ae8a5ed48",
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "2ff9aaf57a82edba53e8702cc35f9d633043d0f46391768eddeeb47cdb2eb775",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 240,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "868f9f4519c15e65009c615643b361900a395b7b4325c8f6f334111482095748",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 240,
+          "outcome": "incomplete_response"
+        }
+      ],
+      "usage_complete": false,
+      "reported_usage": {
+        "requests": 2,
+        "requests_with_usage": 1,
+        "input_tokens": 1423,
+        "output_tokens": 19,
+        "reasoning_tokens": 6,
+        "requests_with_reasoning_usage": 1
+      },
+      "total_input_tokens": null,
+      "total_output_tokens": null
+    },
+    {
+      "case_id": "a13598f550d29a39e1a1bc34c3bc12b970efc99e1896006374894c05199d662b",
+      "public_development_seed": 0,
+      "scale": "extreme",
+      "agent": {
+        "name": "gpt-5.6-sol",
+        "kind": "responses",
+        "model": "gpt-5.6-sol",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "NATIVE_KEY",
+        "headers_env": "NATIVE_HEADERS",
+        "timeout_seconds": 240,
+        "options": {
+          "reasoning_effort": "high",
+          "max_output_tokens": 16384
+        }
+      },
+      "grade": {
+        "success": false,
+        "termination": "adapter_error",
+        "cost": 0,
+        "budget": 209,
+        "steps": 0,
+        "verified_current_state": false,
+        "goals_completed": 0,
+        "goals_total": 48,
+        "inspection_cost": 0,
+        "invalid_actions": 0,
+        "blocked_actions": 0,
+        "work_spent": 0,
+        "redundant_probes": 0,
+        "failed_verifications": 0,
+        "external_changes": 0
+      },
+      "elapsed_seconds": 0.765639,
+      "sanitized_error": "Endpoint HTTP status 400",
+      "trace_sha256": "91829b005730708ba58ca9e454c981455182e23bbc76dce8b3ca29411588bf69",
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "f178c6816e234473d7781fb572fa4a8950f05eb7d3c07098c8c4992f570be1ed",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 240,
+          "outcome": "http_error"
+        }
+      ],
+      "usage_complete": false,
+      "reported_usage": {
+        "requests": 1,
+        "requests_with_usage": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_tokens": 0,
+        "requests_with_reasoning_usage": 0
+      },
+      "total_input_tokens": null,
+      "total_output_tokens": null
+    },
+    {
+      "case_id": "d33ce7b79d1a05e1a9135e372900263ea7c9b90f5f8d1225711dd31d03f3edf3",
+      "public_development_seed": 0,
+      "scale": "sanity",
+      "agent": {
+        "name": "gpt-5.6-sol",
+        "kind": "responses",
+        "model": "gpt-5.6-sol",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "NATIVE_KEY",
+        "headers_env": "NATIVE_HEADERS",
+        "timeout_seconds": 240,
+        "options": {
+          "reasoning_effort": "high",
+          "max_output_tokens": 16384
+        }
+      },
+      "grade": {
+        "success": false,
+        "termination": "adapter_error",
+        "cost": 0,
+        "budget": 25,
+        "steps": 0,
+        "verified_current_state": false,
+        "goals_completed": 0,
+        "goals_total": 6,
+        "inspection_cost": 0,
+        "invalid_actions": 0,
+        "blocked_actions": 0,
+        "work_spent": 0,
+        "redundant_probes": 0,
+        "failed_verifications": 0,
+        "external_changes": 0
+      },
+      "elapsed_seconds": 0.562351,
+      "sanitized_error": "Endpoint HTTP status 400",
+      "trace_sha256": "c7896527cef854cd67d9f74736a22cccba6a011a3cb624c822ce6ef86dde643f",
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "1832e0ee9e88d99f86bdd751d0c084ef21e26b33fc480ba05ca7031c82dd828c",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 240,
+          "outcome": "http_error"
+        }
+      ],
+      "usage_complete": false,
+      "reported_usage": {
+        "requests": 1,
+        "requests_with_usage": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_tokens": 0,
+        "requests_with_reasoning_usage": 0
+      },
+      "total_input_tokens": null,
+      "total_output_tokens": null
+    },
+    {
+      "case_id": "d33ce7b79d1a05e1a9135e372900263ea7c9b90f5f8d1225711dd31d03f3edf3",
+      "public_development_seed": 0,
+      "scale": "sanity",
+      "agent": {
+        "name": "custom/z-ai/glm-5.3",
+        "kind": "responses",
+        "model": "custom/z-ai/glm-5.3",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "ROUTER_KEY",
+        "headers_env": "ROUTER_HEADERS",
+        "timeout_seconds": 240,
+        "options": {
+          "reasoning_effort": "high",
+          "max_output_tokens": 16384
+        }
+      },
+      "grade": {
+        "success": false,
+        "termination": "adapter_error",
+        "cost": 22,
+        "budget": 25,
+        "steps": 7,
+        "verified_current_state": false,
+        "goals_completed": 2,
+        "goals_total": 6,
+        "inspection_cost": 18,
+        "invalid_actions": 3,
+        "blocked_actions": 0,
+        "work_spent": 3,
+        "redundant_probes": 0,
+        "failed_verifications": 0,
+        "external_changes": 1
+      },
+      "elapsed_seconds": 51.974565,
+      "sanitized_error": "Endpoint did not return one unambiguous JSON action",
+      "trace_sha256": "81be7322e8ac65e6e5440d4a33bb78fd5611cf5c5e3550b2292378b372234d3f",
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "ea9634c2e49c5a3aa2335fd98b8187ada11993b1fa7ec29619f931fc00bdae32",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 240,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "8aac960a8d3b8aa3f44440a41d6ae98aca3faf78bcb41ce709e7fb1d6a738e46",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 240,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "65d30b8b7a93bbc464ec79fdf14df199bd6199d731d3cd210c64626e636e3b9a",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 240,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "6e75a480d82eb860983264ec0c1733c80e77b46f21692b0654d6d9ac0b742046",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 240,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "4c091ea9d76297de1b11607aa8e48fd0b3178e399ae3ad40b0cc73d0bd0fe222",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 240,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "51791e082aec1154d49fbeedc4a351685579aa24e90dda7b20457b200d2cb027",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 240,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "e75584e48ec190cddc021446cb18b98a0519696c94f9e318cd8b1ed7bc6b00fd",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 240,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "08a1019d7fdedc1ed30a4eb0a59fd2769abe7aa1fac5d6c70b2de8a99ab4b2a9",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 240,
+          "outcome": "protocol_error"
+        }
+      ],
+      "usage_complete": true,
+      "reported_usage": {
+        "requests": 8,
+        "requests_with_usage": 8,
+        "input_tokens": 12048,
+        "output_tokens": 2692,
+        "reasoning_tokens": 2555,
+        "requests_with_reasoning_usage": 8
+      },
+      "total_input_tokens": 12048,
+      "total_output_tokens": 2692
+    }
+  ],
+  "plan_binding": {
+    "plan_sha256": "7d031f41ff26dd6f5714ac411f69cdec548015261069782a0680fd038085a4f3",
+    "manifest_sha256": "4a0b21c40f901e089cfb9cde18ad1d152d0820a5c96407aec35494f51551b131"
+  },
+  "launcher_check": {
+    "settings_and_auth_bytes_unchanged": true
+  }
+}

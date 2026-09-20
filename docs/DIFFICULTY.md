@@ -24,6 +24,12 @@ release gate, not a promise inferred from task length or a profile name.
 `dependency-cover/1` is available from framework 2.5. It is separate from both
 `diagnostic-graphs/1` and the frozen `dependency-recovery/1` prototype.
 
+Framework 2.5.1 adds `dependency-cover-actions/2`: explicit JSON examples and
+fixed schema feedback after invalid actions. Generation, work limits and scoring
+remain unchanged. Historical 2.5.0 replay selects its original action contract;
+new and old framework versions are not pooled. Removing ambiguity in the action
+interface prevents schema friction from masquerading as planning difficulty.
+
 | Scale | Goals | Goals per operation | Alternative operations | Initial work | Recovery work |
 |---|---:|---:|---:|---:|---:|
 | sanity | 6 | 2 | 9 | 3 | 2 |
@@ -150,7 +156,8 @@ remain unchanged; old runs replay, but source/version drift still forbids resume
    Do not rewrite old scores, drop failures, or adapt difficulty separately for
    competing models while comparing raw success rates.
 
-The current [calibration record](../studies/coverage-calibration-v1/README.md)
+The [first calibration record](../studies/coverage-calibration-v1/README.md) and
+[corrected follow-up](../studies/coverage-calibration-v2/README.md)
 distinguishes implemented structural difficulty from demonstrated model headroom.
 Difficulty and discrimination are necessary; real-work predictive validity
 remains a separate P4 gate.

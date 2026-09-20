@@ -95,7 +95,7 @@ def replay_environment(trace: dict, case: dict, *, partial=False) -> Environment
     validate_case_version(case, trace["framework_version"])
     if trace["case_id"] != digest(case):
         raise ValueError("Trace/case fingerprint mismatch")
-    env = Environment(case, trace["condition"], trace["replicate"])
+    env = Environment(case, trace["condition"], trace["replicate"], framework_version=trace["framework_version"])
     if trace["initial_observation"] != env.observation() or trace["contract"] != env.contract():
         raise ValueError("Initial observation or contract changed")
     for index, event in enumerate(trace["events"]):

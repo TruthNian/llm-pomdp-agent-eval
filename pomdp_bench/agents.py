@@ -47,7 +47,7 @@ def validate_config(config: dict) -> None:
 
 
 def validate_agent_version(config, version):
-    if config["kind"] in COVER_POLICIES and version != "2.5.0":
+    if config["kind"] in COVER_POLICIES and version not in ("2.5.0", "2.5.1"):
         raise ValueError("Coverage policies require framework 2.5")
     if version in ("2.0.0", "2.1.0", "2.2.0") and (config["kind"] == "responses" or "headers_env" in config):
         raise ValueError("This HTTP configuration requires framework 2.3 or later")
