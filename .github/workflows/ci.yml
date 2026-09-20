@@ -30,6 +30,8 @@ jobs:
         run: python studies/settlement-incident-v1/controls.py artifacts/incident-controls
       - name: Regrade published incident trajectories and readable report
         run: python studies/settlement-incident-v1/verify.py
+      - name: Regrade separately retained live format-feedback follow-up
+        run: python studies/settlement-incident-v1/verify.py --study studies/settlement-incident-v2
       - name: Verify released dataset
         run: python tools/verify_release.py
       - name: Verify frozen study

@@ -23,8 +23,10 @@ The [first complete collection](../studies/settlement-incident-v1/README.md) ret
 all six controls and both max-reasoning model attempts. Sol delivered in 20 actions;
 the old parser terminated GLM after 13. Every action matched fresh execution.
 The readable report includes intermediate damage and the final reconstructed tables.
-Format-feedback handling and a separately frozen additional GLM episode address
-the integration defect. This does not establish frontier difficulty.
+The separately frozen [GLM follow-up](../studies/settlement-incident-v2/README.md)
+recovered from two malformed action responses and delivered in 26 actions with
+all 33 orders reconciled. The earlier failed attempt remains preserved. Complete
+interaction is now demonstrated on both requested routes; frontier difficulty is not.
 
 ## Difficulty iteration
 
@@ -36,6 +38,9 @@ and orders interventions before recovery becomes impossible. The irreversible
 consequence must execute in the world, not come from a hidden policy rule.
 Do not substitute hidden requirements, format traps, missing tools, short timeouts
 or irrelevant files for difficulty.
+
+The [next-scenario contract](EXTERNAL_SETTLEMENT.md) links the provider documentation
+behind these constraints and defines the minimum executable consequences and controls.
 
 Freeze each new scenario and budget before model collection. Keep old versions and all failures.
 Only observed task outcomes and policy differences establish added discrimination; repeats of one

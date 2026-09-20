@@ -31,6 +31,11 @@ Sol delivered in 20 actions. The original GLM attempt stopped at the old parser 
 intermediate business consequences are retained, with matching fresh execution.
 This scenario is a workflow anchor; the required frontier difficulty is not yet achieved.
 
+A separately frozen [GLM follow-up](studies/settlement-incident-v2/README.md)
+completed in 26 actions, including recovery from two malformed action responses.
+All 33 accepted orders reconciled. The original failed attempt remains published;
+the two adapter versions are not pooled into a model ranking.
+
 ## Architecture
 
 ```text

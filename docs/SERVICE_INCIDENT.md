@@ -33,16 +33,35 @@ Model reasoning latency does not change the workload. A deadline of 60 ticks
 includes reads, invalid operations and handover. These are simulated scheduling
 units, not claims about production seconds or actual financial loss.
 
-`verify` submits four new orders, exercises retry behavior, processes the backlog
+`verify` submits four new orders with one workload batch, then makes four additional
+drain passes. It exercises retry behavior, processes the backlog
 and compares orders against the net ledger. It requires no unresolved messages,
 working settlement and intact monitoring. The next action must be `finish`;
 further activity advances the service and expires the prior verification.
 Process health and a successful configuration edit do not establish acceptance.
 
+Framework 2.9.2 corrects the stable-boundary exception: only valid `verify` and
+`finish` calls suppress the ordinary arrival step. Earlier source also suppressed
+arrivals after rejected calls with those command names; repeated malformed final
+actions could therefore skip scheduled work. New collection uses the correction;
+old records retain their original version and responses. The public traffic
+runbook now also explicitly distinguishes the submission batch from four later
+drain passes; execution already performed both in the earlier version.
+
 The outcome includes every unresolved order, remaining messages, actual HTTP
 request count, steps, provider usage, and accumulated excess-debit-cent ticks and
 unsettled-message ticks. The latter measure temporary damage in this controlled
 world; a final repair does not erase earlier damage from the trace.
+
+Precisely, excess-debit-cent ticks sum `max(net_ledger - order_amount, 0)` across
+orders in each recorded post-action audit. Unsettled-message ticks sum the count
+of non-done outbox rows over those same audits. They include the incident's
+pre-existing damage, not just new damage attributable to the agent. The public
+result comes from the action; the private audit describes the state after that
+tick's automatic traffic and processing. Both exposure sums stop at termination.
+A failed early handover can have a smaller sum simply because it ran for less
+time; do not use these totals as an unconditional ranking. They are not estimates
+of customer loss.
 
 ## Run a full interaction
 

@@ -1,0 +1,13 @@
+{
+  "source_commit": "f4f609f1a427485c469bcd8a33377c9544103f36",
+  "framework_version": "2.9.1",
+  "episodes": {
+    "model": 1
+  },
+  "fresh_recheck": "Every original action and final database fingerprint matched fresh HTTP/SQLite execution before merging the clock fix.",
+  "file_sha256": {
+    "plan.json": "91242c637a1bd30dfede6b9fdce5fdfd56dcf60f7217c8d366e87ea7dd4636fb",
+    "model-evidence.json": "3ac868d8f77127662995bc563f56a3eae4faff1ee602f5d3d8827d784dba948c",
+    "trajectories.html": "57ad4fb9580b7a6e3f56762eef828bbdb63f8f01885c63cf1d456bfba30c693b"
+  }
+}

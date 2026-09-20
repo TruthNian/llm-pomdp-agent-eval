@@ -2,6 +2,11 @@
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
 
+2.9.2 corrects incident arrivals after rejected `verify`/`finish` calls and clarifies
+the verification workload's initial batch plus four drain passes. Old recorded
+responses remain replayable; fresh reproduction of old observations requires its
+frozen source. Do not pool corrected and original-source collections.
+
 2.9.1 changes the model action channel: completed malformed assistant action text
 uses a normal rejected environment turn and gives the model format feedback. Transport
 and envelope failures still terminate. Environment transitions are unchanged; old

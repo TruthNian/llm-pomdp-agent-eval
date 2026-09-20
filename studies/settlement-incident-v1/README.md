@@ -52,6 +52,11 @@ GLM; elapsed episode times were 224.58 and 420.10 seconds. These are provider
 usage and measured wall time, not compute-matched or price estimates. Both budgets
 were fixed before collection; the failed attempt was not restarted or replaced.
 
+Exposure sums include the initial incident's excess debits and stop at each
+attempt's termination. Different stopping times prevent a direct efficiency
+ranking; a failed early handover may have a small sum while leaving unpaid orders.
+See the [exact measurement definitions](../../docs/SERVICE_INCIDENT.md).
+
 Only the runbook-aware operator delivered among the six controls. Process health,
 configuration without restart, future-only repair and rollback left actual
 accounting/backlog failures; repeated inspection exhausted the action horizon.
