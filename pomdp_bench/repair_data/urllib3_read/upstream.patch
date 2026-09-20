@@ -1,0 +1,17 @@
+diff --git a/src/urllib3/response.py b/src/urllib3/response.py
+index 46c7e4bb..f42398b7 100644
+--- a/src/urllib3/response.py
++++ b/src/urllib3/response.py
+@@ -1114,6 +1114,12 @@ class HTTPResponse(BaseHTTPResponse):
+ 
+         if amt is None:
+             data = self._decode(data, decode_content, flush_decoder)
++            # It's possible that there is buffered decoded data after a
++            # partial read.
++            if decode_content and len(self._decoded_buffer) > 0:
++                self._decoded_buffer.put(data)
++                data = self._decoded_buffer.get_all()
++
+             if cache_content:
+                 self._body = data
+         else:

@@ -1,0 +1,40 @@
+diff --git a/src/werkzeug/routing/map.py b/src/werkzeug/routing/map.py
+index 76bbe2f3..87b83a54 100644
+--- a/src/werkzeug/routing/map.py
++++ b/src/werkzeug/routing/map.py
+@@ -109,7 +109,6 @@ class Map:
+ 
+         self.default_subdomain = default_subdomain
+         self.strict_slashes = strict_slashes
+-        self.merge_slashes = merge_slashes
+         self.redirect_defaults = redirect_defaults
+         self.host_matching = host_matching
+ 
+@@ -123,6 +122,14 @@ class Map:
+         for rulefactory in rules or ():
+             self.add(rulefactory)
+ 
++    @property
++    def merge_slashes(self) -> bool:
++        return self._matcher.merge_slashes
++
++    @merge_slashes.setter
++    def merge_slashes(self, value: bool) -> None:
++        self._matcher.merge_slashes = value
++
+     def is_endpoint_expecting(self, endpoint: str, *arguments: str) -> bool:
+         """Iterate over all rules and check if the endpoint expects
+         the arguments provided.  This is for example useful if you have
+diff --git a/src/werkzeug/routing/matcher.py b/src/werkzeug/routing/matcher.py
+index 0d1210a6..1fd00efc 100644
+--- a/src/werkzeug/routing/matcher.py
++++ b/src/werkzeug/routing/matcher.py
+@@ -177,7 +177,7 @@ class StateMachineMatcher:
+                 rv = _match(self._root, [domain, *path.split("/")], [])
+             except SlashRequired:
+                 raise RequestPath(f"{path}/") from None
+-            if rv is None:
++            if rv is None or rv[0].merge_slashes is False:
+                 raise NoMatch(have_match_for, websocket_mismatch)
+             else:
+                 raise RequestPath(f"{path}")

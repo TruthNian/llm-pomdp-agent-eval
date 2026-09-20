@@ -1,0 +1,16 @@
+[
+  {
+    "command": "edit",
+    "target": {
+      "path": "src/urllib3/response.py",
+      "old": "\n        if amt is None:\n            data = self._decode(data, decode_content, flush_decoder)\n            if cache_content:\n                self._body = data\n        else:\n",
+      "new": "\n        if amt is None:\n            data = self._decode(data, decode_content, flush_decoder)\n            # It's possible that there is buffered decoded data after a\n            # partial read.\n            if decode_content and len(self._decoded_buffer) > 0:\n                self._decoded_buffer.put(data)\n                data = self._decoded_buffer.get_all()\n\n            if cache_content:\n                self._body = data\n        else:\n"
+    }
+  },
+  {
+    "command": "verify"
+  },
+  {
+    "command": "finish"
+  }
+]

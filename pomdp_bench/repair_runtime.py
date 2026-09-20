@@ -19,15 +19,16 @@ def validate_image(image):
 
 
 class DockerExecutor:
-    def __init__(self, image):
+    def __init__(self, image, *, portfolio=False):
         validate_image(image)
         self.image = image
+        self.portfolio = portfolio
 
     def run(self, files, requests):
         if not shutil.which("docker"):
             return {"status": "runtime_error"}
         name = "pomdp-repair-" + uuid.uuid4().hex
-        worker = Path(__file__).with_name("repair_worker.py").read_text(encoding="utf-8")
+        worker = Path(__file__).with_name("repair_portfolio_worker.py" if self.portfolio else "repair_worker.py").read_text(encoding="utf-8")
         command = ["docker", "run", "--rm", "--pull=never", "--name", name, "-i",
                    "--network=none", "--read-only", "--user=65534:65534", "--cap-drop=ALL",
                    "--security-opt=no-new-privileges", "--pids-limit=32", "--memory=256m", "--cpus=1",

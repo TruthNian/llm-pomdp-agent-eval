@@ -1,0 +1,60 @@
+# Three real compatibility repairs — fixed development matrix
+
+The purpose is executable selection of real tasks with consequential surrounding
+constraints. Task count and public provenance do not establish high difficulty.
+These are public development issues, not held-out evaluation.
+
+| Task | Actual user failure | Acceptance coverage |
+|---|---|---|
+| [Werkzeug 2834](https://github.com/pallets/werkzeug/issues/2834) | Disabled slash merging still redirects an existing route | 166 checks: Map updates, rule overrides, converters, redirects, methods and literal slashes |
+| [attrs 1427](https://github.com/python-attrs/attrs/issues/1427) | Pre-init hook sees defaults instead of supplied arguments | 37 checks: defaults/factories, positional/keyword calls, aliases, converters, slots/frozen, omitted or absent hooks |
+| [urllib3 3636](https://github.com/urllib3/urllib3/issues/3636) | Partial then complete response read loses decoded bytes | 126 checks: real Brotli/gzip/deflate, raw bytes, partial/full reads, EOF, caching and byte order |
+
+Source snapshots contain complete package Python source/type stubs and selected
+pre-fix docs/tests. The [import script](../../tools/import_repair_portfolio.py)
+reproduces per-file provenance and upstream source patches without executing
+candidate code. Upstream artifacts are acceptance controls, never model attempts.
+The original packaging fixture and its published evidence remain unchanged.
+
+## Fixed controls and runtime
+
+Before any execution, [controls.py](controls.py) defines three tasks × four
+controls: unchanged, partial repair, complete upstream artifact, and a later
+unverified edit. Every task has 80 steps and 12 check calls. The collector has
+300 wall seconds per artifact trajectory. Original attempts are never replaced.
+
+Only the upstream artifact should deliver. The partial repair must pass the
+reported reproduction but fail complete acceptance:
+
+- Routing: repair the Map setter but omit the per-rule constraint.
+- Initialization: forward required/default arguments but omit the factory branch.
+- Response reading: drain the old buffer but discard newly decoded bytes.
+
+Fresh-container rechecks are additional audits of the same recorded actions,
+not replacement scores. A gate failure retains its matrix and discrepancies.
+These finite checks do not establish all-library correctness or comprehensive
+resistance to malicious measurement spoofing.
+
+[Dockerfile](Dockerfile) extends the pinned Python base with MarkupSafe 3.0.3 and
+Brotli 1.2.0 before candidate execution. The resolved image ID binds each case.
+The candidate has no network, host mount, credentials or installation action.
+The worker explicitly loads the container's dependency directory with site
+startup disabled. It returns behavior values; expected answers remain outside.
+
+```bash
+docker pull python:3.13-slim
+BASE=$(docker image inspect python:3.13-slim --format '{{.Id}}')
+docker build --build-arg BASE_IMAGE="$BASE" -t pomdp-repair-portfolio studies/repository-portfolio-v1
+IMAGE=$(docker image inspect pomdp-repair-portfolio --format '{{.Id}}')
+python studies/repository-portfolio-v1/controls.py --image "$IMAGE" --out artifacts/portfolio-controls
+python -m pomdp_bench prepare-repair-suite --image "$IMAGE" --tasks werkzeug_routing attrs_preinit urllib3_read --out artifacts/portfolio-suite.json
+```
+
+Use the ordinary prepare/resume workflow with HTTP agents and condition open.
+Validation regrades recorded values without importing candidate code. Runtime
+availability is a prerequisite for scored interactive model runs.
+
+## Status
+
+Implementation and control matrix are prepared. Real execution results will be
+recorded after CI; local response-fixture tests are not execution evidence.

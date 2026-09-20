@@ -42,7 +42,11 @@ def selected_checks(group):
 
 
 def assess(group, response):
-    expected = [r["expected"] for r in selected_checks(group)]
+    return assess_rows(selected_checks(group), response)
+
+
+def assess_rows(rows, response):
+    expected = [r["expected"] for r in rows]
     if response.get("status") != "completed":
         return {"passed": False, "checks": len(expected), "matched": 0,
                 "execution_status": response["status"], "failures": []}
@@ -54,5 +58,5 @@ def assess(group, response):
     # Feedback is actionable behavior, never a privileged patch or grader source.
     return {"passed": not failures, "checks": len(expected), "matched": len(expected) - len(failures),
             "execution_status": "completed",
-            "failures": [{"input": selected_checks(group)[i]["input"], "expected": expected[i], "actual": values[i]}
+            "failures": [{"input": rows[i]["input"], "expected": expected[i], "actual": values[i]}
                          for i in failures[:3]]}

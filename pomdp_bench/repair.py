@@ -6,14 +6,19 @@ import json
 from pathlib import Path, PurePosixPath
 
 from .generator import digest
-from .repair_checks import CHECK_VERSION, assess, selected_checks
+from .repair_checks import CHECK_VERSION, assess_rows, selected_checks
 from .repair_runtime import DockerExecutor, STATUSES, validate_image
+from . import repair_portfolio
+from .repair_portfolio_checks import selected as portfolio_checks
 
 VERSION = "repository-repair/1"
+REPAIR_VERSIONS = (VERSION, repair_portfolio.VERSION)
 DATA = Path(__file__).with_name("repair_data") / "packaging_state"
 
 
-def make_case(image):
+def make_case(image, task=None):
+    if task is not None:
+        return repair_portfolio.make_case(image, task)
     validate_image(image)
     files = json.loads((DATA / "base.json").read_text(encoding="utf-8"))
     provenance = json.loads((DATA / "provenance.json").read_text(encoding="utf-8"))
@@ -26,11 +31,15 @@ def make_case(image):
             "image_id": image, "check_version": CHECK_VERSION, "max_steps": 40, "max_checks": 8}
 
 
-def suite(image):
+def suite(image, tasks=None):
+    if tasks is not None:
+        return {"generator_version": repair_portfolio.VERSION, "cases": [make_case(image, task) for task in tasks]}
     return {"generator_version": VERSION, "cases": [make_case(image)]}
 
 
 def validate_case(case):
+    if case.get("generator_version") == repair_portfolio.VERSION:
+        return repair_portfolio.validate_case(case)
     if digest(case) != digest(make_case(case["image_id"])):
         raise ValueError("Repository task differs from its pinned source, runtime or contract")
 
@@ -56,6 +65,16 @@ class RepairEnvironment:
         self.last_result = {"kind": "start"}
 
     def contract(self):
+        if self.case["generator_version"] == repair_portfolio.VERSION:
+            result = self._original_contract()
+            result.update(repair_portfolio.contract(self.case),
+                          contract_version=repair_portfolio.VERSION)
+            result["actions"]["edit"]["target"]["path"] = "src/package/file.py"
+            result["semantics"] = result["semantics"].replace("src/packaging/*.py", "src/ Python or .pyi")
+            return result
+        return self._original_contract()
+
+    def _original_contract(self):
         return {"protocol_version": 1, "contract_version": VERSION, "family": "repository_repair",
                 "repository": "pypa/packaging (complete package source plus selected public docs/tests)",
                 "task": "Fix Requirement serialization losing the specifier's explicit prereleases setting. "
@@ -97,11 +116,16 @@ class RepairEnvironment:
     def lower_bound(self):
         return None  # No invented optimum tool count for a real repair task.
 
+    def check_rows(self, group):
+        return (portfolio_checks(self.case["profile"], group)
+                if self.case["generator_version"] == repair_portfolio.VERSION else selected_checks(group))
+
     def _check(self, group):
-        requests = [r["input"] for r in selected_checks(group)]
+        rows = self.check_rows(group)
+        requests = [r["input"] for r in rows]
         binding = {"step": len(self.history) + 1, "revision": self.revision, "group": group,
                    "files_sha256": digest(self.files), "input_sha256": digest(requests),
-                   "image_id": self.case["image_id"], "check_version": CHECK_VERSION}
+                   "image_id": self.case["image_id"], "check_version": self.case["check_version"]}
         if self.recorded_calls is not None:
             if len(self.calls) >= len(self.recorded_calls):
                 raise ValueError("Missing recorded code execution")
@@ -110,12 +134,14 @@ class RepairEnvironment:
                 raise ValueError("Code execution is not bound to this exact revision, input and runtime")
             response = copy.deepcopy(call["response"])
         else:
-            runner = self.executor or DockerExecutor(self.case["image_id"])
+            runner = self.executor or (DockerExecutor(self.case["image_id"], portfolio=True)
+                                      if self.case["generator_version"] == repair_portfolio.VERSION
+                                      else DockerExecutor(self.case["image_id"]))
             response = runner.run(copy.deepcopy(self.files), requests)
         if (not isinstance(response, dict) or response.get("status") not in STATUSES
                 or set(response) != ({"status", "values"} if response["status"] == "completed" else {"status"})):
             raise ValueError("Invalid code execution record")
-        outcome = assess(group, response)
+        outcome = assess_rows(rows, response)
         self.calls.append({**binding, "response": response})
         self.check_count += 1
         if group == "all":
@@ -158,7 +184,9 @@ class RepairEnvironment:
                         result = {"kind": "file", "path": path, "start": target["start"],
                                   "total_lines": len(lines), "text": "\n".join(selected)}
                     elif (command == "edit" and set(target) == {"path", "old", "new"}
-                          and path.startswith("src/packaging/") and path.endswith(".py")
+                          and (path.startswith("src/packaging/") and path.endswith(".py")
+                               if self.case["generator_version"] == VERSION
+                               else path.startswith("src/") and path.endswith((".py", ".pyi")))
                           and all(isinstance(target[k], str) and len(target[k]) <= 65536 for k in ("old", "new"))
                           and target["old"] and target["old"] != target["new"]
                           and self.files[path].count(target["old"]) == 1):
@@ -190,7 +218,7 @@ class RepairEnvironment:
                 "steps": len(self.history), "verified_current_state": self.verified_revision == self.revision,
                 "check_calls": self.check_count, "edited_files": len(self.changed_paths()), "revisions": self.revision,
                 "invalid_actions": self.invalid_actions, "blocked_actions": self.blocked_actions,
-                "code_execution_failures": sum(assess(c["group"], c["response"])["execution_status"] != "completed"
+                "code_execution_failures": sum(assess_rows(self.check_rows(c["group"]), c["response"])["execution_status"] != "completed"
                                                for c in self.calls)}
 
     def evidence(self):

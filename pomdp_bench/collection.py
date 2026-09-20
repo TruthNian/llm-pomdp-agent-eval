@@ -12,7 +12,7 @@ from pathlib import Path
 from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
 from .agents import validate_agent_version, validate_config
 from .coverage import COVER_VERSIONS, POLICIES as COVER_POLICIES, ASSISTED_POLICIES
-from .worlds import Environment, REPAIR_VERSION, cluster_id, validate_case_version, CONDITIONS, validate_condition_version
+from .worlds import Environment, REPAIR_VERSIONS, cluster_id, validate_case_version, CONDITIONS, validate_condition_version
 from .evaluation import episode_record, recover_interrupted, replay, replay_environment, run_episode, validate_suite
 from .generator import digest
 from .storage import collection_lock, read_json, write_json
@@ -37,7 +37,7 @@ def validate_definition(data, configs, conditions, replicates, wall_seconds):
     if (not isinstance(conditions, list) or not conditions or len(set(conditions)) != len(conditions)
             or set(conditions) - set(CONDITIONS)):
         raise ValueError("Unknown or duplicate conditions")
-    if data["generator_version"] == REPAIR_VERSION:
+    if data["generator_version"] in REPAIR_VERSIONS:
         if conditions != ["open"] or any(c["kind"] not in ("chat", "responses", "actions") for c in configs):
             raise ValueError("Repository repair needs open and HTTP agents or explicit artifact controls")
     elif data["generator_version"] in COVER_VERSIONS:
@@ -197,7 +197,7 @@ def read_run(directory: Path, *, partial=False):
             raise ValueError("Trace stratum mismatch")
         if record["cluster_id"] != cluster_id(case):
             raise ValueError("Trace cluster mismatch")
-        if case["generator_version"] == REPAIR_VERSION and record.get("cluster_unit") != "repository_task":
+        if case["generator_version"] in REPAIR_VERSIONS and record.get("cluster_unit") != "repository_task":
             raise ValueError("Repository cases cluster by source task, not synthetic seed")
         if version and type(record.get("request_in_flight")) is not bool:
             raise ValueError("Missing request boundary evidence")

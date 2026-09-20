@@ -1,5 +1,13 @@
 # Real repository repair — repository-repair/1
 
+Framework 2.8 additionally registers `repository-repair/2`, the
+[three-task compatibility portfolio](../studies/repository-portfolio-v1/README.md).
+It reuses this state machine with task-specific source and behavioral checks,
+80 steps and 12 executions. Existing Python source/type stubs under src/ are
+writable; public docs/tests remain read-only. Select it explicitly with
+`prepare-repair-suite --tasks werkzeug_routing attrs_preinit urllib3_read`.
+The original packaging contract and its recorded replay are preserved.
+
 Framework 2.7 adds an executable repair task over real upstream code. The output
 is a unified source patch. Acceptance checks behavior in an isolated runtime,
 requires verification of the current revision, and requires explicit handover.

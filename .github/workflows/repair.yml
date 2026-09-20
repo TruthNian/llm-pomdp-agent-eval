@@ -32,6 +32,14 @@ jobs:
         run: python studies/repository-repair-v1/controls.py --image "$REPAIR_IMAGE" --out artifacts/repair-controls
       - name: Replay recorded behavior without executing source
         run: python -m pomdp_bench validate artifacts/repair-controls
+      - name: Build isolated portfolio runtime
+        run: |
+          docker build --build-arg BASE_IMAGE="$REPAIR_IMAGE" -t pomdp-repair-portfolio studies/repository-portfolio-v1
+          image=$(docker image inspect pomdp-repair-portfolio --format '{{.Id}}')
+          echo "PORTFOLIO_IMAGE=$image" >> "$GITHUB_ENV"
+          docker image inspect "$image" --format '{{json .Id}}' > artifacts/portfolio-image.json
+      - name: Execute all portfolio artifact controls and fresh rechecks
+        run: python studies/repository-portfolio-v1/controls.py --image "$PORTFOLIO_IMAGE" --out artifacts/portfolio-controls
       - name: Retain successes, failures and partial evidence
         if: always()
         uses: actions/upload-artifact@v7
@@ -40,4 +48,6 @@ jobs:
           path: |
             artifacts/repair-controls
             artifacts/repair-image-digests.json
+            artifacts/portfolio-controls
+            artifacts/portfolio-image.json
           if-no-files-found: error

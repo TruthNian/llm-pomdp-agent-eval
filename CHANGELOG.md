@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.8.0 — 2026-09-20
+
+- Register `repository-repair/2` with pinned Werkzeug routing, attrs pre-init,
+  and urllib3 response-reading defects. Remove packaging-only workspace/check
+  assumptions while preserving the original repair anchor and replay.
+- Add 329 task-specific behavioral checks, exact upstream artifact controls,
+  plausible partial repairs, immutable runtime dependencies and a 12-row
+  real-execution matrix. Difficulty claims require model calibration.
+- Keep source tasks distinct from synthetic seeds. Preserve all historical data.
+
 ## 2.7.0 — 2026-09-20
 
 - Make real repository repair the mainline and replace the old dependency

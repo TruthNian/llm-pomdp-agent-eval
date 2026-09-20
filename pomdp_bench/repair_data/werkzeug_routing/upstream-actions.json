@@ -1,0 +1,32 @@
+[
+  {
+    "command": "edit",
+    "target": {
+      "path": "src/werkzeug/routing/map.py",
+      "old": "\n        self.default_subdomain = default_subdomain\n        self.strict_slashes = strict_slashes\n        self.merge_slashes = merge_slashes\n        self.redirect_defaults = redirect_defaults\n        self.host_matching = host_matching\n\n",
+      "new": "\n        self.default_subdomain = default_subdomain\n        self.strict_slashes = strict_slashes\n        self.redirect_defaults = redirect_defaults\n        self.host_matching = host_matching\n\n"
+    }
+  },
+  {
+    "command": "edit",
+    "target": {
+      "path": "src/werkzeug/routing/map.py",
+      "old": "\n        for rulefactory in rules or ():\n            self.add(rulefactory)\n\n    def is_endpoint_expecting(self, endpoint: str, *arguments: str) -> bool:\n        \"\"\"Iterate over all rules and check if the endpoint expects\n",
+      "new": "\n        for rulefactory in rules or ():\n            self.add(rulefactory)\n\n    @property\n    def merge_slashes(self) -> bool:\n        return self._matcher.merge_slashes\n\n    @merge_slashes.setter\n    def merge_slashes(self, value: bool) -> None:\n        self._matcher.merge_slashes = value\n\n    def is_endpoint_expecting(self, endpoint: str, *arguments: str) -> bool:\n        \"\"\"Iterate over all rules and check if the endpoint expects\n"
+    }
+  },
+  {
+    "command": "edit",
+    "target": {
+      "path": "src/werkzeug/routing/matcher.py",
+      "old": "                rv = _match(self._root, [domain, *path.split(\"/\")], [])\n            except SlashRequired:\n                raise RequestPath(f\"{path}/\") from None\n            if rv is None:\n                raise NoMatch(have_match_for, websocket_mismatch)\n            else:\n                raise RequestPath(f\"{path}\")\n",
+      "new": "                rv = _match(self._root, [domain, *path.split(\"/\")], [])\n            except SlashRequired:\n                raise RequestPath(f\"{path}/\") from None\n            if rv is None or rv[0].merge_slashes is False:\n                raise NoMatch(have_match_for, websocket_mismatch)\n            else:\n                raise RequestPath(f\"{path}\")\n"
+    }
+  },
+  {
+    "command": "verify"
+  },
+  {
+    "command": "finish"
+  }
+]

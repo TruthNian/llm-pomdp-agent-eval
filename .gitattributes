@@ -5,3 +5,4 @@
 *.pdf binary
 # Preserve empty context lines in the byte-pinned upstream diff.
 pomdp_bench/repair_data/packaging_state/upstream.patch whitespace=-blank-at-eol
+pomdp_bench/repair_data/*/upstream.patch whitespace=-blank-at-eol
