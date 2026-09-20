@@ -1,0 +1,18 @@
+{
+  "framework_version": "2.5.0",
+  "generator_version": "dependency-cover/1",
+  "purpose": "Bounded public development headroom check, not a held-out evaluation or model ranking",
+  "development_seeds": [0],
+  "scales": ["sanity", "extreme"],
+  "conditions": ["open"],
+  "replicates": 1,
+  "expected_episodes": 4,
+  "wall_seconds": 1800,
+  "agents": [
+    {"name": "gpt-5.6-sol", "kind": "responses", "model": "gpt-5.6-sol", "endpoint_env": "DIRECT_ENDPOINT", "api_key_env": "NATIVE_KEY", "headers_env": "NATIVE_HEADERS", "timeout_seconds": 240, "options": {"reasoning_effort": "high", "max_output_tokens": 16384}},
+    {"name": "custom/z-ai/glm-5.3", "kind": "responses", "model": "custom/z-ai/glm-5.3", "endpoint_env": "DIRECT_ENDPOINT", "api_key_env": "ROUTER_KEY", "headers_env": "ROUTER_HEADERS", "timeout_seconds": 240, "options": {"reasoning_effort": "high", "max_output_tokens": 16384}}
+  ],
+  "stopping_rule": "Exactly four public development episodes; one attempt each; no added seeds, retries, timeout changes or replacement failures",
+  "interpretation": "Completed task failures may suggest headroom; transport failures remain unknown about ability. All-success or all-failure at either extreme motivates a future separately versioned calibration, not retuning these samples. No readiness or ranking claim from one seed.",
+  "transport": {"base_url": "http://127.0.0.1:4202/v1", "headers": {"x-codex-router-exact-route": "1"}, "native_agent_runtime": false, "tools": [], "benchmark_retries": 0, "global_session_sharing_changes": false}
+}

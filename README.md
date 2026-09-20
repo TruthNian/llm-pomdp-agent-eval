@@ -8,7 +8,9 @@ An open framework for evaluating how agents **discover information, make decisio
 
 The unit of evaluation is an interaction trajectory. Actions reveal evidence, change the world, and consume future options. Successful completion must correspond to an accepted environment state.
 
-**Version 2.4 corrects the model action channel.** One HTTP transport supports Chat Completions and Responses without a native agent runtime. Typed reasoning parts are ignored as actions; completed items can supply an answer without repeating it in the final envelope. Whole-response completion and rejection of tools, ambiguity and truncation remain required. Preregistered studies preserve failures and seed-level uncertainty. Real-work validity remains unproven; the original 72-run comparison is a [historical study](studies/2026-gpt56-glm53/README.md).
+**Version 2.5 adds a structural difficulty ladder and selective recovery.** Agents discover overlapping operations, plan under finite work allowances, and rebuild only invalidated goals. Four scales reach 48 goals and 96 alternatives. Exact public-information controls distinguish global planning from competent local heuristics; [strong-model calibration](studies/coverage-calibration-v1/README.md) is separate from this implementation evidence. Real-work validity remains unproven; the original 72-run comparison is a [historical study](studies/2026-gpt56-glm53/README.md).
+
+High and discriminating difficulty is a [core maintenance contract](docs/DIFFICULTY.md): measure ceiling/floor effects, preserve immutable anchors, and version new scales as models improve. A larger task name or longer transcript does not establish difficulty.
 
 Development follows [explicit stages and acceptance gates](docs/ROADMAP.md): reliable collection → isolated intervention studies → new task structures → external validity → measured acceleration. Requirements are questioned, unnecessary work is removed, and the remaining workflow is simplified before it is automated. For long collections, use [`prepare`, `status` and `resume`](docs/COLLECTION.md); completed and interrupted attempts are never silently replaced.
 
@@ -55,6 +57,21 @@ Output contains `summary.json` plus a `private/` manifest and traces. Validation
 Optional installation: `python -m pip install -e .` provides the `pomdp-bench` command.
 
 ## Generate a new evaluation
+
+For the planning/recovery ladder, use the same collector with a separate generator:
+
+```bash
+python -m pomdp_bench generate-cover --fresh --count 12 --scales sanity challenge hard extreme --out artifacts/private/cover.json
+python -m pomdp_bench prepare --suite artifacts/private/cover.json --agents examples/coverage-agents.json --out artifacts/cover
+python -m pomdp_bench resume artifacts/cover
+python -m pomdp_bench validate artifacts/cover
+```
+
+Batch reads/builds preserve resource costs while removing unnecessary requests.
+Use `--stable` or `--slack N` only as declared ablations. Scale names describe
+structure; model headroom must be measured. [Rules, solvability and calibration gates](docs/DIFFICULTY.md).
+
+The original diagnostic generator remains available with unchanged semantics:
 
 ```bash
 python -m pomdp_bench generate --fresh --count 24 --families diagnosis cascade --profiles standard wide deep --out artifacts/private/suite.json

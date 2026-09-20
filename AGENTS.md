@@ -12,6 +12,8 @@ The project's objective is a durable evaluation framework for agents acting unde
 - New random seeds, repeated model runs, and semantic skins are distinct units. Keep paired design and seed clustering intact.
 - New capabilities need executable positive/negative controls and a precise claim about the construct measured.
 - Fresh seeds do not establish contamination resistance or real-world predictive validity.
+- High, adjustable and empirically discriminating difficulty is a core requirement. Do not infer it from task length, profile names, or failure of a deliberately weak policy. Keep a solvable public-information reference, competent heuristics, rescue ablations and explicit ceiling/floor checks on strong model configurations.
+- Preserve versioned difficulty anchors. Calibrate new scales before claiming frontier headroom; infrastructure failures do not demonstrate cognitive difficulty. Do not alter a frozen matrix or its budgets after observing model results.
 
 ## Preserve history
 

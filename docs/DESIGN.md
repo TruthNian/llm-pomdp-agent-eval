@@ -86,6 +86,14 @@ An operational action point is a synthetic resource, not a token or dollar. Repo
 
 ## Validity before leaderboard growth
 
+Difficulty must also survive model improvement. The small reactive discovery
+prototype is a contract test, not evidence of high difficulty. The new
+`dependency-cover/1` kernel introduces global compatibility under constrained
+work and selective invalidation. Its [difficulty contract](DIFFICULTY.md) requires
+competent heuristic comparisons, rescue ablations, strong-model ceiling/floor
+checks and immutable anchors before extending the ladder. Neither size nor
+scripted-control separation by itself establishes frontier headroom.
+
 Each family needs a public-information positive control and designed failures. A cosmetic-success policy must fail. A state-mutating action after acceptance must require re-verification. A generated instance must be reproducible, solvable under its declared budget, and blind to answer-bearing metadata.
 
 Fresh seeds help prevent exact-instance memorization. They do not prevent a model from learning the public generator's structure. Structural profiles, held-out generator variants, and external tasks are separate tests. A profile becomes held-out by the experimental protocol, not by its name.

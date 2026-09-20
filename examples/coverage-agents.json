@@ -1,0 +1,6 @@
+[
+  {"name": "exact-public-reference", "kind": "cover_reference"},
+  {"name": "maximum-new-coverage", "kind": "cover_greedy"},
+  {"name": "rarest-goal-first", "kind": "cover_rarest"},
+  {"name": "no-recovery", "kind": "cover_no_recovery"}
+]

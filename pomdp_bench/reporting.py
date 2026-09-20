@@ -28,6 +28,9 @@ def interval(values: list[tuple[str, float]], resamples=1000) -> list[float] | N
 
 
 def cell(rows: list[dict]) -> dict:
+    def metric(key, transform=lambda value: value):
+        # A different world does not acquire diagnostic measurements by filling zeroes.
+        return mean(transform(r["grade"][key]) for r in rows) if all(key in r["grade"] for r in rows) else None
     successes = sum(r["grade"]["success"] for r in rows)
     cost = sum(r["grade"]["cost"] for r in rows)
     usages = [r["usage"] for r in rows]
@@ -42,11 +45,13 @@ def cell(rows: list[dict]) -> dict:
             "collection_failures": sum(r["grade"]["termination"] == "collection_interrupted" for r in rows),
             "mean_action_cost": cost / len(rows), "action_cost_per_accepted_completion": cost / successes if successes else None,
             "mean_steps": mean(r["grade"]["steps"] for r in rows),
-            "mean_diagnostic_cost": mean(r["grade"]["diagnostic_cost"] for r in rows),
-            "mean_tests_after_certainty": mean(r["grade"]["tests_after_certainty"] for r in rows),
-            "completion_budget_lost_rate": mean(r["grade"]["budget_lost_at"] is not None for r in rows),
-            "wrong_repair_rate": mean(r["grade"]["wrong_repairs"] > 0 for r in rows),
-            "proxy_attempt_rate": mean(r["grade"]["proxy_attempts"] > 0 for r in rows),
+            "mean_diagnostic_cost": metric("diagnostic_cost"),
+            "mean_tests_after_certainty": metric("tests_after_certainty"),
+            "completion_budget_lost_rate": metric("budget_lost_at", lambda value: value is not None),
+            "wrong_repair_rate": metric("wrong_repairs", lambda value: value > 0),
+            "proxy_attempt_rate": metric("proxy_attempts", lambda value: value > 0),
+            **({"mean_work_spent": metric("work_spent"), "mean_inspection_cost": metric("inspection_cost")}
+               if any("work_spent" in r["grade"] for r in rows) else {}),
             "mean_elapsed_seconds": mean(r["elapsed_seconds"] for r in rows),
             "elapsed_lower_bound_episodes": sum(r.get("elapsed_seconds_is_lower_bound", False) for r in rows),
             "total_input_tokens": input_tokens, "total_output_tokens": output_tokens,

@@ -11,7 +11,9 @@ from pathlib import Path
 
 from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
 from .agents import validate_agent_version, validate_config
-from .environment import CONDITIONS, Environment, validate_condition_version
+from .environment import CONDITIONS, validate_condition_version
+from .coverage import VERSION as COVER_VERSION, POLICIES as COVER_POLICIES
+from .worlds import Environment, validate_case_version
 from .evaluation import episode_record, recover_interrupted, replay, replay_environment, run_episode, validate_suite
 from .generator import digest
 from .storage import collection_lock, read_json, write_json
@@ -35,6 +37,11 @@ def validate_definition(data, configs, conditions, replicates, wall_seconds):
     if (not isinstance(conditions, list) or not conditions or len(set(conditions)) != len(conditions)
             or set(conditions) - set(CONDITIONS)):
         raise ValueError("Unknown or duplicate conditions")
+    if data["generator_version"] == COVER_VERSION:
+        if conditions != ["open"] or any(c["kind"] not in (*COVER_POLICIES, "reference", "chat", "responses") for c in configs):
+            raise ValueError("Coverage requires open and coverage/reference/HTTP agents")
+    elif any(c["kind"] in COVER_POLICIES for c in configs):
+        raise ValueError("Coverage policies require a coverage suite")
     if (type(replicates) is not int or replicates < 1 or type(wall_seconds) not in (int, float)
             or not math.isfinite(wall_seconds) or wall_seconds <= 0):
         raise ValueError("Replicates and wall limit must be positive")
@@ -123,6 +130,8 @@ def read_run(directory: Path, *, partial=False):
     for config in manifest["agents"]:
         validate_agent_version(config, manifest["framework_version"])
     data = {"generator_version": manifest["generator_version"], "cases": manifest["cases"]}
+    for case in data["cases"]:
+        validate_case_version(case, manifest["framework_version"])
     validate_definition(data, manifest["agents"], manifest["conditions"], manifest["replicates"],
                         manifest["wall_seconds_per_episode"])
     if "study" in manifest:

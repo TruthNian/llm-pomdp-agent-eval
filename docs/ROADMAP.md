@@ -4,6 +4,11 @@
 
 The enduring question is whether an agent can turn incomplete information into an accepted outcome under resource constraints. A model name, training story, larger catalogue or higher score is not itself progress toward answering that question.
 
+**Persistent requirement:** high, adjustable and demonstrated discriminating
+difficulty. Keep overlap with earlier scales as capabilities advance, but do not
+let a saturated toy define the project's useful range. The [difficulty contract](DIFFICULTY.md)
+makes solvability, strong baselines, model headroom and ceiling/floor checks explicit.
+
 ## Working order
 
 Apply the requested five-step method in order: **question requirements → delete unnecessary parts → simplify and optimize → shorten feedback cycles → automate**. The first three steps are release gates. Faster collection is useful only after the collection measures the intended behavior.
@@ -124,14 +129,21 @@ and over-investigation fail throughout. A separate public-history acceptance
 check agrees with the state grader. This closes the minimal contract/control gate,
 not P3, model readiness, arbitrary hypothesis discovery or external validity.
 
-**Next bounded development iteration:** challenge a small structural generator
-before implementing it. Depth, shared prerequisites or selective invalidation
-must alter required decisions and costs; changing handles alone is insufficient.
-Require a public-information witness and truth-independent solvability budgets
-for every supported structure, then reuse the existing collector and replay
-without filling diagnostic-only metrics with invented zeroes. Keep prototype
-records separate until that integration and its failure accounting are verified.
-Do not add domains, scheduling, a plugin framework or a new overall score.
+**P3.2 implemented in 2.5:** `dependency-cover/1` combines hidden coverage,
+overlapping alternatives, global work constraints and selective invalidation.
+Four structural scales, an exact public-information reference, two competent
+local heuristics and recovery/budget ablations use the shared collector and
+replay. Diagnostic metrics remain null where inapplicable. Batch operations
+remove unnecessary request overhead while preserving work cost. The
+[192-episode development matrix and frozen model pilot](../studies/coverage-calibration-v1/README.md)
+separate structural evidence from measured model difficulty.
+
+**P3.3 next gate:** calibrate headroom against strong model/compute configurations,
+then freeze private seeds and useful structural holdouts. Do not call larger
+profiles frontier-hard before measurement. If the top scale saturates, design a
+new version with overlapping anchors; if failures are transport-dominated, repair
+the public-input channel gate before expanding private evaluation. Do not add
+domains, scheduling, a plugin framework or a new overall score.
 
 ## P4 — Test whether the benchmark predicts real outcomes
 
@@ -151,9 +163,9 @@ Profile actual collection, replay, analysis and maintenance costs. Remove avoida
 
 Public development seeds support debugging; private evaluation seeds support prospective collection; held-out structures test a different generalization claim. Retire and publish reviewed manifests/traces with versioned sources and exclusions. Never silently change a released study or erase failed collection attempts. New seeds alone do not establish contamination resistance.
 
-The next implementation work is **P3.2's bounded structural generation and shared evidence path**,
-after the P3.1 offline contract/control gate. Apply the removal rule to each proposed
-source of variation. Keep endpoint diagnosis as a separate bounded public-input
+The next gate is **P3.3's measured model headroom and frozen discrimination protocol**,
+after the P3.2 structural generator/shared evidence implementation. Apply the
+removal rule to each proposed source of difficulty. Keep endpoint diagnosis as a bounded public-input
 activity; the 2.4 live gate remains failed despite two complete tasks. Do not expand
 the completed pilots or infer model mechanisms from their execution failures.
 Neither transport corrections nor a new synthetic structure close P2's mechanism

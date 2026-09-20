@@ -7,21 +7,22 @@ from pathlib import Path
 
 from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
 from .agents import AdapterError, make_agent, validate_agent_version
-from .environment import Environment, validate_condition_version
-from .generator import GENERATOR_VERSION, digest, keyed_seed, validate_case
+from .environment import validate_condition_version
+from .generator import digest, keyed_seed
 from .storage import read_json
+from .worlds import Environment, VERSIONS, validate_case, validate_case_version
 
 
 def episode_record(env, config, replicate, elapsed=0, usage=None, error=None, in_flight=False):
     case = env.case
-    baseline = sum(next(c["repair_cost"] for c in stage["candidates"] if c["id"] == truth)
-                   for stage, truth in zip(case["stages"], case["truths"])) + case["verify_cost"]
+    initial = Environment(case, env.condition, replicate)
+    baseline = initial.lower_bound()
     grade = env.grade()
     return {"schema_version": SCHEMA_VERSION, "framework_version": __version__,
             "case_id": digest(case), "family": case["family"], "profile": case["profile"], "domain": case["domain"],
-            "cluster_id": digest([GENERATOR_VERSION, case["seed"]]),
+            "cluster_id": digest([case["generator_version"], case["seed"]]),
             "agent": copy.deepcopy(config), "condition": env.condition, "replicate": replicate,
-            "initial_observation": Environment(case, env.condition, replicate).observation(),
+            "initial_observation": initial.observation(),
             "contract": env.contract(), "events": copy.deepcopy(env.history),
             "grade": grade, "error": error, "usage": copy.deepcopy(usage),
             "request_in_flight": in_flight, "elapsed_seconds": round(elapsed, 6),
@@ -91,6 +92,7 @@ def replay_environment(trace: dict, case: dict, *, partial=False) -> Environment
     validate_condition_version(trace["condition"], trace["framework_version"])
     validate_agent_version(trace["agent"], trace["framework_version"])
     validate_case(case)
+    validate_case_version(case, trace["framework_version"])
     if trace["case_id"] != digest(case):
         raise ValueError("Trace/case fingerprint mismatch")
     env = Environment(case, trace["condition"], trace["replicate"])
@@ -136,11 +138,14 @@ def recover_interrupted(checkpoint: dict, case: dict) -> dict:
 
 def validate_suite(data: dict) -> None:
     if (not isinstance(data, dict) or set(data) != {"generator_version", "cases"}
-            or data.get("generator_version") != GENERATOR_VERSION or not data.get("cases")):
+            or data.get("generator_version") not in VERSIONS or not isinstance(data.get("cases"), list)
+            or not data["cases"]):
         raise ValueError("Unsupported or empty suite")
     ids = []
     for case in data["cases"]:
         validate_case(case)
+        if case["generator_version"] != data["generator_version"]:
+            raise ValueError("A suite must use one generator; cross-family pooling requires a separate protocol")
         ids.append(digest(case))
     if len(ids) != len(set(ids)):
         raise ValueError("Duplicate cases in suite")

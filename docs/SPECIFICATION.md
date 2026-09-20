@@ -1,6 +1,11 @@
-# Benchmark specification — frameworks 2.0–2.4
+# Diagnostic benchmark specification — frameworks 2.0–2.5
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
+
+2.5 adds the separately versioned `dependency-cover/1` family, specified in the
+[planning/recovery and difficulty contract](DIFFICULTY.md). The rules below still
+describe diagnostics only. The new family reuses collection/replay, uses `open`,
+and reports nonapplicable diagnostic metrics as null. Suites do not mix generators.
 
 2.1 preserves the environment and prompt semantics below. Its additional collection termination and evidence files are specified in the [collection contract](COLLECTION.md); historical 2.0 traces remain replayable, but cannot be resumed or silently pooled with 2.1.
 
@@ -117,7 +122,7 @@ Each trace stores the initial public observation, exact task contract, every pub
 `dependency-recovery/1` is a separately versioned [offline prototype](DISCOVERY_RECOVERY.md)
 with its own observation, transition, control and acceptance contract. It is not
 accepted as a `diagnostic-graphs/1` case and cannot be pooled into its metrics.
-The scored framework remains 2.4; prototype reports bind their implementation
+The prototype remains outside scored collection; its reports bind their implementation
 source hashes and require that source for replay. Added package source changes
 the collector's fingerprint, so an unfinished collection still needs its original
 checkout even when the scored semantics have not changed.

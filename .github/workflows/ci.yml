@@ -44,5 +44,11 @@ jobs:
         run: python -m pomdp_bench.discovery_controls --validate artifacts/discovery-controls.json
       - name: Recompute analysis
         run: python harness/analyze_results.py > analysis-output.json
+      - name: Generate structural difficulty controls
+        run: python -m pomdp_bench generate-cover --count 2 --scales sanity challenge hard extreme --out artifacts/cover-suite.json
+      - name: Collect structural difficulty controls
+        run: python -m pomdp_bench run --suite artifacts/cover-suite.json --agents examples/coverage-agents.json --out artifacts/cover
+      - name: Replay structural difficulty controls
+        run: python -m pomdp_bench validate artifacts/cover
       - name: Verify recomputed outputs
         run: python tools/verify_release.py

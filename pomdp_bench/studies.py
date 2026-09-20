@@ -36,7 +36,7 @@ def validate_plan(plan):
     fixed = {"schema_version": 1, "generator_version": GENERATOR_VERSION,
              "intervention": INTERVENTION_ID, "primary_outcome": "accepted_completion",
              "stopping_rule": "fixed_matrix", "failure_policy": "retain_and_bound"}
-    if (type(plan["schema_version"]) is not int or plan["framework_version"] not in ("2.2.0", "2.3.0", "2.4.0")
+    if (type(plan["schema_version"]) is not int or plan["framework_version"] not in ("2.2.0", "2.3.0", "2.4.0", "2.5.0")
             or any(plan[k] != v for k, v in fixed.items())):
         raise ValueError("Unsupported study version, intervention, outcome or collection policy")
     if not isinstance(plan["study_id"], str) or not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,79}", plan["study_id"]):

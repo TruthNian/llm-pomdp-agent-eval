@@ -1,6 +1,26 @@
 # Changelog
 
-## Unreleased — offline discovery/recovery contract
+## 2.5.0 — 2026-09-20
+
+- Make high, adjustable and empirically discriminating difficulty a core acceptance
+  requirement, with strong-model calibration, ceiling/floor checks and versioned anchors.
+- Add `dependency-cover/1`: discover overlapping operations, plan within work
+  limits, preserve valid progress and rebuild selectively after an announced change.
+- Add four structural scales, a public-information exact reference, maximum-coverage
+  and rarest-goal heuristics, plus budget and recovery rescue ablations.
+- Reuse the existing collector, checkpoint/resume, replay, reporting and HTTP
+  adapters. No plugin registry or second durable collector. Diagnostic-only metrics
+  stay null; generator versions cannot silently mix within one suite.
+- Add resource-preserving atomic batch actions so task size need not multiply
+  provider calls. Record the fixed 192-episode offline matrix and a separately
+  frozen four-episode public strong-model calibration plan.
+
+**Comparability:** diagnostic semantics are unchanged; 2.0–2.4 traces remain
+replayable. The new generator/action contract exists only from 2.5, uses `open`,
+and is not pooled with old scores. Named scales do not yet establish measured
+frontier difficulty. The P3.1 prototype remains unchanged and separately versioned.
+
+## P3.1 development milestone — 2026-09-20
 
 - Add the separately versioned `dependency-recovery/1` prototype: a probe reveals
   an unavailable preparation operation; an announced dependency replacement

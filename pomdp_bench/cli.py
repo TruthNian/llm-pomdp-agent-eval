@@ -13,6 +13,7 @@ from .generator import DOMAINS, FAMILIES, PROFILES, suite
 from .reporting import validate_run
 from .storage import collection_lock, read_json, write_json
 from .studies import prepare_study, validate_plan
+from .coverage import SCALES, suite as coverage_suite
 
 
 def show_study(report):
@@ -33,6 +34,15 @@ def main(argv=None) -> int:
     generate.add_argument("--families", nargs="+", choices=FAMILIES, default=list(FAMILIES))
     generate.add_argument("--profiles", nargs="+", choices=PROFILES, default=["standard"])
     generate.add_argument("--domains", nargs="+", choices=DOMAINS, default=["incident"])
+    coverage = commands.add_parser("generate-cover", help="Versioned planning scales; PRIVATE cases, no model calls")
+    coverage.add_argument("--out", type=Path, required=True)
+    coverage.add_argument("--count", type=int, default=12)
+    coverage.add_argument("--scales", nargs="+", choices=SCALES, default=["hard"])
+    coverage_seed = coverage.add_mutually_exclusive_group()
+    coverage_seed.add_argument("--seed", type=int, default=0, help="Public development seed start")
+    coverage_seed.add_argument("--fresh", action="store_true")
+    coverage.add_argument("--stable", action="store_true", help="Recovery ablation")
+    coverage.add_argument("--slack", type=int, default=0, help="Additional work in each epoch; a different task distribution")
     study = commands.add_parser("prepare-study", help="Bind a preregistered two-condition plan and draw fresh seeds; no model calls")
     study.add_argument("--plan", type=Path, required=True)
     study.add_argument("--out", type=Path, required=True)
@@ -61,11 +71,12 @@ def main(argv=None) -> int:
             print(f"Prepared {manifest['expected_episodes']} episodes for {plan['purpose']} study {plan['study_id']}.")
             print(f"Independent seeds: {plan['independent_seeds']}; conservative precision requirement: {required}.")
             print(f"Plan SHA256: {manifest['study']['plan_sha256']}; no model requests made. Resume: {args.out}")
-        elif args.command == "generate":
+        elif args.command in ("generate", "generate-cover"):
             if args.count < 1 or args.out.exists():
                 raise ValueError("Use count >= 1 and an unused output file")
             seeds = [secrets.randbits(128) for _ in range(args.count)] if args.fresh else list(range(args.seed, args.seed + args.count))
-            data = suite(seeds, args.families, args.profiles, args.domains)
+            data = (coverage_suite(seeds, args.scales, recovery=not args.stable, slack=args.slack)
+                    if args.command == "generate-cover" else suite(seeds, args.families, args.profiles, args.domains))
             write_json(args.out, data)
             print(f"Generated {len(data['cases'])} cases. Keep this file private during evaluation.")
         elif args.command in ("run", "demo", "prepare"):

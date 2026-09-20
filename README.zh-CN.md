@@ -7,7 +7,9 @@
 
 现实中的问题往往在执行过程中逐渐显露。每次行动都会同时改变已知信息、环境状态和后续选择。这里以完整交互轨迹为评测对象，用环境的真实终态判定任务是否完成。
 
-**2.4 版纠正动作通道的协议假设**：两个 API 共用 HTTP 传输，无需完整智能体运行时。合法推理片段不再被误拒，也不会当成动作；完整答案可以来自已完成的输出项，不必在最终事件中重复传输。整体完成、工具隔离和含糊输出检查继续保留。实验按预注册计划保留失败与种子级不确定性。真实工作效度仍需验证；原先 72 条 GPT/GLM 实验保留为[历史研究](studies/2026-gpt56-glm53/README.md)。
+**2.5 版加入结构难度阶梯与局部恢复**：智能体需要发现重叠操作，在有限执行额度内选择全局可行组合，并在变化后保留有效成果、恢复失效目标。四档规模最高包含 48 个目标、96 个备选操作。公开信息精确搜索与较强局部启发式已有明显差异；[真实强模型校准](studies/coverage-calibration-v1/README.md)单独报告。真实工作效度仍需验证；原先 72 条 GPT/GLM 实验保留为[历史研究](studies/2026-gpt56-glm53/README.md)。
+
+**高难度、可持续提高且确有区分度，是项目的核心验收要求。** [难度维护规范](docs/DIFFICULTY.md)要求检验天花板与地板效应、保留固定版本参照，并随模型进步校准新档位。任务变长、名字叫“极难”，都不算难度证据。
 
 开发按[分阶段路线与验收关卡](docs/ROADMAP.zh-CN.md)推进：可靠采集 → 单项机制实验 → 新任务结构 → 真实工作效度 → 度量后的加速。先质疑需求、删除不必要的内容，再简化和优化，最后自动化。长实验可用 [`prepare`、`status`、`resume`](docs/COLLECTION.md)；已经完成或中断的尝试不会被悄悄重跑替换。
 
@@ -54,6 +56,19 @@ python -m pomdp_bench validate artifacts/demo
 也可用 `python -m pip install -e .` 安装 `pomdp-bench` 命令。
 
 ## 为未来模型生成新任务
+
+新的规划／恢复阶梯复用现有采集器：
+
+```powershell
+python -m pomdp_bench generate-cover --fresh --count 12 --scales sanity challenge hard extreme --out artifacts/private/cover.json
+python -m pomdp_bench prepare --suite artifacts/private/cover.json --agents examples/coverage-agents.json --out artifacts/cover
+python -m pomdp_bench resume artifacts/cover
+python -m pomdp_bench validate artifacts/cover
+```
+
+批量探查和执行按成员数量计费，减少无意义的调用往返。`--stable` 移除变化，`--slack N` 放宽执行额度，
+必须作为预先声明的消融条件；不能在失败后替换原试验。档位名称只说明结构规模，是否难倒强模型需要实测。
+原来的诊断任务继续按既有语义生成：
 
 ```powershell
 python -m pomdp_bench generate --fresh --count 24 --families diagnosis cascade --profiles standard wide deep --out artifacts/private/suite.json
