@@ -327,9 +327,10 @@ class Runtime:
         except (ValueError, TypeError, sqlite3.Error) as exc:
             self.connection.rollback()
             result = {"error": str(exc)[:300]}
-        # Verification and handover use a stable boundary after this action's
-        # arrivals. finish deliberately does not create new work after a PASS.
-        if action.get("command") not in ("verify", "finish"):
+        # Only valid verification/handover use the stable boundary. Rejected
+        # final actions spend a normal tick and cannot skip scheduled arrivals.
+        stable_boundary = action.get("command") in ("verify", "finish") and "error" not in result
+        if not stable_boundary:
             if self.tick <= 18:
                 self.submit(f"live-{self.tick}", 900 + self.tick * 13)
             self.pump()

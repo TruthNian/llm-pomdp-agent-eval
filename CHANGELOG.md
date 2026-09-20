@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.9.2
+
+- Rejected `verify`/`finish` actions now advance scheduled arrivals like every
+  other rejected action. The earlier stable-boundary exception incorrectly
+  allowed malformed final actions to skip incoming orders.
+- Recorded older trajectories retain their original responses and versions.
+  New collections require the corrected source. Existing model scores are not
+  rerun or relabeled as measurements of the corrected version.
+
 ## 2.9.1
 
 - Preserve completed malformed model actions as rejected, charged turns with feedback;

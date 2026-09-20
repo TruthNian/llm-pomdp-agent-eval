@@ -48,6 +48,22 @@ class IncidentTests(unittest.TestCase):
         self.assertFalse(trace["grade"]["success"])
         self.assertFalse(trace["grade"]["verified_current_state"])
 
+    def test_rejected_final_actions_cannot_skip_scheduled_traffic(self):
+        for action in ({"command": "finish", "target": "invalid"},
+                       {"command": "verify", "target": "invalid"},
+                       {"command": "verify", "extra": "invalid"}):
+            with self.subTest(action=action):
+                env = IncidentEnvironment(make_case())
+                try:
+                    for _ in range(18):
+                        self.assertIn("error", env.step(action)["result"])
+                    self.assertEqual(env.last_response["audit"]["order_count"], 25)
+                    self.assertEqual(env.grade()["steps"], 18)
+                    self.assertEqual(env.grade()["invalid_actions"], 18)
+                    self.assertFalse(env.done)
+                finally:
+                    env.close()
+
     def test_sql_is_useful_but_read_only_and_resources_close(self):
         env = IncidentEnvironment(make_case())
         try:
