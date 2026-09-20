@@ -36,6 +36,8 @@ jobs:
         run: python -m pomdp_bench validate artifacts/ci-demo
       - name: Verify documentation links
         run: python tools/check_docs.py
+      - name: Regrade published real-repair behavior without code execution
+        run: python studies/repository-repair-v1/verify.py
       - name: Verify published discovery and recovery controls
         run: python -m pomdp_bench.discovery_controls --validate studies/discovery-recovery-v1/controls.json
       - name: Reproduce discovery and recovery controls

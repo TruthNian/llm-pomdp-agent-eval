@@ -1,0 +1,13 @@
+{
+  "workflow_run_url": "https://github.com/TruthNian/llm-pomdp-agent-eval/actions/runs/35494806761",
+  "source_commit": "136e0c5885029aff3306237c9cf93c55907ee057",
+  "image_id": "sha256:b2bb53ac7b6fbe78a48c95b7c15130ea21de1674fc683fbc93158b0c23826823",
+  "image_repository_digests": [
+    "python@sha256:8d9d0b8bcf6506481eae4907c18f5e3e7902e629f5f6d684f9e7c32e85e3ddf0"
+  ],
+  "evidence_file_sha256": "0c7665410705ad8f0c9b2ae9b4f6ca41b2ca7a3763f8e40563dc7d2b91dde4ea",
+  "original_container_calls": 8,
+  "fresh_recheck_container_calls": 8,
+  "attempts": 6,
+  "model_calls": 0
+}

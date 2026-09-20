@@ -33,5 +33,32 @@ explicit response fixtures and do not count as real candidate execution.
 
 ## Execution record
 
-Implementation and matrix are prepared; actual container evidence will be added
-after the first CI execution. No code-execution or model outcome is claimed yet.
+**First execution passed**, using clean source commit
+`136e0c5885029aff3306237c9cf93c55907ee057` in
+[CI run 35494806761](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/runs/35494806761).
+All six attempted controls remain in [control-evidence.json](control-evidence.json).
+[execution.json](execution.json) binds its byte hash, workflow, image ID and
+image repository digest. There were 8 original container calls, 8 fresh recheck
+calls, and zero model calls. All six recorded traces also validated locally
+after downloading the full CI artifact.
+
+| Control | Observed behavior | Delivery |
+|---|---|---|
+| unchanged | Reproduction failed; 54/118 full checks matched | Rejected |
+| example-only | Reproduction passed; 50/118 full checks matched | Rejected |
+| upstream-artifact | 118/118 matched | Accepted |
+| unverified-later-edit | 118/118 before later edit; PASS expired | Rejected |
+| test-tampering | Test edit rejected; 54/118 matched | Rejected |
+| exit-zero | Empty behavior output; invalid_response | Rejected |
+
+All fresh rechecks agreed with original observations and grades. Recorded
+values and patches can be audited locally without Docker:
+
+```bash
+python studies/repository-repair-v1/verify.py
+```
+
+For fresh execution, run the control command in the task contract using the
+recorded image. A new run has its own directory and provenance; it does not
+replace this first execution. These results validate the declared repair
+acceptance loop. They do not measure model performance or frontier difficulty.
