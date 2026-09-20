@@ -9,7 +9,7 @@ from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
 from .agents import AdapterError, make_agent, validate_agent_version
 from .generator import digest, keyed_seed
 from .storage import read_json
-from .worlds import Environment, VERSIONS, validate_case, validate_case_version, validate_condition_version
+from .worlds import Environment, VERSIONS, REPAIR_VERSION, cluster_id, validate_case, validate_case_version, validate_condition_version
 
 
 def episode_record(env, config, replicate, elapsed=0, usage=None, error=None, in_flight=False):
@@ -19,14 +19,16 @@ def episode_record(env, config, replicate, elapsed=0, usage=None, error=None, in
     grade = env.grade()
     return {"schema_version": SCHEMA_VERSION, "framework_version": __version__,
             "case_id": digest(case), "family": case["family"], "profile": case["profile"], "domain": case["domain"],
-            "cluster_id": digest([case["generator_version"], case["seed"]]),
+            "cluster_id": cluster_id(case),
+            **({"cluster_unit": "repository_task", "repository_evidence": env.evidence()}
+               if case["generator_version"] == REPAIR_VERSION else {}),
             "agent": copy.deepcopy(config), "condition": env.condition, "replicate": replicate,
             "initial_observation": initial.observation(),
             "contract": env.contract(), "events": copy.deepcopy(env.history),
             "grade": grade, "error": error, "usage": copy.deepcopy(usage),
             "request_in_flight": in_flight, "elapsed_seconds": round(elapsed, 6),
             "clairvoyant_action_cost_lower_bound": baseline,
-            "successful_excess_cost_over_lower_bound": grade["cost"] - baseline if grade["success"] else None}
+            "successful_excess_cost_over_lower_bound": grade["cost"] - baseline if grade["success"] and baseline is not None else None}
 
 
 def run_episode(case: dict, config: dict, condition: str, replicate: int, wall_seconds=300,
@@ -85,7 +87,7 @@ def run_episode(case: dict, config: dict, condition: str, replicate: int, wall_s
     return snapshot()
 
 
-def replay_environment(trace: dict, case: dict, *, partial=False) -> Environment:
+def replay_environment(trace: dict, case: dict, *, partial=False, execute_checks=False) -> Environment:
     if trace.get("schema_version") != SCHEMA_VERSION or trace.get("framework_version") not in REPLAY_VERSIONS:
         raise ValueError("Unsupported trace version")
     validate_condition_version(trace["condition"], trace["framework_version"])
@@ -94,7 +96,10 @@ def replay_environment(trace: dict, case: dict, *, partial=False) -> Environment
     validate_case_version(case, trace["framework_version"])
     if trace["case_id"] != digest(case):
         raise ValueError("Trace/case fingerprint mismatch")
-    env = Environment(case, trace["condition"], trace["replicate"], framework_version=trace["framework_version"])
+    repository = case["generator_version"] == REPAIR_VERSION
+    calls = trace["repository_evidence"]["calls"] if repository else None
+    env = Environment(case, trace["condition"], trace["replicate"], framework_version=trace["framework_version"],
+                      recorded_calls=None if execute_checks else calls)
     if trace["initial_observation"] != env.observation() or trace["contract"] != env.contract():
         raise ValueError("Initial observation or contract changed")
     for index, event in enumerate(trace["events"]):
@@ -110,6 +115,8 @@ def replay_environment(trace: dict, case: dict, *, partial=False) -> Environment
         env.abort(termination)
     if env.grade() != trace["grade"]:
         raise ValueError("Recorded grade differs from replayed state")
+    if repository and env.evidence() != trace["repository_evidence"]:
+        raise ValueError("Repository patch or external execution evidence differs from replay")
     baseline = episode_record(env, trace["agent"], trace["replicate"])
     for field in ("clairvoyant_action_cost_lower_bound", "successful_excess_cost_over_lower_bound"):
         if trace.get(field) != baseline[field]:

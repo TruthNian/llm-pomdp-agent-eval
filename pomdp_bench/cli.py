@@ -8,12 +8,14 @@ from pathlib import Path
 from .agents import BUILTINS
 from .collection import prepare_suite, resume_suite, run_status, run_suite, save_summary
 from .worlds import CONDITIONS
-from .evaluation import load_suite
+from .evaluation import load_suite, replay_environment
 from .generator import DOMAINS, FAMILIES, PROFILES, suite
 from .reporting import validate_run
 from .storage import collection_lock, read_json, write_json
 from .studies import prepare_study, validate_plan
 from .coverage import SCALES, DEPTH_SCALES, suite as coverage_suite
+from .repair import suite as repair_suite
+from .generator import digest
 
 
 def show_study(report):
@@ -44,6 +46,9 @@ def main(argv=None) -> int:
     coverage_seed.add_argument("--fresh", action="store_true")
     coverage.add_argument("--stable", action="store_true", help="Recovery ablation")
     coverage.add_argument("--slack", type=int, default=0, help="Additional work in each epoch; a different task distribution")
+    repair = commands.add_parser("prepare-repair-suite", help="Pin a real upstream repair task and container image; no code execution")
+    repair.add_argument("--image", required=True, help="Immutable local Docker image ID (sha256:...)")
+    repair.add_argument("--out", type=Path, required=True)
     study = commands.add_parser("prepare-study", help="Bind a preregistered two-condition plan and draw fresh seeds; no model calls")
     study.add_argument("--plan", type=Path, required=True)
     study.add_argument("--out", type=Path, required=True)
@@ -58,14 +63,17 @@ def main(argv=None) -> int:
     demo = commands.add_parser("demo", help="Offline positive/negative controls; consumes no model tokens")
     demo.add_argument("--out", type=Path, required=True)
     demo.add_argument("--count", type=int, default=12)
-    for command in ("validate", "summarize", "resume", "status"):
+    for command in ("validate", "recheck", "summarize", "resume", "status"):
         item = commands.add_parser(command, help={"resume": "Collect only unstarted episodes; never retry failures",
                                                  "status": "Inspect coverage without calling models"}.get(
                                                      command, "Replay and check the entire matrix"))
         item.add_argument("run_directory", type=Path)
     args = parser.parse_args(argv)
     try:
-        if args.command == "prepare-study":
+        if args.command == "prepare-repair-suite":
+            write_json(args.out, repair_suite(args.image), replace=False)
+            print("Prepared pinned repository source and runtime; no code or model execution.")
+        elif args.command == "prepare-study":
             plan = read_json(args.plan)
             required = validate_plan(plan)
             manifest = prepare_study(plan, args.out)
@@ -112,7 +120,12 @@ def main(argv=None) -> int:
                     count = report["episodes"]
                     show_study(report)
             else:
-                _, records = validate_run(args.run_directory)
+                manifest, records = validate_run(args.run_directory)
+                if args.command == "recheck":
+                    cases = {digest(c): c for c in manifest["cases"]}
+                    for row in records:
+                        replay_environment(row, cases[row["case_id"]], execute_checks=True)
+                    print("External checks re-executed and compared with recorded behavior.")
                 count = len(records)
             print(f"Validated {count} episodes: generator, observations, scores, and complete matrix.")
         return 0

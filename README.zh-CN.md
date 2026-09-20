@@ -1,170 +1,99 @@
-# POMDP 代理评测框架
+# POMDP 智能体评测框架
 
 [![CI](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/workflows/ci.yml)
-[English](README.md) · [设计依据](docs/DESIGN.md) · [评测规范](docs/SPECIFICATION.md) · [接入模型](docs/MODEL_ADAPTERS.md)
+[English](README.md) · [路线](docs/ROADMAP.zh-CN.md) · [设计](docs/DESIGN.md) · [接入模型](docs/MODEL_ADAPTERS.md)
 
-评估代理在信息不完整的情况下，如何**获取证据、理解问题、选择行动、分配资源、从错误中恢复并完成验收**。
+评估智能体能否在信息不完整、资源有限的情况下，交付**通过验收、有实际价值的成果**。
+完整轨迹是评测单位；失败尝试、执行故障和交付成本都保留。
 
-现实中的问题往往在执行过程中逐渐显露。每次行动都会同时改变已知信息、环境状态和后续选择。这里以完整交互轨迹为评测对象，用环境的真实终态判定任务是否完成。
+**2.7 将真实仓库修复确立为开发主线。** 智能体阅读真实源码、定位原因、修改代码、
+执行行为检查，最终交付补丁。首个任务复现 pypa/packaging 的真实序列化缺陷，
+118 项检查覆盖报告中的问题、相关行为与向后兼容。[任务规范](docs/REPOSITORY_REPAIR.md)。
 
-**2.6 版加入实验性深度档位与显式求解器对照**：智能体需要发现重叠操作，在有限执行额度内选择可行组合，并在变化后恢复失效目标。旧四档保留，两个实验档最高包含 96 个目标、288 个备选操作；可选的求解动作把组合搜索与带工具的执行流程分开检验。真实工作效度仍需验证；原先 72 条 GPT/GLM 实验保留为[历史研究](studies/2026-gpt56-glm53/README.md)。
+首个公开问题负责打通执行和验收。下一阶段从有后果的真实修复中建立高难题集，
+用配备实用工具的强模型检验区分度，再随模型提升扩展。
+目录大小、提示长度和通信超时都不能充当能力难度的证据。
 
-**校准发现：** [第二轮完整实测](studies/coverage-calibration-v2/README.md)中，
-Sol 在一个公开种子上通过了原 2.5 最高档；GLM 对应尝试触及响应大小上限，不能解释为能力不足。
-目前尚未证明对前沿模型有足够难度余量。[可复现的求解器筛查](studies/coverage-search-v1/README.md)
-保留全部 180 次搜索，进一步探索需要组合更多操作的结构，达到验收条件后才加入正式难度阶梯。
+## 实现路径与架构
 
-[2.5.3 候选验收](studies/coverage-qualification-v1/README.md)保留 252 行计划：
-232 行实际执行并重放，20 行因前置参考解不可用而未执行。
-两个更深结构通过离线参考与救援检查，第三个有 10/12 个种子触及参考搜索限额；私有种子上的模型区分度尚未成立。
-
-**2.6 开始检验“有实用工具时还剩什么难度”：** 两个通过结构以 depth18／depth24 实验档接入，
-可选的限额 solve 动作只从已探查信息中给出建议，执行、恢复、验收仍由模型决定。
-固定的工具消费脚本已能完成全部 24 个验收实例，因此更广泛的智能体难度声明需要更强的结构证据。
-[完整四次实测](studies/coverage-depth-v1/README.md)保留两条直接模式请求超时、两条带工具成功；
-后者均使用 9 个动作、2 次求解调用。四条全部重放，22 个公开请求指纹全部核对。
-一个公开实例不能证明认知能力不足、因果性救援或总体排名。带工具成功的输入用量仍很高；
-下一步先检验重复历史数据的删除，再构建让信息取舍真正影响结果的任务。
-
-**高难度、可持续提高且确有区分度，是项目的核心验收要求。** [难度维护规范](docs/DIFFICULTY.md)要求检验天花板与地板效应、保留固定版本参照，并随模型进步校准新档位。任务变长、名字叫“极难”，都不算难度证据。
-
-开发按[分阶段路线与验收关卡](docs/ROADMAP.zh-CN.md)推进：可靠采集 → 单项机制实验 → 新任务结构 → 真实工作效度 → 度量后的加速。先质疑需求、删除不必要的内容，再简化和优化，最后自动化。长实验可用 [`prepare`、`status`、`resume`](docs/COLLECTION.md)；已经完成或中断的尝试不会被悄悄重跑替换。
-
-单项干预实验使用 [`prepare-study`](docs/STUDIES.md)，[离线示例](examples/study-reserve.pilot.json)无需调用模型。主分析只比较同一模型在两种提示下的配对结果；超时保留在分母中，并单独报告其造成的解释范围。小样本全成功也不会被报告成确定的总体效果。
-
-[预注册的 8 条真实模型试跑](studies/verification-reserve-pilot-v1/README.md)已完整发布，包含两条接入失败和本机运行时的能力边界遗漏。结果没有证明预算提醒有效；下一步先验证动作通道，再考虑扩大采集。
-
-[第一轮直接 HTTP 验证](studies/direct-channel-validation-v1/README.md)保留了 4 条首请求失败。[2.4 独立后续验证](studies/direct-channel-validation-v2/README.md)中，两种模型各完成一条多阶段任务，另两条分别因流失败和超时终止。**整组接入验收仍未通过。** 4 条均完整重放；开发诊断单独报告，旧失败不被替换。
-
-## 无需模型账号即可运行
-
-新任务结构已有[版本化的依赖发现与恢复离线原型](docs/DISCOVERY_RECOVERY.md)。
-[60 条完整对照轨迹](studies/discovery-recovery-v1/README.md)检验未知操作的获取、变化后的信息失效与重建，
-并通过移除对应障碍，让相关失败策略恢复成功。它尚未加入正式评分家族，也不是模型成绩。
-原型单独运行与重放：
-
-```powershell
-python -m pomdp_bench.discovery_controls --out artifacts/discovery-controls.json
-python -m pomdp_bench.discovery_controls --validate artifacts/discovery-controls.json
+```text
+固定任务与验收要求
+  → 公开观察 → 模型 JSON 动作 → 检索、阅读、修改源码工作区
+  → 隔离容器执行 → 环境外部比较行为
+  → 当前版本验证通过 + 主动交付 → 源码补丁
+  → 单次尝试采集 → 记录重放／重新执行 → 按任务汇总
 ```
 
-Python 3.11+，运行时只使用标准库。在仓库根目录执行：
+所有任务复用一个采集器。源码、镜像、预算和尝试与证据绑定。
+模型获得公开工具结果，不获得私有清单、上游答案或评分器。
+任何修改都会使旧验证失效；失败留在分母中，缺少用量保持未知。
+
+## 运行
+
+Python 3.11+，评测器使用标准库；执行候选代码还需要支持 Linux 容器的 Docker。
+PowerShell 示例：
 
 ```powershell
-python -m pomdp_bench demo --out artifacts/demo
+python -m pip install -e .
+docker pull python:3.13-slim
+$repairImage = docker image inspect python:3.13-slim --format '{{.Id}}'
+python studies/repository-repair-v1/controls.py --image $repairImage --out artifacts/repair-controls
+python -m pomdp_bench validate artifacts/repair-controls
+```
+
+[六项固定对照](studies/repository-repair-v1/README.md)检查正确修复、不改源码、
+只通过报告样例、验证后改动、篡改测试与空进程成功退出。
+上游补丁是产物验收对照，不是模型成绩。对照命令也会用新容器重新执行检查。
+
+`validate` 核对已记录行为，不运行候选代码。
+`recheck` 使用固定镜像重新执行并比对原记录。
+模型任务沿用 `chat`／`responses` 配置和
+[`prepare`／`resume` 流程](docs/REPOSITORY_REPAIR.md#run)。
+凭据留在环境变量和请求头；完成或中断的尝试不会静默重跑替换。
+
+没有 Docker 或模型账号也能运行合成回归对照：
+
+```powershell
+python -m pomdp_bench demo --out artifacts/demo --count 3
 python -m pomdp_bench validate artifacts/demo
 ```
 
-同一批生成任务交给四种策略：
+## 开发取舍与结果
 
-| 策略 | 输入 | 用途 |
-|---|---|---|
-| `reference` | 公开任务与观察 | 正对照：按可靠检测决策树收集信息，修复、验收、交付 |
-| `random` | 公开动作目录 | 随机动作基线 |
-| `overdiagnose` | 公开任务与观察 | 负对照：把全部诊断检查两遍后才行动 |
-| `proxy` | 公开任务与观察 | 负对照：把仪表盘改成健康后交付 |
+按 **质疑 → 删除 → 简化和优化 → 加速 → 自动化** 的顺序工作。
 
-参考策略不读取隐藏答案。它在“可靠检测决策树”这个限定策略类内计算最坏情形成本最小的方案，并非全局最优 POMDP 求解器。评分器另行记录知道答案时的动作成本下界。
+- 主线是修复真实问题、保护相关行为并交付可审查补丁。
+- 诊断、依赖发现和覆盖搜索保留为对照。
+- 删除“扩大合成目录、完成历史压缩后才能做真实工作”的前置条件。
+- 复用采集、模型接入和证据校验，不另造调度器、插件体系或智能总分。
+- 难度来自跨文件诊断、兼容性约束和失败恢复；用强模型实测，
+  随能力进步扩展，同时保留固定历史参照。
 
-[已发布的实现验证](studies/framework-v2-validation/README.md)：144 个生成实例、576 条重放轨迹；参考策略 144/144，随机策略 4/144，两个负对照均为 0/144。这些是脚本策略验证结果，不是模型成绩。
+[逐步路线](docs/ROADMAP.zh-CN.md)给出交付物与删除条件。
+分别报告通过验收的补丁、工具步骤、检查次数、修改文件数、耗时、用量和执行故障。
+修复任务按源问题聚类，合成任务按种子聚类。
+反复运行一个公开问题不会产生更多独立任务。未测量的人工介入时间不编造。
 
-输出包含 `summary.json` 和 `private/` 中的运行清单、轨迹。`validate` 会重新生成实例、重放动作、核对评分，并拒绝缺失或重复记录。输出目录存在时拒绝覆盖。评测期间应让代理无法读取私有文件。
+已发布研究保持原样，入口见[证据索引](README.md#preserved-evidence)。
+最近的[深度试跑](studies/coverage-depth-v1/README.md)保留两条直接模式请求超时、
+两条带工具成功；固定脚本可完成全部 24 个合格实例。
+据此将覆盖任务保留为搜索和工具使用对照，把主线推进到实际代码交付。
 
-也可用 `python -m pip install -e .` 安装 `pomdp-bench` 命令。
-
-## 为未来模型生成新任务
-
-新的规划／恢复阶梯复用现有采集器：
-
-```powershell
-python -m pomdp_bench generate-cover --fresh --count 12 --scales sanity challenge hard extreme --out artifacts/private/cover.json
-python -m pomdp_bench prepare --suite artifacts/private/cover.json --agents examples/coverage-agents.json --out artifacts/cover
-python -m pomdp_bench resume artifacts/cover
-python -m pomdp_bench validate artifacts/cover
-```
-
-批量探查和执行按成员数量计费，减少无意义的调用往返。`--stable` 移除变化，`--slack N` 放宽执行额度，
-必须作为预先声明的消融条件；不能在失败后替换原试验。档位名称只说明结构规模，是否难倒强模型需要实测。
-原来的诊断任务继续按既有语义生成：
-
-```powershell
-python -m pomdp_bench generate --fresh --count 24 --families diagnosis cascade --profiles standard wide deep --out artifacts/private/suite.json
-python -m pomdp_bench run --suite artifacts/private/suite.json --agents examples/agents.json --conditions open principles procedural --out artifacts/controls
-python -m pomdp_bench validate artifacts/controls
-```
-
-`--fresh` 使用新生成的私有种子。开发时可用 `--seed 0` 重现任务，公开开发种子不应算作留出测试。
-
-生成器改变候选假设、检测集合划分、成本、可靠性、目录顺序、真实故障和阶段结构。重复运行改变观察噪声，不算新的独立任务。`wide` 增加候选数量，`deep` 扩大多阶段深度；若用于泛化评测，应在调参前预先留出。
-
-| 家族 | 信息如何出现 | 主要考验 |
-|---|---|---|
-| `diagnosis` | 从多个原因中诊断；便宜检测可能出错，可靠检测更贵 | 信息价值、何时停止、资源分配 |
-| `cascade` | 修复前一阶段后才出现下一阶段的诊断目录 | 调整策略、丢弃失效假设、预留预算 |
-
-错误修复会留下需要回滚的损害。健康覆盖只能改变表面状态。强验证必须通过，任何后续状态修改都会使验收失效。免费、无效和预算不足的动作同样占用步骤额度。
-
-目前 `incident` 与 `data_pipeline` 是同一内核的两种语义外观，用于配对测试，不能代表两个独立现实领域。详见[测量边界](docs/DESIGN.md#measurement-boundaries)。
-
-## 接入任意命名的模型
-
-新运行器与统计支持任意模型名称、任意数量的比较组。`chat` 和 `responses` 适配器只发送公开任务、当前观察和已有动作，不启动智能体运行时或工具执行器，也不提供 shell、文件系统、种子、答案或评分器工具。Responses 接口可用[对应配置示例](examples/responses-agent.example.json)。
-
-1. 复制[配置示例](examples/chat-agent.example.json)，填写模型标识及供应商支持的推理参数。
-2. 设置本地环境变量：完整 HTTPS 端点 `BENCH_CHAT_ENDPOINT` 和凭据 `BENCH_API_KEY`。
-3. 使用相同任务集运行各模型与提示条件：
-
-```powershell
-python -m pomdp_bench run --suite artifacts/private/suite.json --agents my-agents.json --conditions open principles procedural --replicates 3 --out artifacts/models
-```
-
-调用产生正常的供应商费用。凭据不写入配置或轨迹。推理档位须显式配置、如实报告；程序不会自行把不同供应商的档位视作相同计算量。详见[模型接入说明](docs/MODEL_ADAPTERS.md)。
-
-## 如何理解结果
-
-主指标是**通过验收的完成率**：全部阶段修复、损害清理、覆盖关闭、最新状态通过验证，并在预算内主动结束。
-
-普通运行汇总展示各家族与配置的表现、每个成果承担的动作成本和 token、确定答案后的冗余检测、错误修复、表面指标操纵及预算损失；提供严格配对比较、提示敏感性与按种子聚类的 bootstrap 区间。失败仍计入分母，缺少用量时显示 `null`。
-
-预注册实验以绑定计划的 `study_analysis` 为主分析，使用种子级 Hoeffding 同时区间，并单列接入中断造成的识别范围。此时通用汇总中的 bootstrap 字段只作描述性兼容输出。
-
-不设置任意加权的“智能总分”。程序提示带来的提升只说明对本次干预的敏感性，解释为内在自主性需要额外证据；token 也不直接等于费用或 FLOPs。详见[指标定义](docs/SPECIFICATION.md#metrics-and-comparison)。
-
-## 长期维护的原则
-
-长期资产是可检验的规范、环境与证据：
-
-1. 生成器、任务接口、状态转移、提示和评分规则均记录版本。
-2. 真实状态与评分在代理观察边界之外。
-3. 用只依赖公开信息的策略验证可解性。
-4. 用负对照检查评分能识别表面成功和有缺陷的策略。
-5. 同时检验新实例与新任务结构。
-6. 冻结已发布研究；测试集退役后公开清单与轨迹。
-7. 通过真实工作任务验证外部效度，再讨论部署表现。
-
-已有交互式评测覆盖了其中许多问题。项目与 AgentBoard、τ-bench、OSWorld、InfoSeeker 的关系见[相关研究](docs/RELATED_WORK.md)，后续实验与验收门槛见[路线图](docs/ROADMAP.zh-CN.md)。
-
-## 代码与历史数据
-
-```text
-pomdp_bench/  生成器、环境、策略、接入、运行器、重放、统计
-examples/     离线策略与模型配置
-docs/         设计、规范、效度、扩展与版本管理
-tests/        状态转移、生成、泄露、重放、HTTP、数据完整性
-studies/      历史索引及不可变文件哈希
-harness/      v1 历史实现
-results/      v1 轨迹与统计
-reports/      v1 报告
-```
-
-历史文件保留原路径，已有链接继续可用。[效度说明与勘误](studies/2026-gpt56-glm53/ERRATA.md)单独记录，避免用新版定义重写旧结果。
+## 验证与贡献
 
 ```powershell
 python -m unittest discover -s tests -v
-python tools/verify_release.py
 python tools/verify_study.py
+python tools/verify_release.py
+python tools/check_docs.py
 ```
 
-[贡献指南](CONTRIBUTING.md) · [隔离边界](SECURITY.md) · [版本变化](CHANGELOG.md) · [引用信息](CITATION.cff)
+[pomdp_bench/](pomdp_bench/) 是环境、模型接入、采集与重放；
+[docs/](docs/) 是规范；[studies/](studies/) 保存证据。
+`harness/`、`results/`、`reports/` 是冻结的历史材料。
 
-代码、文档与已发布合成数据使用 Apache-2.0 许可证。项目独立维护，与供应商无隶属或背书关系。
+[贡献](CONTRIBUTING.md) · [隔离](SECURITY.md) · [版本](CHANGELOG.md) · [引用](CITATION.cff)
+
+项目代码与文档使用 [Apache-2.0](LICENSE)。
+内置 packaging 源码保留[上游双许可证](pomdp_bench/repair_data/packaging_state/LICENSE)。
+项目独立维护，与模型供应商无隶属或背书关系。

@@ -26,7 +26,7 @@ flowchart LR
 
 The agent path has no edge to the private generator, answer key or grader. This is an information boundary enforced by the HTTP request builder; in-process Python baselines remain trusted code.
 
-## Why a generative diagnostic kernel comes first
+## Why the project started with a diagnostic kernel
 
 The historical experiment found useful behavior differences in one small simulator. Generalizing the research requires removing answer leakage, fixed-cost dependence, model-name assumptions, and weak acceptance semantics before adding more elaborate scenarios.
 
@@ -38,7 +38,7 @@ The generator chooses a budget from the worst-case cost of this **public-informa
 
 ## Measurement boundaries
 
-The implemented environment is a controlled diagnostic decision problem. The candidate hypotheses and test likelihoods are explicitly listed. Later catalogues are hidden until an intervention, but the protocol itself is known. This isolates information selection and control from domain expertise and natural-language retrieval.
+The original diagnostic environment is a controlled decision problem. Candidate hypotheses and test likelihoods are explicitly listed. Later catalogues are hidden until an intervention, but the protocol itself is known. This isolates information selection and control from domain expertise and natural-language retrieval.
 
 The `cascade` family introduces sequential revelation and reset of beliefs, but still uses the diagnostic kernel. It is not an arbitrary causal world simulator. `incident` and `data_pipeline` currently alter the task description only; they are semantic controls, not evidence of broad domain coverage.
 
@@ -48,7 +48,7 @@ The framework does not yet establish:
 - learning an unknown transition law;
 - long-term memory under lossy context;
 - negotiation of hidden user preferences;
-- visual/desktop or repository-level execution competence;
+- visual/desktop competence or broad repository-level competence;
 - the real-world cost of human supervision;
 - predictive validity on external work tasks.
 
@@ -64,7 +64,7 @@ released diagnostic kernel and the broader validity boundaries above are unchang
 
 ## Fair information and acceptance
 
-The remote model receives a JSON allowlist: contract, current observation, and public history. It never receives the case identifier, generation seed, sampled answer, run directory, manifest, or hidden score. The reference policy receives the same representation. No action lets the model read files or rewrite the evaluator.
+The remote model receives a JSON allowlist: contract, current observation, and public history. It never receives the case identifier, generation seed, sampled answer, run directory, manifest, or hidden score. Synthetic reference policies receive the same representation. Repository-repair actions expose only the pinned task workspace; no action exposes evaluator files or rewrites the oracle.
 
 Built-in Python policies execute in the evaluator process and are trusted code. Passing them JSON is an interface discipline, not an OS security boundary. New untrusted local agents require a separate sandbox or remote service with no access to the evaluator's files, environment, or process memory.
 
@@ -103,7 +103,7 @@ search and tool-equipped workflow are distinct constructs. A future family must
 leave consequential information/action decisions after useful computation is
 available, rather than relying on ever larger catalogues alone.
 
-Each family needs a public-information positive control and designed failures. A cosmetic-success policy must fail. A state-mutating action after acceptance must require re-verification. A generated instance must be reproducible, solvable under its declared budget, and blind to answer-bearing metadata.
+Synthetic families need a public-information positive control and designed failures. Real repair fixtures use known accepted patches as artifact controls until public-information policies are measured; the two are never conflated. Cosmetic-success policies must fail. State mutation requires re-verification. Sources and budgets are pinned, with answer-bearing metadata excluded.
 
 Fresh seeds help prevent exact-instance memorization. They do not prevent a model from learning the public generator's structure. Structural profiles, held-out generator variants, and external tasks are separate tests. A profile becomes held-out by the experimental protocol, not by its name.
 
@@ -113,4 +113,21 @@ Published studies should freeze their suite and evaluation version. As models ap
 
 Success, cost, failure recovery, intervention sensitivity, and shortcut attempts answer different deployment questions. Weighting them into a single number imposes an application-specific utility function. The default output preserves the dimensions and the task distribution. An application may define weights before evaluation and publish them alongside its results.
 
-The eventual validation target is prospective: can these measurements predict accepted outcomes and supervision burden on unseen real tasks after controlling for basic domain skill? This is the test that would justify the project's broader ambition.
+## Real delivery is now the mainline
+
+Framework 2.7 directly evaluates a real repository repair. The agent acquires
+source details through reads/searches, proposes edits, executes checks and
+delivers a patch. The partially observed state includes the defect's cause and
+the consequences of a proposed change; the full source is not supplied up front.
+A compact observation describes the revision, remaining resources and latest
+tool result. There is no complete hypothesis catalogue or built-in repair solver.
+
+The [repair contract](REPOSITORY_REPAIR.md) uses a pinned upstream snapshot,
+isolated candidate execution and an evaluator-owned behavioral oracle. Its first
+public defect validates this loop, with six artifact controls and a targeted
+regression suite. Broader task difficulty is the next concrete development step.
+
+The [R0–R3 route](ROADMAP.md) removes additional synthetic studies and history
+compression as prerequisites. Prospective prediction and measured supervision
+burden remain research targets; actual accepted patches provide immediate
+application evidence within their declared task scope.

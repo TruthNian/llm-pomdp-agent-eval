@@ -38,7 +38,10 @@ def cell(rows: list[dict]) -> dict:
     input_tokens = sum(u["input_tokens"] for u in usages) if complete_usage else None
     output_tokens = sum(u["output_tokens"] for u in usages) if complete_usage else None
     return {"episodes": len(rows), "unique_cases": len({r["case_id"] for r in rows}),
-            "seed_clusters": len({r["cluster_id"] for r in rows}), "successes": successes,
+            **({"task_clusters": len({r["cluster_id"] for r in rows})}
+               if all(r.get("cluster_unit") == "repository_task" for r in rows)
+               else {"seed_clusters": len({r["cluster_id"] for r in rows})}),
+            "successes": successes,
             "success_rate": successes / len(rows),
             "success_cluster_bootstrap95": interval([(r["cluster_id"], int(r["grade"]["success"])) for r in rows]),
             "adapter_failures": sum(r["grade"]["termination"] in ("adapter_error", "internal_error") for r in rows),
@@ -55,6 +58,9 @@ def cell(rows: list[dict]) -> dict:
             **({"mean_solver_calls": metric("solver_calls"), "mean_solver_search_states": metric("solver_search_states"),
                 "mean_solver_limit_failures": metric("solver_limit_failures")}
                if any("solver_calls" in r["grade"] for r in rows) else {}),
+            **({"mean_check_calls": metric("check_calls"), "mean_edited_files": metric("edited_files"),
+                "code_execution_failures": sum(r["grade"].get("code_execution_failures", 0) for r in rows)}
+               if any("check_calls" in r["grade"] for r in rows) else {}),
             "mean_elapsed_seconds": mean(r["elapsed_seconds"] for r in rows),
             "elapsed_lower_bound_episodes": sum(r.get("elapsed_seconds_is_lower_bound", False) for r in rows),
             "total_input_tokens": input_tokens, "total_output_tokens": output_tokens,
@@ -118,7 +124,7 @@ def summarize(records: list[dict], *, compare_agents=True) -> dict:
             "paired_comparisons": comparisons, "prompt_rescue": rescue,
             **({"solver_assistance": solver} if solver else {}),
             "interpretation": [
-                "Bootstrap intervals resample generator seeds; repeats and semantic skins are not independent tasks.",
+                "Bootstrap intervals resample generator seeds or source repository tasks; repeats are not independent tasks.",
                 "Empirical bootstrap intervals can collapse at all-success/all-failure; they do not prove certainty.",
                 "Prompt rescue is sensitivity to this intervention, not an identified intrinsic autonomy trait.",
                 "Cost per accepted completion is observed batch cost divided by successes, not a retry forecast.",

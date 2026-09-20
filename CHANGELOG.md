@@ -1,5 +1,24 @@
 # Changelog
 
+## 2.7.0 — 2026-09-20
+
+- Make real repository repair the mainline and replace the old dependency
+  sequence with R0–R3: delivery, difficult real tasks, measured delegation value,
+  then scaling. Preserve all published synthetic studies and anchors.
+- Add `repository-repair/1`: pinned packaging issue 1204, source inspection,
+  exact edits, Docker execution, 118 behavioral checks and delivered patches.
+  Six fixed artifact controls test actual acceptance and fresh execution rechecks.
+- Reuse collection, checkpoints, HTTP models and replay. Bind external responses
+  to source revision, inputs, check version and immutable image; distinguish
+  recorded-behavior `validate` from fresh `recheck`.
+- Add source-task clustering and execution metrics; leave unknown optimum costs
+  null. Upstream fixes are artifact controls, not model performance or difficulty
+  evidence. Preserve bundled source provenance and upstream licenses.
+
+**Comparability:** synthetic generation and acceptance remain unchanged.
+The new real task is a public development fixture, not a new synthetic seed or
+an independent frontier calibration. Historical versions remain replayable.
+
 ## 2.6.0 — 2026-09-20
 
 - Register only two qualified experimental depth profiles under

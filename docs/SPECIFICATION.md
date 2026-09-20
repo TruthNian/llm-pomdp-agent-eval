@@ -1,6 +1,12 @@
-# Diagnostic benchmark specification — frameworks 2.0–2.6
+# Diagnostic benchmark specification — frameworks 2.0–2.7
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
+
+2.7 registers `repository-repair/1`, specified in the separate
+[real repair contract](REPOSITORY_REPAIR.md). It uses actual code execution,
+task-source clusters and artifact controls. The diagnostic rules below remain
+unchanged. Recorded-behavior validation does not execute candidate code;
+`recheck` explicitly runs the pinned runtime again.
 
 2.5 adds the separately versioned `dependency-cover/1` family, specified in the
 [planning/recovery and difficulty contract](DIFFICULTY.md). The rules below still

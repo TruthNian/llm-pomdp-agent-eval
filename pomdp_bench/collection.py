@@ -12,7 +12,7 @@ from pathlib import Path
 from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
 from .agents import validate_agent_version, validate_config
 from .coverage import COVER_VERSIONS, POLICIES as COVER_POLICIES, ASSISTED_POLICIES
-from .worlds import Environment, validate_case_version, CONDITIONS, validate_condition_version
+from .worlds import Environment, REPAIR_VERSION, cluster_id, validate_case_version, CONDITIONS, validate_condition_version
 from .evaluation import episode_record, recover_interrupted, replay, replay_environment, run_episode, validate_suite
 from .generator import digest
 from .storage import collection_lock, read_json, write_json
@@ -21,8 +21,9 @@ COLLECTION_VERSION = 1
 
 
 def source_hashes():
-    return {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
-            for p in sorted(Path(__file__).resolve().parent.glob("*.py"))}
+    root = Path(__file__).resolve().parent
+    paths = list(root.glob("*.py")) + [p for p in (root / "repair_data").rglob("*") if p.is_file()]
+    return {p.relative_to(root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}
 
 
 def validate_definition(data, configs, conditions, replicates, wall_seconds):
@@ -36,7 +37,10 @@ def validate_definition(data, configs, conditions, replicates, wall_seconds):
     if (not isinstance(conditions, list) or not conditions or len(set(conditions)) != len(conditions)
             or set(conditions) - set(CONDITIONS)):
         raise ValueError("Unknown or duplicate conditions")
-    if data["generator_version"] in COVER_VERSIONS:
+    if data["generator_version"] == REPAIR_VERSION:
+        if conditions != ["open"] or any(c["kind"] not in ("chat", "responses", "actions") for c in configs):
+            raise ValueError("Repository repair needs open and HTTP agents or explicit artifact controls")
+    elif data["generator_version"] in COVER_VERSIONS:
         if (set(conditions) - {"open", "solver_assisted"}
                 or any(c["kind"] not in (*COVER_POLICIES, *ASSISTED_POLICIES, "reference", "chat", "responses") for c in configs)):
             raise ValueError("Coverage requires open/solver_assisted and coverage/reference/HTTP agents")
@@ -191,8 +195,10 @@ def read_run(directory: Path, *, partial=False):
         case = cases[entry["case_id"]]
         if any(record[k] != case[k] for k in ("family", "profile", "domain")):
             raise ValueError("Trace stratum mismatch")
-        if record["cluster_id"] != digest([manifest["generator_version"], case["seed"]]):
+        if record["cluster_id"] != cluster_id(case):
             raise ValueError("Trace cluster mismatch")
+        if case["generator_version"] == REPAIR_VERSION and record.get("cluster_unit") != "repository_task":
+            raise ValueError("Repository cases cluster by source task, not synthetic seed")
         if version and type(record.get("request_in_flight")) is not bool:
             raise ValueError("Missing request boundary evidence")
         if not checkpoint and record.get("request_in_flight") and record["grade"]["termination"] != "collection_interrupted":

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pomdp-agent-bench"
-version = "2.6.0"
+version = "2.7.0"
 description = "Generative, auditable evaluation of agents acting under partial observability"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -17,3 +17,6 @@ pomdp-bench = "pomdp_bench.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["pomdp_bench*"]
+
+[tool.setuptools.package-data]
+pomdp_bench = ["repair_data/packaging_state/*"]

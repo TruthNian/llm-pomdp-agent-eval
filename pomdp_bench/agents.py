@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import copy
 import math
 import random
 
@@ -17,13 +18,19 @@ POLICIES = (*BUILTINS, "reserve_probe", *COVER_POLICIES, *ASSISTED_POLICIES)
 
 def validate_config(config: dict) -> None:
     allowed = {"name", "kind", "model", "endpoint_env", "api_key_env", "options",
-               "timeout_seconds", "headers_env", "max_response_bytes"}
+               "timeout_seconds", "headers_env", "max_response_bytes", "actions"}
     if not isinstance(config, dict) or set(config) - allowed:
         raise ValueError("Unknown agent configuration fields")
     if not isinstance(config.get("name"), str) or not config["name"].strip():
         raise ValueError("Every agent needs a nonempty name")
-    if config.get("kind") not in (*POLICIES, "chat", "responses"):
+    if config.get("kind") not in (*POLICIES, "chat", "responses", "actions"):
         raise ValueError("Unknown agent kind")
+    if config["kind"] == "actions":
+        if (set(config) != {"name", "kind", "actions"} or not isinstance(config["actions"], list)
+                or not config["actions"] or len(config["actions"]) > 100):
+            raise ValueError("Fixed-action artifact controls require 1-100 explicit actions")
+    elif "actions" in config:
+        raise ValueError("Only fixed-action controls accept an action sequence")
     if "max_response_bytes" in config:
         if config["kind"] not in ("chat", "responses"):
             raise ValueError("max_response_bytes applies only to HTTP agents")
@@ -53,6 +60,8 @@ def validate_config(config: dict) -> None:
 
 
 def validate_agent_version(config, version):
+    if config["kind"] == "actions" and not version_at_least(version, "2.7.0"):
+        raise ValueError("Fixed-action artifact controls require framework 2.7")
     if "max_response_bytes" in config and not version_at_least(version, "2.5.2"):
         raise ValueError("Explicit response byte limits require framework 2.5.2")
     if config["kind"] in COVER_POLICIES and not version_at_least(version, "2.5.0"):
@@ -119,4 +128,17 @@ class ScriptedAgent:
 
 def make_agent(config: dict, seed: int):
     validate_config(config)
+    if config["kind"] == "actions":
+        return ActionSequence(config["actions"])
     return ChatAgent(config) if config["kind"] in ("chat", "responses") else ScriptedAgent(config["kind"], seed)
+
+
+class ActionSequence:
+    """An explicitly supplied artifact control, never presented as a solving agent."""
+    usage = None
+
+    def __init__(self, actions):
+        self.actions = iter(copy.deepcopy(actions))
+
+    def act(self, request, timeout):
+        return next(self.actions, {"command": "finish"})

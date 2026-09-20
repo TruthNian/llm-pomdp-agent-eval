@@ -1,6 +1,8 @@
 # Repository working contract
 
-The project's objective is a durable evaluation framework for agents acting under partial observability. Specific model comparisons are versioned studies, not the project's identity.
+The project's objective is a durable, difficult evaluation of agents delivering useful real work under partial observability. Real repository repair is the development mainline; synthetic tasks remain diagnostic controls. Specific model comparisons are versioned studies, not the project's identity.
+
+Question requirements, delete unnecessary dependencies, then simplify and optimize before accelerating or automating. Do not postpone real execution for more synthetic scaling, perfect risk elimination or unrelated mechanism studies. Follow the active R0–R3 route in `docs/ROADMAP.md`.
 
 ## Preserve the measurement
 
@@ -12,6 +14,7 @@ The project's objective is a durable evaluation framework for agents acting unde
 - Distinguish planned, executed and unexecuted controls. Missing prerequisites have no observed outcome; do not invent successes/failures or claim every planned row ran. An offline qualification pass is not model-discrimination evidence.
 - New random seeds, repeated model runs, and semantic skins are distinct units. Keep paired design and seed clustering intact.
 - New capabilities need executable positive/negative controls and a precise claim about the construct measured.
+- Execute candidate code only in the declared isolated runtime. Preserve source/runtime identities, behavioral outputs and patches. Distinguish recorded-behavior replay from fresh execution. An upstream fix is an artifact control, never an observation-only policy or model score.
 - Fresh seeds do not establish contamination resistance or real-world predictive validity.
 - High, adjustable and empirically discriminating difficulty is a core requirement. Do not infer it from task length, profile names, or failure of a deliberately weak policy. Keep a solvable public-information reference, competent heuristics, rescue ablations and explicit ceiling/floor checks on strong model configurations.
 - Preserve versioned difficulty anchors. Calibrate new scales before claiming frontier headroom; infrastructure failures do not demonstrate cognitive difficulty. Do not alter a frozen matrix or its budgets after observing model results.
