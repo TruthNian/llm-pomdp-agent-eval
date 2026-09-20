@@ -91,12 +91,54 @@ All six requests have completed under clean prepared source
 [model-proposals.json](model-proposals.json) retains five valid submissions and
 one 600-second request timeout; no retry or correction was made. All six request
 fingerprints were verified. Local configuration and authentication bytes were
-unchanged. Independent container acceptance is pending.
+unchanged.
 
 Sol completed all three requests and reported the requested model name. The two
 completed GLM-routed requests did not report an exact match to the requested
 `custom/z-ai/glm-5.3` alias. The adapter retains that mismatch, not an independently
 verified provider identity. The timeout has unknown usage, not zero usage.
+
+## Executed model artifacts and decision
+
+[Independent CI acceptance](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/runs/35499777539)
+ran at clean source `13dbe6abae3ae3e9b5b95328a30277b68c95966a`.
+[model-acceptance.json](model-acceptance.json) retains all six outcomes and every
+executed trace; [model-execution.json](model-execution.json) binds the source,
+runtime, proposals and evidence. All five fresh-container rechecks agree with
+the original five executions. There were four accepted artifacts, one rejected
+artifact and one unexecuted submission after a request timeout.
+
+Names below identify the requested routes, subject to the identity limitation above.
+Seconds and tokens describe proposal generation, not the later scripted acceptance.
+
+| Task | Requested route | Acceptance | Seconds | Reported input / output tokens |
+|---|---|---|---:|---:|
+| Werkzeug routing | Sol | Rejected: 154/166 | 212.72 | 22,198 / 8,980 |
+| Werkzeug routing | GLM | Request timeout; no patch executed | 600.00 | Unknown |
+| attrs initialization | GLM | Accepted: 37/37 | 76.86 | 33,844 / 4,737 |
+| attrs initialization | Sol | Accepted: 37/37 | 28.56 | 34,153 / 1,211 |
+| urllib3 reading | Sol | Accepted: 126/126 | 100.48 | 21,136 / 4,913 |
+| urllib3 reading | GLM | Accepted: 126/126 | 135.23 | 21,040 / 7,879 |
+
+Reasoning tokens, when reported, are included in output tokens, not added again.
+The five known usages do not establish a complete batch token total or dollar cost.
+
+Sol's routing patch removes the matcher's global merge guard and dynamically
+reinterprets inherited Rule settings. Nine checks then redirect while merging
+is globally disabled; three redirect for rules originally bound with merging
+disabled after the global setting changes. The frozen contract expects 404 in
+all twelve cases. These are observable compatibility regressions, not a parser
+failure. No acceptance rule was changed after seeing proposals.
+
+**Decision:** retain attrs and urllib3 as regression anchors for localized patch
+construction. Both routes solved these tasks in one proposal; more variants of
+the same localized task are not the priority. Retain routing as a compatibility
+diagnostic, and next test whether autonomous localization plus execution feedback
+resolves the error under a fixed budget. Expand the difficult-task mainline only
+where realistic diagnosis and interacting constraints remain consequential after
+useful tools are available. One proposal per task/route cannot establish a model
+ranking, reliable success rate or frontier difficulty. No interactive POMDP model
+episodes were collected in this screen.
 
 ## Development corrections retained
 

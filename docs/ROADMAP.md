@@ -64,11 +64,24 @@ example were corrected with all earlier results retained. The
 explicitly supplies localization help and tests patch construction. It does not
 replace an interactive evaluation.
 
+The [executed screen](../studies/repository-portfolio-v1/README.md#executed-model-artifacts-and-decision)
+retains four accepted artifacts, one compatibility failure and one request timeout.
+Both routes solve attrs and urllib3 in one localized proposal: keep them as
+regression anchors and stop treating them as candidate frontier-hard examples.
+Routing remains a compatibility diagnostic, not a demonstrated hard-task population.
+
 **R1b next: autonomous localization and recovery.** With execution available,
 compare problem-only versus file-localized conditions on identical tasks and
 budgets. Require plausible incomplete repairs, obtainable evidence and executable
 regression constraints. Retain easily repaired cases as regression anchors;
 do not manufacture difficulty by enlarging catalogues or hiding acceptance requirements.
+
+Use the existing read/search/edit/check/finish loop. Start with the routing error
+to test repair from actual feedback; retain the two solved tasks as ceiling
+controls. Freeze the problem-only/localized matrix before interactive calls and
+publish complete accepted patches and failure trajectories. If feedback closes
+the gap, select genuinely more demanding multi-component maintenance work instead
+of multiplying variants of these three known issues.
 
 Freeze tasks and budgets before model attempts. Run available Sol and GLM
 configurations on the same tasks with useful tools. Retain all attempts, including

@@ -1,0 +1,17 @@
+{
+  "workflow_run_url": "https://github.com/TruthNian/llm-pomdp-agent-eval/actions/runs/35499777539",
+  "execution_source_commit": "13dbe6abae3ae3e9b5b95328a30277b68c95966a",
+  "working_tree_dirty": false,
+  "proposal_preparation_commit": "b4eb5cf9eb9424f7aee7fe276b18dc8b7c253f08",
+  "proposal_file_digest": "9416989ace1058705247a0fd8b2a40a3ea5316efd7998b7d6ef4899fbc265ab8",
+  "acceptance_file_sha256": "a7ff6fe5dbbbc55e3c1f9c23b471932df16fba396fcaf160faf1152139110b8c",
+  "image_id": "sha256:741db163c5c68c8be8164f074c2c3a21fb572cfe76c82c9b7854733142997cc9",
+  "original_container_calls": 5,
+  "fresh_recheck_container_calls": 5,
+  "expected_submissions": 6,
+  "retained_submissions": 6,
+  "executed_submissions": 5,
+  "accepted_submissions": 4,
+  "usage_note": "Completed provider usage is retained; timeout usage is unknown. Reasoning tokens are a subset of output tokens.",
+  "identity_note": "Names denote requested routes; GLM completed responses did not exactly match the requested model alias. No independent provider identity attestation."
+}

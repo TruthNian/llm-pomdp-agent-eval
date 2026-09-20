@@ -16,9 +16,11 @@ failures remain published. The original packaging fixture keeps its 118 checks.
 [Contract and execution instructions](docs/REPOSITORY_REPAIR.md).
 
 High difficulty remains a requirement. A frozen six-proposal Sol/GLM baseline
-tests patch construction with localized source; it does not measure autonomous
-localization or interactive recovery. Real provenance, catalogue size and
-transport timeouts cannot substitute for demonstrated task difficulty.
+tests patch construction with localized source: four artifacts were accepted,
+one failed compatibility checks, and one request timed out. attrs and urllib3
+become regression anchors; routing and autonomous recovery remain development
+targets. This screen does not measure interactive POMDP completion. Real provenance,
+catalogue size and transport timeouts cannot substitute for demonstrated difficulty.
 
 ## Architecture
 

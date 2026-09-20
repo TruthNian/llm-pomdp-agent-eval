@@ -45,6 +45,12 @@ def main():
         from pomdp_bench.generator import digest
         data = read_json(root / "model-proposals.json")
         outcomes = read_json(model_path)
+        run = read_json(root / "model-execution.json")
+        if (hashlib.sha256(model_path.read_bytes()).hexdigest() != run["acceptance_file_sha256"]
+                or digest(data) != run["proposal_file_digest"] or outcomes["image_id"] != run["image_id"]
+                or data["preparation_git_revision"] != run["proposal_preparation_commit"]
+                or run["working_tree_dirty"]):
+            raise ValueError("Model execution publication binding changed")
         if outcomes["proposal_file_sha256"] != digest(data) or len(outcomes["outcomes"]) != 6:
             raise ValueError("Model submission binding changed")
         for i, row in enumerate(outcomes["outcomes"]):
@@ -63,6 +69,11 @@ def main():
                     raise ValueError("Model artifact acceptance mismatch")
             elif row["accepted"] or row["trace"] is not None:
                 raise ValueError("Unexecuted model proposal cannot have an acceptance result")
+        if (sum(r["accepted"] for r in outcomes["outcomes"]) != run["accepted_submissions"]
+                or sum(r["acceptance_executed"] for r in outcomes["outcomes"]) != run["executed_submissions"]
+                or sum(len(r["trace"]["repository_evidence"]["calls"]) for r in outcomes["outcomes"]
+                       if r["acceptance_executed"]) != run["original_container_calls"]):
+            raise ValueError("Model execution denominator changed")
         print("Regraded frozen model artifacts; these are single proposals, not interactive episodes.")
 
 

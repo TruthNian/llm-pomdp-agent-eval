@@ -17,6 +17,10 @@
   agent completion and receives no test feedback or corrected retry.
 - Preserve the executed compressed input bytes across Python versions, fixing
   3.11/3.12 replay without changing the accepted Python 3.13 inputs or the oracle.
+- Publish all six original model requests: four accepted artifacts, one routing
+  regression and one transport timeout. Five fresh executions agree. Retain attrs
+  and urllib3 as localized-patch regression anchors, not frontier-hard tasks;
+  prioritize autonomous diagnosis and compatibility recovery next.
 
 ## 2.7.0 — 2026-09-20
 
