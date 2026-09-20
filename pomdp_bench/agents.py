@@ -11,9 +11,10 @@ from .planning import consistent_candidates, diagnostic_plan
 from .interventions import RESERVE_TEXT
 from . import version_at_least
 from .coverage import POLICIES as COVER_POLICIES, ASSISTED_POLICIES, policy_action as cover_action
+from .incident import POLICY as INCIDENT_POLICY, policy_action as incident_action
 
 BUILTINS = ("reference", "random", "overdiagnose", "proxy")
-POLICIES = (*BUILTINS, "reserve_probe", *COVER_POLICIES, *ASSISTED_POLICIES)
+POLICIES = (*BUILTINS, "reserve_probe", *COVER_POLICIES, *ASSISTED_POLICIES, INCIDENT_POLICY)
 
 
 def validate_config(config: dict) -> None:
@@ -60,6 +61,8 @@ def validate_config(config: dict) -> None:
 
 
 def validate_agent_version(config, version):
+    if config["kind"] == INCIDENT_POLICY and not version_at_least(version, "2.9.0"):
+        raise ValueError("Incident operator requires framework 2.9")
     if config["kind"] == "actions" and not version_at_least(version, "2.7.0"):
         raise ValueError("Fixed-action artifact controls require framework 2.7")
     if "max_response_bytes" in config and not version_at_least(version, "2.5.2"):
@@ -79,6 +82,8 @@ class ScriptedAgent:
         self.usage = None  # No model tokens were consumed; never fabricate zero-token LLM measurements.
 
     def act(self, request: dict, timeout: float) -> dict:
+        if self.kind == INCIDENT_POLICY:
+            return incident_action(request)
         if request["task"].get("family") == "dependency_cover":
             return cover_action("cover_reference" if self.kind == "reference" else self.kind, request)
         observation, history = request["observation"], request["history"]

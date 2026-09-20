@@ -1,0 +1,16 @@
+{
+  "framework_version": "2.9.0",
+  "generator_version": "service-incident/1",
+  "purpose": "Restore the full open incident-response loop and observe complete model policies, including feedback and business damage. Development calibration, not a model ranking.",
+  "expected_episodes": 2,
+  "conditions": ["open"],
+  "replicates": 1,
+  "wall_seconds": 3600,
+  "agents": [
+    {"name": "gpt-5.6-sol", "kind": "responses", "model": "gpt-5.6-sol", "endpoint_env": "DIRECT_ENDPOINT", "api_key_env": "NATIVE_KEY", "headers_env": "NATIVE_HEADERS", "timeout_seconds": 600, "options": {"reasoning_effort": "max"}},
+    {"name": "custom/z-ai/glm-5.3", "kind": "responses", "model": "custom/z-ai/glm-5.3", "endpoint_env": "DIRECT_ENDPOINT", "api_key_env": "ROUTER_KEY", "headers_env": "ROUTER_HEADERS", "timeout_seconds": 600, "options": {"reasoning_effort": "max"}}
+  ],
+  "transport": {"base_url": "http://127.0.0.1:4202/v1", "headers": {"x-codex-router-exact-route": "1"}},
+  "stopping_rule": "Exactly one complete episode per requested route. Each model gets all public feedback and may repair mistakes within 60 actions and 3600 seconds. Never replace a failed or interrupted episode. Environment repairs after collection require a new version and new records.",
+  "decision": "Report complete service/accounting outcomes, action choices and accumulated harm. If both models solve easily, this is a workflow anchor rather than demonstrated frontier difficulty. Preserve evidence and develop consequential interactions instead of withholding tools or shortening transport timeouts."
+}

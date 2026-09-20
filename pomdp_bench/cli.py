@@ -16,6 +16,7 @@ from .studies import prepare_study, validate_plan
 from .coverage import SCALES, DEPTH_SCALES, suite as coverage_suite
 from .repair import suite as repair_suite
 from .repair_portfolio import TASKS as REPAIR_TASKS
+from .incident import suite as incident_suite
 from .generator import digest
 
 
@@ -51,6 +52,8 @@ def main(argv=None) -> int:
     repair.add_argument("--image", required=True, help="Immutable local Docker image ID (sha256:...)")
     repair.add_argument("--tasks", nargs="+", choices=REPAIR_TASKS, help="Select the real portfolio; omit for the original packaging anchor")
     repair.add_argument("--out", type=Path, required=True)
+    incident = commands.add_parser("prepare-incident-suite", help="Prepare the executable checkout/settlement incident")
+    incident.add_argument("--out", type=Path, required=True)
     study = commands.add_parser("prepare-study", help="Bind a preregistered two-condition plan and draw fresh seeds; no model calls")
     study.add_argument("--plan", type=Path, required=True)
     study.add_argument("--out", type=Path, required=True)
@@ -72,7 +75,10 @@ def main(argv=None) -> int:
         item.add_argument("run_directory", type=Path)
     args = parser.parse_args(argv)
     try:
-        if args.command == "prepare-repair-suite":
+        if args.command == "prepare-incident-suite":
+            write_json(args.out, incident_suite(), replace=False)
+            print("Prepared the incident; run uses local HTTP/SQLite services, validate uses recorded behavior.")
+        elif args.command == "prepare-repair-suite":
             write_json(args.out, repair_suite(args.image, args.tasks), replace=False)
             print("Prepared pinned repository source and runtime; no code or model execution.")
         elif args.command == "prepare-study":

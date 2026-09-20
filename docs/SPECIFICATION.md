@@ -1,6 +1,10 @@
-# Diagnostic benchmark specification — frameworks 2.0–2.8
+# Diagnostic benchmark specification — frameworks 2.0–2.9
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
+
+2.9 adds the separate `service-incident/1` [executable service incident](SERVICE_INCIDENT.md).
+It restores complete open interactions over HTTP and SQLite, with business-state
+acceptance, recorded-service replay and fresh execution. Diagnostic semantics below are unchanged.
 
 2.8 registers the separate `repository-repair/2`
 [compatibility portfolio](../studies/repository-portfolio-v1/README.md).

@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.9.0 — 2026-09-20
+
+- Restore full open incident response as the mainline. Keep localized source
+  repairs as component controls instead of using one-shot patch acceptance as
+  progress on autonomous investigation and recovery.
+- Add `service-incident/1`: local HTTP checkout/ledger delivery, persistent SQLite
+  orders/outbox/accounting, rolling payload migration, at-least-once retries,
+  operational SQL, configuration, backlog repair and compensating transactions.
+- Reuse the existing collector for every model action and service response.
+  Separate recorded-service validation from fresh HTTP/database execution;
+  preserve temporary accounting harm and all failed/interrupted trajectories.
+
 ## 2.8.0 — 2026-09-20
 
 - Register `repository-repair/2` with pinned Werkzeug routing, attrs pre-init,

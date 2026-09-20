@@ -9,7 +9,7 @@ from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
 from .agents import AdapterError, make_agent, validate_agent_version
 from .generator import digest, keyed_seed
 from .storage import read_json
-from .worlds import Environment, VERSIONS, REPAIR_VERSIONS, cluster_id, validate_case, validate_case_version, validate_condition_version
+from .worlds import Environment, VERSIONS, REPAIR_VERSIONS, INCIDENT_VERSION, cluster_id, validate_case, validate_case_version, validate_condition_version
 
 
 def episode_record(env, config, replicate, elapsed=0, usage=None, error=None, in_flight=False):
@@ -22,6 +22,8 @@ def episode_record(env, config, replicate, elapsed=0, usage=None, error=None, in
             "cluster_id": cluster_id(case),
             **({"cluster_unit": "repository_task", "repository_evidence": env.evidence()}
                if case["generator_version"] in REPAIR_VERSIONS else {}),
+            **({"cluster_unit": "incident_scenario", "service_evidence": env.evidence()}
+               if case["generator_version"] == INCIDENT_VERSION else {}),
             "agent": copy.deepcopy(config), "condition": env.condition, "replicate": replicate,
             "initial_observation": initial.observation(),
             "contract": env.contract(), "events": copy.deepcopy(env.history),
@@ -34,6 +36,14 @@ def episode_record(env, config, replicate, elapsed=0, usage=None, error=None, in
 def run_episode(case: dict, config: dict, condition: str, replicate: int, wall_seconds=300,
                 checkpoint=None) -> dict:
     env = Environment(case, condition, noise_seed=replicate)
+    try:
+        return _run_episode(env, config, replicate, wall_seconds, checkpoint)
+    finally:
+        if hasattr(env, "close"):
+            env.close()
+
+
+def _run_episode(env, config, replicate, wall_seconds, checkpoint):
     started = time.monotonic()
     agent, error, in_flight = None, None, False
 
@@ -97,31 +107,37 @@ def replay_environment(trace: dict, case: dict, *, partial=False, execute_checks
     if trace["case_id"] != digest(case):
         raise ValueError("Trace/case fingerprint mismatch")
     repository = case["generator_version"] in REPAIR_VERSIONS
-    calls = trace["repository_evidence"]["calls"] if repository else None
+    incident = case["generator_version"] == INCIDENT_VERSION
+    evidence_key = "repository_evidence" if repository else "service_evidence"
+    calls = trace[evidence_key]["calls"] if repository or incident else None
     env = Environment(case, trace["condition"], trace["replicate"], framework_version=trace["framework_version"],
                       recorded_calls=None if execute_checks else calls)
-    if trace["initial_observation"] != env.observation() or trace["contract"] != env.contract():
-        raise ValueError("Initial observation or contract changed")
-    for index, event in enumerate(trace["events"]):
-        if env.step(event["action"]) != event["observation"]:
-            raise ValueError(f"Replay divergence at step {index + 1}")
-    termination = trace["grade"]["termination"]
-    if not env.done and not (partial and termination is None):
-        allowed = {"adapter_error", "internal_error", "wall_limit"}
-        if trace["framework_version"] != "2.0.0":
-            allowed.add("collection_interrupted")
-        if termination not in allowed:
-            raise ValueError("Missing terminal action")
-        env.abort(termination)
-    if env.grade() != trace["grade"]:
-        raise ValueError("Recorded grade differs from replayed state")
-    if repository and env.evidence() != trace["repository_evidence"]:
-        raise ValueError("Repository patch or external execution evidence differs from replay")
-    baseline = episode_record(env, trace["agent"], trace["replicate"])
-    for field in ("clairvoyant_action_cost_lower_bound", "successful_excess_cost_over_lower_bound"):
-        if trace.get(field) != baseline[field]:
-            raise ValueError("Recorded cost bound differs from replayed state")
-    return env
+    try:
+        if trace["initial_observation"] != env.observation() or trace["contract"] != env.contract():
+            raise ValueError("Initial observation or contract changed")
+        for index, event in enumerate(trace["events"]):
+            if env.step(event["action"]) != event["observation"]:
+                raise ValueError(f"Replay divergence at step {index + 1}")
+        termination = trace["grade"]["termination"]
+        if not env.done and not (partial and termination is None):
+            allowed = {"adapter_error", "internal_error", "wall_limit"}
+            if trace["framework_version"] != "2.0.0":
+                allowed.add("collection_interrupted")
+            if termination not in allowed:
+                raise ValueError("Missing terminal action")
+            env.abort(termination)
+        if env.grade() != trace["grade"]:
+            raise ValueError("Recorded grade differs from replayed state")
+        if (repository or incident) and env.evidence() != trace[evidence_key]:
+            raise ValueError("Repository patch or external execution evidence differs from replay")
+        baseline = episode_record(env, trace["agent"], trace["replicate"])
+        for field in ("clairvoyant_action_cost_lower_bound", "successful_excess_cost_over_lower_bound"):
+            if trace.get(field) != baseline[field]:
+                raise ValueError("Recorded cost bound differs from replayed state")
+        return env
+    finally:
+        if hasattr(env, "close"):
+            env.close()
 
 
 def replay(trace: dict, case: dict) -> dict:

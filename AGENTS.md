@@ -1,8 +1,8 @@
 # Repository working contract
 
-The project's objective is a durable, difficult evaluation of agents delivering useful real work under partial observability. Real repository repair is the development mainline; synthetic tasks remain diagnostic controls. Specific model comparisons are versioned studies, not the project's identity.
+The project's objective is a durable, difficult evaluation of agents delivering useful outcomes under partial observability. The development mainline is a complete open interaction: investigate, act, observe consequences, recover and verify the real business state. Executable service incidents currently implement this loop. Repository repair fixtures and synthetic tasks remain useful component controls. Specific model comparisons are versioned studies, not the project's identity.
 
-Question requirements, delete unnecessary dependencies, then simplify and optimize before accelerating or automating. Do not postpone real execution for more synthetic scaling, perfect risk elimination or unrelated mechanism studies. Follow the active R0–R3 route in `docs/ROADMAP.md`.
+Question requirements, delete unnecessary dependencies, then simplify and optimize before accelerating or automating. Preserve the information/action/feedback loop when simplifying. Do not substitute localized one-shot answers, CI counts or release counts for complete model trajectories. Follow `docs/ROADMAP.md`.
 
 ## Preserve the measurement
 

@@ -39,7 +39,7 @@ def cell(rows: list[dict]) -> dict:
     output_tokens = sum(u["output_tokens"] for u in usages) if complete_usage else None
     return {"episodes": len(rows), "unique_cases": len({r["case_id"] for r in rows}),
             **({"task_clusters": len({r["cluster_id"] for r in rows})}
-               if all(r.get("cluster_unit") == "repository_task" for r in rows)
+               if all(r.get("cluster_unit") in ("repository_task", "incident_scenario") for r in rows)
                else {"seed_clusters": len({r["cluster_id"] for r in rows})}),
             "successes": successes,
             "success_rate": successes / len(rows),

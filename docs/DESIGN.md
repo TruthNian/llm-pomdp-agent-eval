@@ -113,7 +113,15 @@ Published studies should freeze their suite and evaluation version. As models ap
 
 Success, cost, failure recovery, intervention sensitivity, and shortcut attempts answer different deployment questions. Weighting them into a single number imposes an application-specific utility function. The default output preserves the dimensions and the task distribution. An application may define weights before evaluation and publish them alongside its results.
 
-## Real delivery is now the mainline
+## Real delivery and the complete interaction
+
+The 2.8 localized one-shot model screen omitted investigation and feedback.
+It cannot establish progress on the project's central agent-policy question.
+Framework 2.9 restores that question through an [executable service incident](SERVICE_INCIDENT.md):
+HTTP delivery, durable accounting, operator decisions, consequences and recovery.
+The local business system is constructed; actual production predictive validity
+still needs external evidence. Infrastructure and source-repair checks are components,
+not substitutes for complete model trajectories.
 
 Framework 2.7 directly evaluates a real repository repair. The agent acquires
 source details through reads/searches, proposes edits, executes checks and

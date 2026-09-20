@@ -7,29 +7,32 @@ Evaluate whether an agent can turn incomplete information into an **accepted,
 useful outcome** under resource constraints. The unit is a complete interaction
 trajectory, including unsuccessful actions, execution failures and delivery costs.
 
-**2.8 adds three independently sourced real compatibility defects.** Agents inspect
-source, locate causes, edit code, execute behavioral checks and deliver a patch.
-The [new portfolio](studies/repository-portfolio-v1/README.md) covers Werkzeug
-routing, attrs initialization and urllib3 response reading, with 329 checks.
-All twelve artifact controls and their fresh execution rechecks pass; development
-failures remain published. The original packaging fixture keeps its 118 checks.
-[Contract and execution instructions](docs/REPOSITORY_REPAIR.md).
+**The mainline is complete open incident response.** The [settlement incident](docs/SERVICE_INCIDENT.md)
+executes actual HTTP requests and persists orders, an outbox and a ledger. An agent takes over an
+ambiguous fault, investigates, acts, receives feedback, recovers backlog and reconciles accounts.
+Temporary excess debits remain visible even when the final state is repaired.
 
-High difficulty remains a requirement. A frozen six-proposal Sol/GLM baseline
-tests patch construction with localized source: four artifacts were accepted,
-one failed compatibility checks, and one request timed out. attrs and urllib3
-become regression anchors; routing and autonomous recovery remain development
-targets. This screen does not measure interactive POMDP completion. Real provenance,
-catalogue size and transport timeouts cannot substitute for demonstrated difficulty.
+This is a constructed local business system, not a claimed production incident. Difficulty needs
+complete strong-model trajectories. Localized one-shot patch screens are no longer the mainline;
+the three 2.8 source repairs and all historical evidence remain regression anchors.
+
+```bash
+python -m pip install -e .
+python studies/settlement-incident-v1/controls.py artifacts/incident-controls
+python -m pomdp_bench validate artifacts/incident-controls
+```
+
+No Docker is needed for this service task. Models operate trusted services through maintenance
+interfaces; model-generated code never executes on the host. [Roadmap](docs/ROADMAP.md).
 
 ## Architecture
 
 ```text
-Pinned task + acceptance contract
-  → public observations → model JSON action → inspect/edit source workspace
-  → isolated code execution → evaluator-owned behavioral comparison
-  → current verification + explicit handover → source patch
-  → one-attempt collector → replay / fresh execution recheck → task-level results
+Incident goal + acceptance contract
+  → public observation → model action → real service operation
+  → HTTP/SQL result + changed business state → next model decision
+  → investigation / recovery / verification → explicit handover
+  → complete trajectory + business outcome + accumulated harm
 ```
 
 All families share one collector. Source, runtime, budgets and attempts bind to
