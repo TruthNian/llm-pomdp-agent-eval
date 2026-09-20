@@ -1,9 +1,9 @@
 """Use the existing authorized local routes; keep every episode and request."""
 import base64
+import argparse
 import json
 import os
 from pathlib import Path
-import sys
 import time
 import tomllib
 
@@ -15,16 +15,21 @@ from pomdp_bench.storage import read_json, write_json
 
 
 def main():
-    mode, output = sys.argv[1], Path(sys.argv[2])
-    plan = read_json(Path(__file__).with_name("plan.json"))
+    parser = argparse.ArgumentParser()
+    parser.add_argument("mode", choices=("prepare", "collect"))
+    parser.add_argument("output", type=Path)
+    parser.add_argument("--plan", type=Path, default=Path(__file__).with_name("plan.json"))
+    args = parser.parse_args()
+    mode, output = args.mode, args.output
+    plan = read_json(args.plan)
     if plan["framework_version"] != __version__:
         raise ValueError("Use the frozen source version")
     if mode == "prepare":
         manifest = prepare_suite(suite(), plan["agents"], plan["conditions"], 1, output, plan["wall_seconds"])
-        if manifest["working_tree_dirty"] or manifest["expected_episodes"] != 2:
+        if manifest["working_tree_dirty"] or manifest["expected_episodes"] != plan["expected_episodes"]:
             raise ValueError("Commit the complete implementation before preparing collection")
         write_json(output / "private/plan-binding.json", {"plan_sha256": digest(plan), "manifest_sha256": digest(manifest)}, replace=False)
-        print("Prepared two full interactive episodes; no model called.")
+        print(f"Prepared {plan['expected_episodes']} full interactive episodes; no model called.")
         return
     if mode != "collect":
         raise ValueError("Use prepare or collect")
@@ -43,7 +48,7 @@ def main():
     token = auth["access_token"]
     middle = token.split(".")[1]
     claims = json.loads(base64.urlsafe_b64decode(middle + "=" * (-len(middle) % 4)))
-    if claims["exp"] <= time.time() + plan["wall_seconds"] * 2:
+    if claims["exp"] <= time.time() + plan["wall_seconds"] * plan["expected_episodes"]:
         raise ValueError("Existing login does not cover both planned episodes")
     os.environ["DIRECT_ENDPOINT"] = base + "/responses"
     os.environ["NATIVE_KEY"] = token

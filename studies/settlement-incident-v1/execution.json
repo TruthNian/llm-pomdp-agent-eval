@@ -1,0 +1,15 @@
+{
+  "source_commit": "9fcfb8299ee8ba8cbcd7fff701daef8aa451a97b",
+  "framework_version": "2.9.0",
+  "episodes": {
+    "model": 2,
+    "control": 6
+  },
+  "fresh_recheck": "Every original action and final database fingerprint matched fresh HTTP/SQLite execution before core source changed.",
+  "file_sha256": {
+    "plan.json": "db0f9ec9d4f7a411788ef0bc1a0ae8a63884caf491640afc8132bbb957b3953a",
+    "control-evidence.json": "8e46c5756ba8884e622b521bc43e85dcfd0961d752059fc4eb158d54cee7ce7f",
+    "model-evidence.json": "6d84132cc421ac4153db9dd386e4a5be09131e3a8bb5b13d12ae486796516fac",
+    "trajectories.html": "e767ab2678fc0e422b57797f990e21979847e84156e1d8c4a06e58151bca97a7"
+  }
+}

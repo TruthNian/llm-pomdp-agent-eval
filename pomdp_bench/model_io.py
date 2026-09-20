@@ -26,6 +26,15 @@ class AdapterError(RuntimeError):
         self.code = code
 
 
+class InvalidActionError(AdapterError):
+    """Completed assistant text is not an action; retain identity, never its body."""
+
+    def __init__(self, text):
+        super().__init__("Return exactly one JSON object with command and optional target, without commentary or markdown.",
+                         "invalid_action")
+        self.text_sha256 = hashlib.sha256(text.encode()).hexdigest()
+
+
 def strict_json(text):
     def constant(_):
         raise ValueError("Nonfinite numbers are not JSON")
@@ -99,12 +108,15 @@ def action_text(data, kind):
             text = "".join(x["text"] for x in content)
         if not isinstance(text, str):
             raise ValueError()
+    except (KeyError, TypeError, ValueError, AttributeError):
+        raise AdapterError("Endpoint did not return one completed assistant text message", "protocol_error") from None
+    try:
         action = strict_json(text)
         if not isinstance(action, dict):
             raise ValueError()
         return action
-    except (KeyError, TypeError, ValueError, AttributeError):
-        raise AdapterError("Endpoint did not return one unambiguous JSON action", "protocol_error") from None
+    except (TypeError, ValueError):
+        raise InvalidActionError(text) from None
 
 
 class ResponseStream:
@@ -336,11 +348,16 @@ class HttpAgent:
                             streaming=self.config["kind"] == "responses",
                             max_response_bytes=self.max_response_bytes)
             self.add_usage(data)
+            # Record label agreement even when completed action text is invalid.
+            audit["reported_model_matches_request"] = data.get("model") == self.config["model"] if isinstance(data, dict) and data.get("model") else None
             action = action_text(data, self.config["kind"])
             audit["outcome"] = "action"
-            # Only record expected model names, not arbitrary provider text.
-            audit["reported_model_matches_request"] = data.get("model") == self.config["model"] if data.get("model") else None
             return action
+        except InvalidActionError as exc:
+            audit.update(outcome=exc.code, rejected_text_sha256=exc.text_sha256)
+            # An explicit rejected turn: no transport retry, guessed action or hidden repair.
+            # The normal environment charges a step and the next request sees this feedback.
+            return {"command": "invalid_model_output", "target": str(exc)}
         except AdapterError as exc:
             audit["outcome"] = exc.code
             raise

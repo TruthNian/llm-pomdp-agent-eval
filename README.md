@@ -25,6 +25,12 @@ python -m pomdp_bench validate artifacts/incident-controls
 No Docker is needed for this service task. Models operate trusted services through maintenance
 interfaces; model-generated code never executes on the host. [Roadmap](docs/ROADMAP.md).
 
+[Complete live trajectories and evidence](studies/settlement-incident-v1/README.md):
+Sol delivered in 20 actions. The original GLM attempt stopped at the old parser after
+13 actions; this is not evidence of cognitive difficulty. Both outcomes and their
+intermediate business consequences are retained, with matching fresh execution.
+This scenario is a workflow anchor; the required frontier difficulty is not yet achieved.
+
 ## Architecture
 
 ```text
@@ -40,29 +46,15 @@ evidence. Models receive public tool results, not manifests, upstream fixes or
 grader source. Every edit expires verification. Failed attempts remain in the
 denominator; missing usage remains unknown.
 
-## Run
+## Other task families
 
-Python 3.11+; the evaluator uses the standard library. Real code execution
-additionally requires Linux Docker containers.
-
-```bash
-python -m pip install -e .
-docker pull python:3.13-slim
-IMAGE=$(docker image inspect python:3.13-slim --format '{{.Id}}')
-python studies/repository-repair-v1/controls.py --image "$IMAGE" --out artifacts/repair-controls
-python -m pomdp_bench validate artifacts/repair-controls
-```
-
-[Six fixed controls](studies/repository-repair-v1/README.md) check correct repair,
-unchanged code, an example-only fix, stale verification, test tampering and an
-empty exit-zero process. The upstream repair is an artifact control, not a model
-score. The command also re-executes checks in fresh containers.
-
-`validate` regrades recorded behavior without candidate execution.
-`recheck` explicitly executes again using the pinned image.
-[Prepare a model run](docs/REPOSITORY_REPAIR.md#run) with named `chat` or
-`responses` configurations. Credentials stay in environment variables and HTTP
-headers. Completed/interrupted attempts are never silently replaced.
+Python 3.11+; the evaluator uses the standard library. Repository repair additionally
+requires Linux Docker containers. Its [run instructions](docs/REPOSITORY_REPAIR.md#run),
+[controls](studies/repository-repair-v1/README.md) and
+[three-task portfolio](studies/repository-portfolio-v1/README.md) remain available.
+`validate` regrades recorded behavior; `recheck` executes the same actions again.
+Credentials stay in environment variables and HTTP headers. Completed/interrupted
+attempts are never silently replaced.
 
 Without Docker or model credentials, run synthetic regression controls:
 
@@ -75,17 +67,18 @@ python -m pomdp_bench validate artifacts/demo
 
 Apply **question → delete → simplify/optimize → accelerate → automate**.
 
-- Make actual repair delivery and regression protection the mainline.
+- Make complete investigation, recovery and useful delivery the mainline.
 - Keep synthetic diagnosis, discovery and coverage as controls.
 - Remove catalogue growth and history compression as prerequisites for real work.
 - Reuse collection, HTTP adapters and evidence checks.
-- Build difficult tasks around cross-file diagnosis, compatibility and recovery;
+- Build difficult tasks around evidence, compatibility and recovery constraints;
   calibrate against strong models while preserving immutable anchors.
 
 The [staged roadmap](docs/ROADMAP.md) defines deliverables and removal conditions.
-Report accepted patches, action/check counts, edited files, wall time, usage and
-execution failures separately. Repeated repair attempts cluster by source task;
-synthetic runs cluster by seed. One public issue is one independent task.
+Report accepted delivery, intermediate business damage, actions, wall time, usage
+and execution failures separately. Service runs cluster by incident scenario;
+repair attempts by source task; synthetic runs by seed. Repeating one incident
+does not create independent tasks.
 Human supervision time is reported only when measured. There is no default
 weighted intelligence score.
 
@@ -107,9 +100,8 @@ Published studies retain their original scope and failures:
   [depth/solver pilot](studies/coverage-depth-v1/README.md).
 
 The depth pilot retained two open request timeouts and two assisted successes
-on one public case. A fixed tool-consumer solved all 24 qualified cases. This
-supports keeping coverage as a search/tool-use control while moving to actual
-code delivery.
+on one public case. A fixed tool-consumer solved all 24 qualified cases. Coverage
+therefore remains a search/tool-use control.
 
 ## Verify and contribute
 

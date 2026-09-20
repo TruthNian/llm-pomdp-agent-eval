@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.9.1
+
+- Preserve completed malformed model actions as rejected, charged turns with feedback;
+  transport, incomplete-response and undeclared-tool errors remain terminal.
+- Preserve the original two incident episodes, including the GLM parser termination,
+  with complete readable action trajectories and matching fresh database reconstructions.
+- Separate one additional GLM integration episode under a new frozen plan; never
+  replace the original failure or infer task difficulty from parsing failures.
+
 ## 2.9.0 — 2026-09-20
 
 - Restore full open incident response as the mainline. Keep localized source

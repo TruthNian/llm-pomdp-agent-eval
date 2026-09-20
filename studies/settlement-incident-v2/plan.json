@@ -1,0 +1,15 @@
+{
+  "framework_version": "2.9.1",
+  "generator_version": "service-incident/1",
+  "purpose": "One additional GLM-route full episode after separating recoverable malformed assistant actions from endpoint protocol failures. Integration validation; the original two episodes remain frozen in settlement-incident-v1. Not a replacement or a model comparison.",
+  "expected_episodes": 1,
+  "conditions": ["open"],
+  "replicates": 1,
+  "wall_seconds": 3600,
+  "agents": [
+    {"name": "custom/z-ai/glm-5.3", "kind": "responses", "model": "custom/z-ai/glm-5.3", "endpoint_env": "DIRECT_ENDPOINT", "api_key_env": "ROUTER_KEY", "headers_env": "ROUTER_HEADERS", "timeout_seconds": 600, "options": {"reasoning_effort": "max"}}
+  ],
+  "transport": {"base_url": "http://127.0.0.1:4202/v1", "headers": {"x-codex-router-exact-route": "1"}},
+  "stopping_rule": "Exactly one additional episode from initial state. Malformed assistant action text consumes a normal step and is shown as rejected in public history. No automatic transport retries. Retain every request and terminal failure. Do not replace the v1 failure or pool versions.",
+  "decision": "Inspect the complete outcome and whether recovery feedback was exercised. Success without a malformed action validates the complete live path but not live format-error recovery. No additional difficulty or comparative model claim follows from this one run."
+}

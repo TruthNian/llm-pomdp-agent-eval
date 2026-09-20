@@ -22,6 +22,11 @@ python -m pomdp_bench validate artifacts/incident-controls
 无需 Docker。模型只通过运维接口操作可信服务，不在本机执行模型生成的代码。
 [逐步路线](docs/ROADMAP.zh-CN.md)与[完整交互规范](docs/SERVICE_INCIDENT.md)。
 
+[实测完整轨迹与证据](studies/settlement-incident-v1/README.md)：Sol 用 20 步完成交付；
+GLM 的原始尝试在 13 步后被旧解析器终止，这不能视为认知难度证据。
+两次结果、过程中产生的业务损害和独立重执行均已保留。
+当前场景是完整工作流参照，尚未达到项目要求的前沿高难度。
+
 ## 实现路径与架构
 
 ```text
@@ -36,27 +41,12 @@ python -m pomdp_bench validate artifacts/incident-controls
 模型获得公开工具结果，不获得私有清单、上游答案或评分器。
 任何修改都会使旧验证失效；失败留在分母中，缺少用量保持未知。
 
-## 运行
+## 其他任务族
 
-Python 3.11+，评测器使用标准库；执行候选代码还需要支持 Linux 容器的 Docker。
-PowerShell 示例：
-
-```powershell
-python -m pip install -e .
-docker pull python:3.13-slim
-$repairImage = docker image inspect python:3.13-slim --format '{{.Id}}'
-python studies/repository-repair-v1/controls.py --image $repairImage --out artifacts/repair-controls
-python -m pomdp_bench validate artifacts/repair-controls
-```
-
-[六项固定对照](studies/repository-repair-v1/README.md)检查正确修复、不改源码、
-只通过报告样例、验证后改动、篡改测试与空进程成功退出。
-上游补丁是产物验收对照，不是模型成绩。对照命令也会用新容器重新执行检查。
-
-`validate` 核对已记录行为，不运行候选代码。
-`recheck` 使用固定镜像重新执行并比对原记录。
-模型任务沿用 `chat`／`responses` 配置和
-[`prepare`／`resume` 流程](docs/REPOSITORY_REPAIR.md#run)。
+Python 3.11+，评测器使用标准库。源码修复任务还需要 Linux Docker 容器，
+其[运行方法](docs/REPOSITORY_REPAIR.md#run)、[六项对照](studies/repository-repair-v1/README.md)
+和[三题结果](studies/repository-portfolio-v1/README.md)继续保留。
+`validate` 核对已记录行为；`recheck` 重新执行原动作并比对结果。
 凭据留在环境变量和请求头；完成或中断的尝试不会静默重跑替换。
 
 没有 Docker 或模型账号也能运行合成回归对照：
@@ -70,22 +60,22 @@ python -m pomdp_bench validate artifacts/demo
 
 按 **质疑 → 删除 → 简化和优化 → 加速 → 自动化** 的顺序工作。
 
-- 主线是修复真实问题、保护相关行为并交付可审查补丁。
+- 主线是完整调查、处置、恢复并交付有用的业务结果。
 - 诊断、依赖发现和覆盖搜索保留为对照。
 - 删除“扩大合成目录、完成历史压缩后才能做真实工作”的前置条件。
 - 复用采集、模型接入和证据校验，不另造调度器、插件体系或智能总分。
-- 难度来自跨文件诊断、兼容性约束和失败恢复；用强模型实测，
+- 难度来自证据判断、兼容性约束和失败恢复；用强模型实测，
   随能力进步扩展，同时保留固定历史参照。
 
 [逐步路线](docs/ROADMAP.zh-CN.md)给出交付物与删除条件。
-分别报告通过验收的补丁、工具步骤、检查次数、修改文件数、耗时、用量和执行故障。
-修复任务按源问题聚类，合成任务按种子聚类。
-反复运行一个公开问题不会产生更多独立任务。未测量的人工介入时间不编造。
+分别报告交付验收、过程中的业务损害、操作数、耗时、用量和执行故障。
+服务任务按事故场景聚类，修复任务按源问题聚类，合成任务按种子聚类。
+反复运行一个场景不会产生更多独立任务。未测量的人工介入时间不编造。
 
 已发布研究保持原样，入口见[证据索引](README.md#preserved-evidence)。
 最近的[深度试跑](studies/coverage-depth-v1/README.md)保留两条直接模式请求超时、
 两条带工具成功；固定脚本可完成全部 24 个合格实例。
-据此将覆盖任务保留为搜索和工具使用对照，把主线推进到实际代码交付。
+据此将覆盖任务保留为搜索和工具使用对照。
 
 ## 验证与贡献
 

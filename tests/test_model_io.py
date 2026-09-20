@@ -380,20 +380,57 @@ class TransportTests(unittest.TestCase):
         self.assertEqual(record["request_audit"][0]["outcome"], "unexpected_tool")
 
     def test_failed_json_action_keeps_reported_usage(self):
-        with endpoint(lambda h, _: send(h, response("not json"))):
+        def reply(h, body):
+            public = json.loads(body["input"][0]["content"])
+            send(h, response("not json" if not public["history"] else '{"command":"finish"}'))
+        with endpoint(reply) as received:
             record = run_episode(generate(0), config(), "open", 0)
-        self.assertEqual(record["request_audit"][0]["outcome"], "protocol_error")
-        self.assertEqual(record["usage"]["requests_with_usage"], 1)
-        self.assertEqual(record["usage"]["output_tokens"], 7)
+        self.assertEqual(record["request_audit"][0]["outcome"], "invalid_action")
+        self.assertEqual(record["grade"]["steps"], 2)
+        self.assertEqual(len(received), 2)
+        second = json.loads(json.loads(received[1][0])["input"][0]["content"])
+        self.assertEqual(second["history"][0]["action"]["command"], "invalid_model_output")
+        self.assertEqual(record["usage"]["requests_with_usage"], 2)
+        self.assertEqual(record["usage"]["output_tokens"], 14)
 
     def test_failed_stream_action_keeps_reported_usage(self):
         raw = reasoning_stream(response("not json"))
         with endpoint(lambda h, _: send(h, raw, "text/event-stream")):
-            record = run_episode(generate(0), config(), "open", 0)
-        self.assertEqual(record["events"], [])
-        self.assertEqual(record["request_audit"][0]["outcome"], "protocol_error")
-        self.assertEqual(record["usage"]["requests_with_usage"], 1)
-        self.assertEqual(record["usage"]["output_tokens"], 7)
+            agent = HttpAgent(config())
+            action = agent.act({}, 2)
+        self.assertEqual(action["command"], "invalid_model_output")
+        self.assertEqual(agent.request_audit[0]["outcome"], "invalid_action")
+        self.assertEqual(agent.usage["requests_with_usage"], 1)
+        self.assertEqual(agent.usage["output_tokens"], 7)
+
+    def test_malformed_actions_consume_incident_budget_and_can_recover(self):
+        from pomdp_bench.incident import make_case, policy_action
+        from pomdp_bench.evaluation import replay
+        malformed = ['not json PRIVATE-ACTION-CANARY', '{"command":"finish","command":"verify"}',
+                     '{"command":"finish"}{"command":"verify"}', '[]']
+        def reply(h, body):
+            public = json.loads(body["input"][0]["content"])
+            index = len(public["history"])
+            text = malformed[index] if index < len(malformed) else json.dumps(policy_action(public))
+            send(h, reasoning_stream(response(text)), "text/event-stream")
+        with endpoint(reply) as received:
+            record = run_episode(make_case(), config(), "open", 0)
+        self.assertTrue(record["grade"]["success"])
+        self.assertEqual(record["grade"]["invalid_actions"], len(malformed))
+        self.assertEqual(len(received), record["grade"]["steps"])
+        for i, raw in enumerate(malformed):
+            self.assertEqual(record["request_audit"][i]["rejected_text_sha256"], hashlib.sha256(raw.encode()).hexdigest())
+            self.assertEqual(record["events"][i]["observation"]["steps_remaining"], 59-i)
+        self.assertNotIn("PRIVATE-ACTION-CANARY", json.dumps(record))
+        self.assertEqual(replay(record, make_case()), record["grade"])
+
+    def test_malformed_actions_do_not_gain_free_retries(self):
+        case = generate(0)
+        with endpoint(lambda h, _: send(h, response("not json"))) as received:
+            record = run_episode(case, config(), "open", 0)
+        self.assertEqual(record["grade"]["termination"], "step_limit")
+        self.assertEqual(len(received), record["grade"]["steps"])
+        self.assertGreater(len(received), 1)
 
     def test_redirect_is_not_followed_or_given_credentials(self):
         with endpoint(lambda h, _: send(h, response())) as target:

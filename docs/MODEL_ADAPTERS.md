@@ -70,7 +70,17 @@ Accepted response body follows the common shape:
 }
 ```
 
-Reasoning usage under `completion_tokens_details.reasoning_tokens` is retained when present. Usage counts remain explicitly incomplete when unavailable. Provider error bodies, headers, reasoning text and raw responses are not written to traces. Malformed JSON terminates the episode as an adapter error; invalid but parseable actions consume environment steps. These are distinct failure modes.
+Reasoning usage under `completion_tokens_details.reasoning_tokens` is retained when present. Usage counts remain explicitly incomplete when unavailable. Provider error bodies, headers, reasoning text and raw responses are not written to traces.
+
+From 2.9.1, completed assistant text that is not one unambiguous JSON object becomes
+an explicit rejected turn (`invalid_model_output`). It consumes a normal environment
+step, with the applicable business consequences; the next request receives the
+format feedback in public history. The adapter neither guesses an action nor makes
+an automatic retry. Its audit records `invalid_action` and the rejected text's hash,
+not its body. Invalid but parseable objects also continue through normal environment
+validation. Earlier versions terminated on malformed action text and remain frozen.
+Malformed envelopes, unfinished streams and unexpected tools remain terminal errors;
+these are not silently converted into model mistakes.
 
 From 2.3, the Chat Completions response must contain exactly one assistant choice with `finish_reason: stop`. Tool/function calls, refusal content and truncation are rejected even when the same envelope contains valid JSON text. Duplicate JSON keys and multiple JSON values are rejected. This intentionally rejects ambiguous responses previously accepted by taking the first text field. Historical traces still replay, but new collection needs a new directory and version.
 
@@ -102,7 +112,7 @@ The shared transport has no redirects, automatic retries or implicit environment
 
 `request_audit` records the public request body's SHA-256, protocol, declared empty-tool policy, selected timeout, outcome code and whether a supplied response model label matches the requested string. An alias mismatch is evidence to inspect, not proof of model substitution or a silently rewritten request. No header values, credentials, provider body or reasoning is included. The hash is local provenance, not provider attestation. A crash during a request can leave only the earlier audit prefix and an in-flight checkpoint; the existing interruption rules preserve that uncertainty.
 
-Outcome codes distinguish HTTP, transport, deadline, size, incomplete-response, unexpected-item and JSON/protocol failures. Messages say **endpoint** HTTP status because a local intermediary can generate an error itself. Reported usage from a fully received envelope is retained even when its action is rejected; absent usage remains unknown. These errors still terminate the attempt and remain in the denominator.
+Outcome codes distinguish HTTP, transport, deadline, size, incomplete-response, unexpected-item, JSON/protocol failures and recoverable `invalid_action` turns. Messages say **endpoint** HTTP status because a local intermediary can generate an error itself. Reported usage from a fully received envelope is retained even when its action is rejected; absent usage remains unknown. All errors except completed malformed action text terminate the attempt and remain in the denominator.
 
 ## Private suite, shared conditions
 

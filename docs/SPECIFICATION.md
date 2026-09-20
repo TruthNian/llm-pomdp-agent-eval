@@ -2,6 +2,11 @@
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
 
+2.9.1 changes the model action channel: completed malformed assistant action text
+uses a normal rejected environment turn and gives the model format feedback. Transport
+and envelope failures still terminate. Environment transitions are unchanged; old
+failures replay as recorded. Collection requires a newly frozen source and directory.
+
 2.9 adds the separate `service-incident/1` [executable service incident](SERVICE_INCIDENT.md).
 It restores complete open interactions over HTTP and SQLite, with business-state
 acceptance, recorded-service replay and fresh execution. Diagnostic semantics below are unchanged.
