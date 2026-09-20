@@ -44,7 +44,8 @@ def make_case(image, task):
     return {"generator_version": VERSION, "family": "repository_repair", "profile": task,
             "domain": "python_repository", "source_task_id": provenance["issue"],
             "base_commit": provenance["base_commit"], "files": files, "image_id": image,
-            "check_version": task + "/1", "max_steps": 80, "max_checks": 12}
+            "check_version": task + ("/2" if task == "urllib3_read" else "/1"),
+            "max_steps": 80, "max_checks": 12}
 
 
 def validate_case(case):

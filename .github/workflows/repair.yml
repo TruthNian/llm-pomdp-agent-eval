@@ -40,6 +40,9 @@ jobs:
           docker image inspect "$image" --format '{{json .Id}}' > artifacts/portfolio-image.json
       - name: Execute all portfolio artifact controls and fresh rechecks
         run: python studies/repository-portfolio-v1/controls.py --image "$PORTFOLIO_IMAGE" --out artifacts/portfolio-controls
+      - name: Independently grade frozen model-proposed artifacts
+        if: hashFiles('studies/repository-portfolio-v1/model-proposals.json') != ''
+        run: python studies/repository-portfolio-v1/assess_proposals.py --image "$PORTFOLIO_IMAGE" --out artifacts/model-proposal-assessment
       - name: Retain successes, failures and partial evidence
         if: always()
         uses: actions/upload-artifact@v7
@@ -50,4 +53,5 @@ jobs:
             artifacts/repair-image-digests.json
             artifacts/portfolio-controls
             artifacts/portfolio-image.json
+            artifacts/model-proposal-assessment
           if-no-files-found: error

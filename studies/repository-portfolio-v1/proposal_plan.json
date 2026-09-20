@@ -1,6 +1,7 @@
 {
   "framework_version": "2.8.0",
   "purpose": "Single-proposal strong-model baseline to screen public task headroom. Not an interactive POMDP score or model ranking.",
+  "localization_assistance": "Selected context includes known affected files and neighboring source. This deliberately gives the baseline localization help. Success measures patch construction under that help, not autonomous repository-wide localization.",
   "expected_attempts": 6,
   "request_seconds": 600,
   "max_edits": 64,
@@ -23,7 +24,7 @@
   ],
   "acceptance": "Generate once from task description and selected pre-fix source; apply only exact valid edits; execute complete task oracle in CI without feedback to the model. Record all six submissions, invalid patches, transport failures and unavailable usage.",
   "stopping_rule": "Exactly six attempts; no additional probes, retries, corrected model outputs or outcome-dependent replacement. Interrupted requests stay uncertain and are not redialed.",
-  "decision": "Accepted single proposals are evidence against treating these public tasks as a high-difficulty frontier set. A failed single proposal does not prove difficulty for a tool-equipped interactive agent. Keep easy tasks as regression anchors and select harder consequential tasks next.",
+  "decision": "Accepted single proposals show patch construction is tractable with localized source. They do not measure autonomous localization or interactive recovery. Do not promote the portfolio as frontier-hard from source size or real provenance. Retain useful regression anchors and seek tasks with consequential diagnosis and compatibility interactions.",
   "transport": {"base_url": "http://127.0.0.1:4202/v1", "headers": {"x-codex-router-exact-route": "1"}, "global_session_sharing_changes": false},
   "prerequisite": "All twelve artifact controls must pass before model requests. Publish source and plan first."
 }

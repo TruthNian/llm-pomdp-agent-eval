@@ -94,4 +94,8 @@ def selected(task, group):
     if task == "werkzeug_routing":
         return [next(r for r in rows if r["input"]["initial"] and r["input"]["updated"] is False
                      and r["input"]["override"] is None and r["input"]["path"] == "/api//path")]
+    if task == "urllib3_read":
+        return [next(r for r in rows if r["input"].get("encoding") == "br"
+                     and len(r["input"].get("payload", "")) == 20000
+                     and r["input"]["parts"] == [512, 1024] and not r["input"]["cache"])]
     return rows[:1]

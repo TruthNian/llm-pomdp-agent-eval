@@ -74,6 +74,8 @@ def main():
         gate &= row["fresh_recheck_error"] is None
         if row["control"] == "partial-repair":
             gate &= len(row["checks"]) == 2 and row["checks"][0]["passed"] and not row["checks"][1]["passed"]
+        if row["control"] == "unchanged":
+            gate &= len(row["checks"]) == 2 and not any(c["passed"] for c in row["checks"])
     print(json.dumps({"retained": len(rows), "gate_passed": gate,
                       "results": [{"task": r["task"], "control": r["control"], "grade": r["grade"]} for r in rows]}))
     if not gate:
