@@ -53,6 +53,33 @@ not attested by a requested route label.
 
 ## Reproduction
 
+The [registered offline control evidence](control-evidence.json) retains all 48
+episodes on public seeds 0–11, collected at clean commit
+`2715f1330456f439c31d71f00f8867120a813635`. Every case regenerates and every
+trace replays; the two control runs' source hashes match this implementation.
+
+| Profile | Public cases | Open exact reference | Explicit solver consumer |
+|---|---:|---:|---:|
+| depth18 | 12 | 12/12, 7 actions each | 12/12, 9 actions and 2 solver calls each |
+| depth24 | 12 | 12/12, 7 actions each | 12/12, 9 actions and 2 solver calls each |
+
+Maximum total visited solver states per episode were 9,725 and 67,824
+respectively. They measure this search algorithm's effort on these cases.
+Open references use their own computation, which is not a zero-compute model
+measurement. Model usage is inapplicable to both scripted controls.
+
+Tests additionally bind the renamed cases, selected reference plans and search
+counts to the previous qualification's frozen hashes. All 160 unit tests and all
+four Windows/Linux Python 3.11/3.13 CI jobs passed at this source. Frozen history
+(156 files), the prior 192 coverage controls, both four-attempt model pilots and
+the 60 discovery controls remain valid. An initial standalone control-script
+import failure was fixed before any model request; it produced no control
+episodes and did not replace an outcome.
+
+```bash
+python studies/coverage-depth-v1/controls.py artifacts/depth-controls
+```
+
 Use the source revision recorded in the eventual evidence. The launcher reuses
 the prior explicitly authorized installed route, checks plan/manifest hashes,
 and keeps login/router/consent files unchanged. Raw generated cases and
