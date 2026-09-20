@@ -9,6 +9,7 @@ The project's objective is a durable evaluation framework for agents acting unde
 - A solvability reference must use the public observation history. Label clairvoyant bounds separately.
 - Successful verification is tied to the latest state revision and explicit handover.
 - Count failures and incomplete matrices honestly. Never drop failed episodes, invent missing usage, or replace a failed run silently.
+- Distinguish planned, executed and unexecuted controls. Missing prerequisites have no observed outcome; do not invent successes/failures or claim every planned row ran. An offline qualification pass is not model-discrimination evidence.
 - New random seeds, repeated model runs, and semantic skins are distinct units. Keep paired design and seed clustering intact.
 - New capabilities need executable positive/negative controls and a precise claim about the construct measured.
 - Fresh seeds do not establish contamination resistance or real-world predictive validity.

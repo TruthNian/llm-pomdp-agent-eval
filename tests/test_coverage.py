@@ -15,7 +15,7 @@ from unittest.mock import patch
 from pomdp_bench import __version__
 from pomdp_bench.cli import main
 from pomdp_bench.collection import prepare_suite, resume_suite, read_run, run_suite
-from pomdp_bench.coverage import CoverageEnvironment, POLICIES, SCALES, cover_plan, generate, policy_action, suite
+from pomdp_bench.coverage import CoverageEnvironment, POLICIES, SCALES, _generate, cover_plan, generate, policy_action, suite
 from pomdp_bench.evaluation import episode_record, run_episode, replay, recover_interrupted, validate_suite
 from pomdp_bench.generator import suite as diagnostic_suite
 from pomdp_bench.reporting import summarize
@@ -27,6 +27,41 @@ def request(env):
 
 
 class CoveragePlanningTests(unittest.TestCase):
+    def test_tight_search_matches_bruteforce_and_general_path(self):
+        rng = random.Random(91)
+        for _ in range(400):
+            width, slots = rng.randint(1, 3), rng.randint(1, 3)
+            goals = {str(i) for i in range(width * slots)}
+            rows = {str(i): rng.sample(sorted(goals), rng.randint(1, width)) for i in range(10)}
+            before = copy.deepcopy(rows)
+            expected = next((size for size in range(slots + 1) for names in itertools.combinations(rows, size)
+                             if set().union(*(set(rows[n]) for n in names)) >= goals), None)
+            plan, states = cover_plan(rows, goals, slots)
+            self.assertEqual(len(plan) if plan is not None else None, expected)
+            if plan is not None:
+                # A spare slot selects the independent general-cover implementation,
+                # whose minimum search depth and tie breaking must be identical.
+                self.assertEqual(cover_plan(rows, goals, slots + 1), (plan, states))
+                with self.assertRaisesRegex(RuntimeError, "search limit"):
+                    cover_plan(rows, goals, slots, node_limit=states - 1)
+                self.assertEqual(cover_plan(rows, goals, slots, node_limit=states), (plan, states))
+            self.assertEqual(rows, before)
+
+    def test_released_generation_matches_frozen_search_fingerprints(self):
+        root = Path(__file__).resolve().parents[1]
+        data = json.loads((root / "studies/coverage-search-v1/evidence.json").read_text(encoding="utf-8"))
+        from pomdp_bench.generator import digest
+        for row in data["released_calls"]:
+            case = generate(row["public_seed"], row["profile"])
+            self.assertEqual(digest(case), row["case_sha256"])
+        for row in data["exploratory_calls"]:
+            shape = tuple(map(int, row["profile"].split("-")[1:]))
+            case = _generate(row["public_seed"], row["profile"], shape,
+                             "dependency-cover-exploration/0", recovery=False)
+            self.assertEqual(digest(case), row["case_sha256"])
+            with self.assertRaises(ValueError):
+                validate_case(case)
+
     def test_exact_public_search_matches_independent_bruteforce(self):
         rng = random.Random(44)
         for _ in range(150):

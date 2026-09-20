@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "purpose": "Public development qualification of bounded reference search and recovery controls, not model difficulty calibration",
+  "generator_version": "dependency-cover-exploration/0",
+  "shapes": [[72, 4, 216], [96, 4, 288], [96, 4, 384]],
+  "public_seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+  "node_limit_per_reference_decision": 1000000,
+  "controls": ["reference", "greedy", "rarest", "greedy_relaxed", "rarest_relaxed", "no_recovery", "no_recovery_stable"],
+  "expected_cases": 36,
+  "expected_control_rows": 252,
+  "stopping_rule": "Complete the fixed matrix. Retain search exhaustion and controls whose initial-reference prerequisite is unavailable. No seed filtering or replacement.",
+  "interpretation": "Existing experimental initial catalogues are reused. Recovery is newly checked; these are public development cases, not held-out structures or independent model evidence.",
+  "promotion_rule": "A scale needs complete reference success, failing greedy/rarest/no-recovery controls, and successful budget/recovery rescue controls on every sampled seed to pass this offline gate. Passing does not establish model discrimination."
+}

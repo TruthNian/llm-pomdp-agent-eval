@@ -52,9 +52,9 @@ def validate_config(config: dict) -> None:
 
 
 def validate_agent_version(config, version):
-    if "max_response_bytes" in config and version != "2.5.2":
+    if "max_response_bytes" in config and version not in ("2.5.2", "2.5.3"):
         raise ValueError("Explicit response byte limits require framework 2.5.2")
-    if config["kind"] in COVER_POLICIES and version not in ("2.5.0", "2.5.1", "2.5.2"):
+    if config["kind"] in COVER_POLICIES and version not in ("2.5.0", "2.5.1", "2.5.2", "2.5.3"):
         raise ValueError("Coverage policies require framework 2.5")
     if version in ("2.0.0", "2.1.0", "2.2.0") and (config["kind"] == "responses" or "headers_env" in config):
         raise ValueError("This HTTP configuration requires framework 2.3 or later")

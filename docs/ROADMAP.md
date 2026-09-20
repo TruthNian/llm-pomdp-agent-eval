@@ -156,6 +156,21 @@ recovery ablations, freeze useful candidates and structural holdouts, and compar
 direct-model and solver-assisted configurations under declared compute budgets.
 Do not promote them solely because this reference exhausts a screening limit.
 
+**P3.3a completed in 2.5.3:** [bounded candidate qualification](../studies/coverage-qualification-v1/README.md)
+retains 252 planned rows, with 232 executed/replayed and 20 explicitly unavailable
+prerequisites. The 72/4/216 and 96/4/288 structures pass complete reference,
+heuristic and recovery/budget-rescue checks on all 12 public seeds. The 96/4/384
+structure does not: 10 initial searches exceed the one-million-state limit.
+The optimized exact-capacity path preserves all 180 earlier outcomes, state
+counts and selected plans while removing repeated row scans.
+
+**P3.3b next:** freeze an experimental generator version for the two passing
+structures and connect it to the same collector, keeping released anchors.
+Declare direct-model and solver-assisted tracks before strong-model calibration
+and reserve unseen structures before tuning. Passing offline controls is not
+model-discrimination evidence. Preserve the third candidate's full distribution
+for a separately declared reference/budget experiment; never remove its failed seeds.
+
 ## P4 — Test whether the benchmark predicts real outcomes
 
 Freeze an externally scored sample of real delegated tasks and a rubric for acceptance and human intervention time. Score benchmark configurations before revealing those outcomes. Compare prediction with static domain-skill and simple cost baselines; hold out task sources, not merely repeated runs.

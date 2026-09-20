@@ -103,6 +103,14 @@ search on every future sample. A reference-limit failure blocks that calibration
 gate and stays in the matrix. Supported scales are bounded; new scales require
 versioning and runtime/solvability checks rather than silently increasing defaults.
 
+From 2.5.3 the exact-capacity case uses precomputed bitsets: if missing-goal count
+equals maximum row width times remaining work, every selected row must cover a
+full-width, disjoint set. General overlapping/slack cases retain the original
+search. The [paired comparison](../studies/coverage-qualification-v1/README.md)
+checks all 180 previous public search calls against immutable 2.5.2 code:
+outcomes, completed state counts and selected plans are identical. Lower runtime
+does not raise task difficulty or establish model headroom.
+
 The scorer's lower bound omits inspections, divides missing goals by maximum
 coverage and includes required verification/recovery. It is a clairvoyant lower
 bound, not an executable policy. The reference guarantee and this diagnostic are
@@ -167,6 +175,13 @@ for stronger structural candidates and separately declared solver-assisted contr
 Its 24-build candidates exceed 5,000 states on all 12 tested seeds, but remain
 exploratory, uncalibrated and outside the released ladder. Solver effort alone
 cannot satisfy the strong-model discrimination gate.
+
+The [subsequent complete recovery check](../studies/coverage-qualification-v1/README.md)
+uses the existing one-million-state reference allowance. Two candidate structures
+pass the offline controls on 12 public seeds each. The denser 96/4/384 structure
+retains ten reference-limit failures and twenty unavailable dependent controls.
+It has not passed; its failed seeds remain part of the distribution. All three
+remain outside the released ladder pending the next version/calibration gates.
 
 Version 2.5.2 allows a declared response byte limit so long reasoning streams need
 not hit an undeclared experimental constraint. It does not change task difficulty,

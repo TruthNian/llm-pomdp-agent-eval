@@ -18,12 +18,22 @@ POLICIES = ("cover_reference", "cover_greedy", "cover_rarest", "cover_no_recover
 
 
 def generate(seed, profile="hard", *, recovery=True, slack=0):
-    if type(seed) is not int or seed < 0 or profile not in SCALES or type(recovery) is not bool:
+    if profile not in SCALES:
         raise ValueError("Invalid coverage seed, scale or recovery flag")
-    count, width, alternatives = SCALES[profile]
+    return _generate(seed, profile, SCALES[profile], VERSION, recovery=recovery, slack=slack)
+
+
+def _generate(seed, profile, shape, version, *, recovery=True, slack=0):
+    """Shared sampler; nonreleased shapes remain outside suite validation."""
+    if type(seed) is not int or seed < 0 or type(recovery) is not bool:
+        raise ValueError("Invalid coverage seed, scale or recovery flag")
+    count, width, alternatives = shape
+    if (any(type(n) is not int for n in shape) or not 2 <= width <= count <= 899
+            or count % width or not count // width <= alternatives <= min(8999, math.comb(count, width))):
+        raise ValueError("Invalid coverage dimensions")
     if type(slack) is not int or not 0 <= slack <= count:
         raise ValueError("Work slack must be an integer between zero and the goal count")
-    rng = random.Random(keyed_seed(seed, VERSION + "/" + profile))
+    rng = random.Random(keyed_seed(seed, version + "/" + profile))
     goals = [f"g-{n}" for n in rng.sample(range(100, 999), count)]
     rng.shuffle(goals)
     operations = [f"op-{n}" for n in rng.sample(range(1000, 9999), alternatives)]
@@ -47,7 +57,7 @@ def generate(seed, profile="hard", *, recovery=True, slack=0):
     if recovery:
         limits.append(len(changed) // width + slack)
     probes = alternatives * len(epochs)
-    return {"generator_version": VERSION, "seed": seed, "family": "dependency_cover", "profile": profile,
+    return {"generator_version": version, "seed": seed, "family": "dependency_cover", "profile": profile,
             "domain": "abstract", "recovery": recovery, "slack": slack, "goals": sorted(goals),
             "operations": sorted(operations), "epochs": epochs, "changed_goals": sorted(changed) if recovery else [],
             "width": width, "work_limits": limits, "inspection_budget": probes,
@@ -72,6 +82,9 @@ def cover_plan(catalogue, missing, slots, *, node_limit=1_000_000):
     bit = {g: 1 << i for i, g in enumerate(goals)}
     rows = [(name, sum(bit[g] for g in set(covers) & set(goals))) for name, covers in sorted(catalogue.items())]
     rows = [(name, mask) for name, mask in rows if mask]
+    width = max((mask.bit_count() for _, mask in rows), default=1)
+    if goals and len(goals) == width * slots:
+        return _tight_cover(rows, len(goals), width, node_limit)
     nodes = 0
 
     @lru_cache(None)
@@ -105,6 +118,57 @@ def cover_plan(catalogue, missing, slots, *, node_limit=1_000_000):
         if result is not None:
             return list(result), nodes
     return None, nodes
+
+
+def _tight_cover(rows, goal_count, width, node_limit):
+    """Exact-capacity case: every selected row must cover width fresh goals."""
+    rows = [(name, mask) for name, mask in rows if mask.bit_count() == width]
+    columns = [sum(1 << r for r, (_, mask) in enumerate(rows) if mask & (1 << g))
+               for g in range(goal_count)]
+    conflicts = []
+    for _, mask in rows:
+        conflict = 0
+        while mask:
+            bit = mask & -mask
+            conflict |= columns[bit.bit_length() - 1]
+            mask ^= bit
+        conflicts.append(conflict)
+    nodes = 0
+    failed = set()
+
+    def search(left, active):
+        nonlocal nodes
+        # active rows are determined by left; do not memoize duplicate states.
+        if left in failed:
+            return None
+        nodes += 1
+        if nodes > node_limit:
+            raise RuntimeError("Public reference search limit reached; no infeasibility claim")
+        if not left:
+            return ()
+        bits, choices, best = left, 0, len(rows) + 1
+        while bits:
+            bit = bits & -bits
+            available = columns[bit.bit_length() - 1] & active
+            count = available.bit_count()
+            if count < best:
+                choices, best = available, count
+            if not count:
+                break
+            bits ^= bit
+        while choices:
+            bit = choices & -choices
+            index = bit.bit_length() - 1
+            name, mask = rows[index]
+            tail = search(left ^ mask, active & ~conflicts[index])
+            if tail is not None:
+                return (name, *tail)
+            choices ^= bit
+        failed.add(left)
+        return None
+
+    plan = search((1 << goal_count) - 1, (1 << len(rows)) - 1)
+    return list(plan) if plan is not None else None, nodes
 
 
 class CoverageEnvironment:

@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.5.3 — 2026-09-20
+
+- Simplify exact-capacity reference search to precomputed goal/row conflict
+  bitsets; retain the general cover path for slack. All 180 prior search outcomes,
+  completed state counts and solution hashes match immutable 2.5.2 code.
+  One paired desktop run reduces total solver time from 48.30 to 1.87 seconds;
+  this is a machine-dependent runtime improvement, not increased difficulty.
+- Extract a shared sampler with explicit dimensions, removing process-global
+  scale/version substitution from new candidate qualification. Published
+  generation fingerprints remain unchanged; experimental cases stay unregistered.
+- Add a fixed offline qualification matrix for complete recovery, heuristic
+  failures and budget/recovery rescue ablations. Search exhaustion and controls
+  without an available initial-reference prerequisite remain explicitly recorded.
+  Results do not establish strong-model discrimination.
+- Retain all 252 planned qualification rows: 232 executed and replayed, 20
+  unavailable after initial-reference exhaustion. Two structures pass the
+  offline gate; the third retains 10/12 reference-search failures and does not.
+
+**Comparability:** released generation, task prompts, transitions, acceptance
+and search-state budgets are unchanged. Runtime costs belong to the recorded
+implementation. Existing studies retain their original data and source bindings;
+no new model calls or released difficulty scales are included.
+
 ## 2.5.2 — 2026-09-20
 
 - Publish every 2.5.1 calibration attempt: both sanity tasks and Sol's extreme

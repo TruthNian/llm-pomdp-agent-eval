@@ -18,7 +18,7 @@ def validate_case(case):
 
 
 def validate_case_version(case, framework_version):
-    if case["generator_version"] == COVER_VERSION and framework_version not in ("2.5.0", "2.5.1", "2.5.2"):
+    if case["generator_version"] == COVER_VERSION and framework_version not in ("2.5.0", "2.5.1", "2.5.2", "2.5.3"):
         raise ValueError("Dependency coverage requires framework 2.5")
 
 

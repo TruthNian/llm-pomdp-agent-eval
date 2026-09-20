@@ -18,6 +18,11 @@ a transport-size limit. Frontier headroom remains unproven. The
 [reproducible solver screen](studies/coverage-search-v1/README.md) retains all 180
 searches and investigates deeper combinations before promoting new scales.
 
+The [2.5.3 candidate qualification](studies/coverage-qualification-v1/README.md)
+retains 252 planned controls: 232 executed/replayed, 20 explicitly unavailable.
+Two deeper structures pass the offline reference and rescue checks; the third
+exhausts the reference budget on 10/12 seeds. None is yet model-calibrated.
+
 Development follows [explicit stages and acceptance gates](docs/ROADMAP.md): reliable collection → isolated intervention studies → new task structures → external validity → measured acceleration. Requirements are questioned, unnecessary work is removed, and the remaining workflow is simplified before it is automated. For long collections, use [`prepare`, `status` and `resume`](docs/COLLECTION.md); completed and interrupted attempts are never silently replaced.
 
 For a single-intervention experiment, use [`prepare-study`](docs/STUDIES.md). The [offline example](examples/study-reserve.pilot.json) checks a deliberately budget-blind control, a successful reference and a failing cosmetic-status policy. Study analysis reports a reminder contrast within each agent; it does not automatically rank the models or turn a tiny perfect-success pilot into a precise population claim.
