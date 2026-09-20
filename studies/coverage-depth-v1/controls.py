@@ -3,6 +3,9 @@ import json
 from pathlib import Path
 import sys
 
+# Direct script execution starts at studies/coverage-depth-v1, not the repo root.
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
 from pomdp_bench.collection import run_suite
 from pomdp_bench.coverage import DEPTH_SCALES, suite
 from pomdp_bench.storage import write_json
