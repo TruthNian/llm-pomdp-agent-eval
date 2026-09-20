@@ -1,5 +1,24 @@
 # Changelog
 
+## 2.5.2 — 2026-09-20
+
+- Publish every 2.5.1 calibration attempt: both sanity tasks and Sol's extreme
+  task succeeded; GLM's extreme response exceeded the fixed 2 MB wire allowance.
+  All four replay; 23 public request hashes match; incomplete usage stays unknown.
+- Make HTTP `max_response_bytes` an explicit frozen configuration (default
+  2,000,000; bounded at 64,000,000), recorded per request. Local stream and JSON
+  fixtures verify success above the old limit and exact-boundary rejection.
+  No failed live attempt was retried or replaced.
+- Publish 180 complete/censored solver searches and their reproduction script.
+  Released extreme needs at most 36 states in these public fixtures; deeper
+  experimental candidates remain unregistered and uncalibrated. Require
+  solver-assisted controls and structural holdouts before broad agent claims.
+
+**Comparability:** no task, generator, prompt, scoring or default byte-limit
+change. Larger declared transport allowances are a different configuration;
+record them before requests. Both retained model pilots remain bound to their
+original sources and settings. This release does not establish frontier headroom.
+
 ## 2.5.1 — 2026-09-20
 
 - Preserve all four first calibration failures and 12 reconstructed request

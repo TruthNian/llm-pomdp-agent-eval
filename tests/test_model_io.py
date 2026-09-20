@@ -282,6 +282,57 @@ class EnvelopeTests(unittest.TestCase):
                 parser.feed(sse({"type": "response.output_item.done", "output_index": index,
                                  "item": {"id": item_id, **response()["output"][-1]}}))
 class TransportTests(unittest.TestCase):
+    def test_response_byte_limits_are_declared_bounded_and_versioned(self):
+        for value in (None, True, 0, -1, 2.5, "3000000", 64_000_001):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                validate_config({**config(), "max_response_bytes": value})
+        for value in (1, 64_000_000):
+            validate_config({**config(), "max_response_bytes": value})
+        with self.assertRaises(ValueError):
+            validate_config({"name": "ref", "kind": "reference", "max_response_bytes": 10})
+        declared = {**config(), "max_response_bytes": 3_000_000}
+        validate_agent_version(declared, "2.5.2")
+        with self.assertRaises(ValueError):
+            validate_agent_version(declared, "2.5.1")
+        for kind in ("chat", "responses"):
+            self.assertEqual(request_body(config(kind), {}),
+                             request_body({**config(kind), "max_response_bytes": 3_000_000}, {}))
+
+    def test_long_reasoning_stream_needs_explicit_limit_and_stays_bounded(self):
+        opening = sse({"type": "response.output_item.added", "output_index": 0,
+                       "item": {"id": "rs_1", "type": "reasoning"}})
+        delta = sse({"type": "response.reasoning_text.delta", "output_index": 0,
+                     "item_id": "rs_1", "delta": "PRIVATE-LONG-REASONING-CANARY" + "x" * 4096})
+        raw = reasoning_stream(response()).replace(opening, opening + delta * 512, 1)
+        self.assertGreater(len(raw), MAX_RESPONSE_BYTES)
+        with endpoint(lambda h, _: send(h, raw, "text/event-stream")) as received:
+            for limit in (None, len(raw) - 1, len(raw)):
+                cfg = config() if limit is None else {**config(), "max_response_bytes": limit}
+                agent = HttpAgent(cfg)
+                if limit == len(raw):
+                    self.assertEqual(agent.act({}, 2), {"command": "finish"})
+                    self.assertEqual(agent.usage["requests_with_usage"], 1)
+                else:
+                    with self.assertRaises(AdapterError) as result:
+                        agent.act({}, 2)
+                    self.assertEqual(result.exception.code, "response_too_large")
+                    self.assertEqual(agent.usage["requests_with_usage"], 0)
+                self.assertEqual(agent.request_audit[0]["max_response_bytes"], limit or MAX_RESPONSE_BYTES)
+                self.assertNotIn("PRIVATE-LONG-REASONING-CANARY", json.dumps(agent.request_audit))
+            self.assertEqual(len(received), 3)
+
+    def test_configured_limit_also_bounds_nonstreaming_chat_exactly(self):
+        raw = json.dumps(chat()).encode() + b" " * 2048
+        with endpoint(lambda h, _: send(h, raw)):
+            for limit in (len(raw) - 1, len(raw)):
+                agent = HttpAgent({**config("chat"), "max_response_bytes": limit})
+                if limit == len(raw):
+                    self.assertEqual(agent.act({}, 2), {"command": "finish"})
+                else:
+                    with self.assertRaises(AdapterError) as result:
+                        agent.act({}, 2)
+                    self.assertEqual(result.exception.code, "response_too_large")
+
     def test_responses_fixture_completes_and_replays_multiturn_matrix(self):
         from pomdp_bench.agents import ScriptedAgent
         scripted = ScriptedAgent("reference", 0)
@@ -294,13 +345,15 @@ class TransportTests(unittest.TestCase):
 
         with endpoint(reply) as received, tempfile.TemporaryDirectory() as temp:
             out = Path(temp) / "run"
-            report = run_suite(suite([21]), [config()], ["open"], 1, out)
+            report = run_suite(suite([21]), [{**config(), "max_response_bytes": 3_000_000}], ["open"], 1, out)
             self.assertEqual(report["overall"][0]["successes"], 2)
             _, records = validate_run(out)
             count = len(received)
             resume_suite(out)
             self.assertEqual(len(received), count)
             audits = [a for r in records for a in r["request_audit"]]
+            self.assertTrue(all(r["agent"]["max_response_bytes"] == 3_000_000 for r in records))
+            self.assertTrue(all(a["max_response_bytes"] == 3_000_000 for a in audits))
             self.assertCountEqual([a["request_sha256"] for a in audits], [hashlib.sha256(raw).hexdigest() for raw, _ in received])
             self.assertTrue(all(a["declared_tools"] == [] and a["tool_choice"] == "none" for a in audits))
             self.assertTrue(all(json.loads(raw)["tools"] == [] for raw, _ in received))

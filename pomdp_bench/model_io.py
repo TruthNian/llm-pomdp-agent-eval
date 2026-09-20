@@ -41,6 +41,13 @@ def strict_json(text):
     return json.loads(text, parse_constant=constant, object_pairs_hook=pairs)
 
 
+def response_byte_limit(config):
+    limit = config.get("max_response_bytes", MAX_RESPONSE_BYTES)
+    if type(limit) is not int or not 1 <= limit <= 64_000_000:
+        raise ValueError("max_response_bytes must be an integer between 1 and 64000000")
+    return limit
+
+
 def request_body(config, request):
     public = json.dumps(request, ensure_ascii=False, allow_nan=False)
     options = copy.deepcopy(config.get("options", {}))
@@ -200,7 +207,8 @@ class ResponseStream:
             self.result = terminal
 
 
-def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=False):
+def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=False,
+             max_response_bytes=MAX_RESPONSE_BYTES):
     """No redirects, implicit proxies or retries. Bound reads by one deadline."""
     parsed = urllib.parse.urlsplit(endpoint)
     connection_type = http.client.HTTPSConnection if parsed.scheme == "https" else http.client.HTTPConnection
@@ -246,12 +254,12 @@ def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=Fals
         chunks, size = [], 0
         while not response.isclosed():
             sock.settimeout(remaining())
-            chunk = response.read1(min(65536, MAX_RESPONSE_BYTES + 1 - size))
+            chunk = response.read1(min(65536, max_response_bytes + 1 - size))
             remaining()
             if not chunk:
                 break
             size += len(chunk)
-            if size > MAX_RESPONSE_BYTES:
+            if size > max_response_bytes:
                 raise AdapterError("Response exceeds adapter size limit", "response_too_large")
             if stream:
                 stream.feed(chunk)
@@ -281,6 +289,7 @@ def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=Fals
 class HttpAgent:
     def __init__(self, config):
         self.config = copy.deepcopy(config)
+        self.max_response_bytes = response_byte_limit(config)
         self.usage = {"requests": 0, "requests_with_usage": 0, "input_tokens": 0, "output_tokens": 0,
                       "reasoning_tokens": 0, "requests_with_reasoning_usage": 0}
         self.request_audit = []
@@ -318,12 +327,14 @@ class HttpAgent:
         if not math.isfinite(limit) or limit <= 0:
             raise AdapterError("Endpoint request deadline exceeded", "timeout")
         audit = {"protocol": self.config["kind"], "request_sha256": hashlib.sha256(body).hexdigest(),
-                 "declared_tools": [], "tool_choice": "none", "timeout_seconds": limit, "outcome": "in_flight"}
+                 "declared_tools": [], "tool_choice": "none", "timeout_seconds": limit,
+                 "max_response_bytes": self.max_response_bytes, "outcome": "in_flight"}
         self.request_audit.append(audit)
         self.usage["requests"] += 1
         try:
             data = exchange(self.endpoint, self.key, body, limit, self.headers,
-                            streaming=self.config["kind"] == "responses")
+                            streaming=self.config["kind"] == "responses",
+                            max_response_bytes=self.max_response_bytes)
             self.add_usage(data)
             action = action_text(data, self.config["kind"])
             audit["outcome"] = "action"

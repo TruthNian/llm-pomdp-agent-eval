@@ -1,0 +1,446 @@
+{
+  "framework_version": "2.5.1",
+  "generator_version": "dependency-cover/1",
+  "run_git_revision": "627157092ab939c44524ef9b8a7d4c02a94ce6cb",
+  "working_tree_dirty_at_prepare": false,
+  "source_sha256": {
+    "__init__.py": "b268aa37bd805c0bf74d91baa01cadbdabc9673b74c5ca1d1b2deca5fb0f274e",
+    "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "agents.py": "d4ce8860291f4ff9e28efaed190380ba98c96a3274906eaeae7c1b2ff4bf4e8b",
+    "cli.py": "5df60fb12f49d402804883cb1eb379df0b67aa31b1ce226589a38131090b3d10",
+    "collection.py": "c399d228e2b60eeca72e4ef81554c5c7d0f29c1a979b3cce0a4d87e731e43db2",
+    "coverage.py": "3a12ab96a6e2137c2e954ce5712b14c3c6a0eb43a2a4b3e02fe429c183c1d1b6",
+    "discovery.py": "5d4d1e82d3297915413bee3f6c7dd8f757e2b6c033f56e1067de14ea4b64a62e",
+    "discovery_controls.py": "6e04efa6315c360e3590d8befcae6fdbe78b760a656f62e6b885fa685df42cfb",
+    "environment.py": "36e54dab9298e89cb38aec9f9d196ad6d18f6bd482f92dfed2b744907cf4b3f4",
+    "evaluation.py": "9e31b39e632dcdf2c836a9044b66c63ad1f8980b2b366822dcd7a467210de54d",
+    "generator.py": "5927978a301c50c703cc3450b03e0774abf803122386744cb5dcab434d6f9d69",
+    "interventions.py": "a111d6dc5cfbba6e8ac0bab1d1f026b906683f28a487183742f7469e8fb89dd0",
+    "model_io.py": "0814edf2d33c80ddb0fa790a4d633f9dade0369ba1faba79fca858b71cd67f68",
+    "planning.py": "4a136bcd587e069b716f63cc1c9f1607da6d3f966a5d4f3e7ea8ed57695fcb93",
+    "reporting.py": "244ef5439dada37e32b33823600cf362a92f5f05bde8b7458a7a042782ed7218",
+    "storage.py": "463c36e711458a1e8e401d9d5540ea5dcee5f262cbb8e201217e6f5f20934c84",
+    "studies.py": "c4ffed7f9b96220bb06efda5589835f8ef16c92e939d26effd38d5228d0a11c2",
+    "worlds.py": "16d9e69b0aba20707389d4f1c2ac9a4b758025bdea6efa649d3b6d5a32f83d3b"
+  },
+  "source_matches_export_checkout": true,
+  "expected_episodes": 4,
+  "retained_episodes": 4,
+  "manifest_sha256": "8c2cd59ea143e393255c548c2f878f0f612272b17359389b385f7b05670156f8",
+  "suite_sha256": "77698df38db396c5ef197ef826a8f1bfe7e3b9dd386a01699becdfc3e01aafbf",
+  "outcomes": [
+    {
+      "case_id": "a13598f550d29a39e1a1bc34c3bc12b970efc99e1896006374894c05199d662b",
+      "public_development_seed": 0,
+      "scale": "extreme",
+      "agent": {
+        "name": "custom/z-ai/glm-5.3",
+        "kind": "responses",
+        "model": "custom/z-ai/glm-5.3",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "ROUTER_KEY",
+        "headers_env": "ROUTER_HEADERS",
+        "timeout_seconds": 600,
+        "options": {
+          "reasoning_effort": "high"
+        }
+      },
+      "grade": {
+        "success": false,
+        "termination": "adapter_error",
+        "cost": 96,
+        "budget": 209,
+        "steps": 1,
+        "verified_current_state": false,
+        "goals_completed": 0,
+        "goals_total": 48,
+        "inspection_cost": 96,
+        "invalid_actions": 0,
+        "blocked_actions": 0,
+        "work_spent": 0,
+        "redundant_probes": 0,
+        "failed_verifications": 0,
+        "external_changes": 0
+      },
+      "elapsed_seconds": 401.368207,
+      "sanitized_error": "Response exceeds adapter size limit",
+      "trace_sha256": "b2ce0a2cb778930ad6aa6475d43688bb4a3797910b28184b52a29bf5073c0595",
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "fb298f2ab7a7804f6d9965c7a5a10a80449379edf1a6dc03735a6f8ca7bd612d",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "e061bfa8321da6522f9c8b9ab89b4dcbd10efa957911cb8185bd8dfbbb8be1ce",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "response_too_large"
+        }
+      ],
+      "usage_complete": false,
+      "reported_usage": {
+        "requests": 2,
+        "requests_with_usage": 1,
+        "input_tokens": 1506,
+        "output_tokens": 19,
+        "reasoning_tokens": 6,
+        "requests_with_reasoning_usage": 1
+      },
+      "total_input_tokens": null,
+      "total_output_tokens": null
+    },
+    {
+      "case_id": "a13598f550d29a39e1a1bc34c3bc12b970efc99e1896006374894c05199d662b",
+      "public_development_seed": 0,
+      "scale": "extreme",
+      "agent": {
+        "name": "gpt-5.6-sol",
+        "kind": "responses",
+        "model": "gpt-5.6-sol",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "NATIVE_KEY",
+        "headers_env": "NATIVE_HEADERS",
+        "timeout_seconds": 600,
+        "options": {
+          "reasoning_effort": "high"
+        }
+      },
+      "grade": {
+        "success": true,
+        "termination": "finished",
+        "cost": 209,
+        "budget": 209,
+        "steps": 7,
+        "verified_current_state": true,
+        "goals_completed": 48,
+        "goals_total": 48,
+        "inspection_cost": 192,
+        "invalid_actions": 0,
+        "blocked_actions": 0,
+        "work_spent": 15,
+        "redundant_probes": 0,
+        "failed_verifications": 0,
+        "external_changes": 1
+      },
+      "elapsed_seconds": 206.193745,
+      "sanitized_error": null,
+      "trace_sha256": "12076bc5441fdd7e450a4848b84a23dbb46753f2aa6aeb4faf5f4537e12e775e",
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "c4c51e686376476ae8eefac7683c3497640384ad878911ec890e5678b03c6c17",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "bdf2de5e5114cf6eecd8870eba7b0b59f54c621060843873e994204b9b6f5845",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "9201361cd3095fec9291b94b38c7c78e547a12b8a86d3ee650c712426e6c1064",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "2bd7954e043558153fd03ad4ffad5a1c8c09ebb2c00aaa3d8ac8b16fee7e18c9",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "3996eb6f5f12f48aaa4f3a5c728b1073f615a3197d15a39c5657d51aab8d5df7",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "a5919659df72784882dab2349da17acf7c59a1cb42dacb22eebb4806ac6bc519",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "b67d3aecee437b96f32aeeb5627471c2efb1f0a38d8bffffd4063fbb65f60b35",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        }
+      ],
+      "usage_complete": true,
+      "reported_usage": {
+        "requests": 7,
+        "requests_with_usage": 7,
+        "input_tokens": 109034,
+        "output_tokens": 10560,
+        "reasoning_tokens": 10396,
+        "requests_with_reasoning_usage": 7
+      },
+      "total_input_tokens": 109034,
+      "total_output_tokens": 10560
+    },
+    {
+      "case_id": "d33ce7b79d1a05e1a9135e372900263ea7c9b90f5f8d1225711dd31d03f3edf3",
+      "public_development_seed": 0,
+      "scale": "sanity",
+      "agent": {
+        "name": "gpt-5.6-sol",
+        "kind": "responses",
+        "model": "gpt-5.6-sol",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "NATIVE_KEY",
+        "headers_env": "NATIVE_HEADERS",
+        "timeout_seconds": 600,
+        "options": {
+          "reasoning_effort": "high"
+        }
+      },
+      "grade": {
+        "success": true,
+        "termination": "finished",
+        "cost": 25,
+        "budget": 25,
+        "steps": 7,
+        "verified_current_state": true,
+        "goals_completed": 6,
+        "goals_total": 6,
+        "inspection_cost": 18,
+        "invalid_actions": 0,
+        "blocked_actions": 0,
+        "work_spent": 5,
+        "redundant_probes": 0,
+        "failed_verifications": 0,
+        "external_changes": 1
+      },
+      "elapsed_seconds": 22.51453,
+      "sanitized_error": null,
+      "trace_sha256": "b4aee0a2800bd7ad2c67081b7c90a64a4804fd4eff56cd016070629e1e0c7987",
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "5e660fc6ed64041edc3b00fe539fa18774616d27ecea04f7b9b18bb67d424eeb",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "4ec48dc7bccc266fe4911d04a28d49fbd6fa2f56bdeceb8940d89422e5e5039b",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "dc390492dc2d3cdf579b26aea6ee4fa1de719a7e9831d7f3b3ab55a9213666e7",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "19a6df937c18292e33d446c12fb90110a980b7d42bc2db658c48568b2e1fba7e",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "87750f7895c2d95925537ddd95fcd31610d4cdca208373131842207a2a73db6f",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "a9541f6657c977eeea39ebe55548b4b1f566ba024f97fc9d83d82c6c14fd6813",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "618d4a31725d06e2d2da5073b2577a5764533513992447715cf70b70c5684005",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        }
+      ],
+      "usage_complete": true,
+      "reported_usage": {
+        "requests": 7,
+        "requests_with_usage": 7,
+        "input_tokens": 12024,
+        "output_tokens": 463,
+        "reasoning_tokens": 349,
+        "requests_with_reasoning_usage": 7
+      },
+      "total_input_tokens": 12024,
+      "total_output_tokens": 463
+    },
+    {
+      "case_id": "d33ce7b79d1a05e1a9135e372900263ea7c9b90f5f8d1225711dd31d03f3edf3",
+      "public_development_seed": 0,
+      "scale": "sanity",
+      "agent": {
+        "name": "custom/z-ai/glm-5.3",
+        "kind": "responses",
+        "model": "custom/z-ai/glm-5.3",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "ROUTER_KEY",
+        "headers_env": "ROUTER_HEADERS",
+        "timeout_seconds": 600,
+        "options": {
+          "reasoning_effort": "high"
+        }
+      },
+      "grade": {
+        "success": true,
+        "termination": "finished",
+        "cost": 25,
+        "budget": 25,
+        "steps": 7,
+        "verified_current_state": true,
+        "goals_completed": 6,
+        "goals_total": 6,
+        "inspection_cost": 18,
+        "invalid_actions": 0,
+        "blocked_actions": 0,
+        "work_spent": 5,
+        "redundant_probes": 0,
+        "failed_verifications": 0,
+        "external_changes": 1
+      },
+      "elapsed_seconds": 19.64836,
+      "sanitized_error": null,
+      "trace_sha256": "d4704c9b4757328e05b71b6838fa578266b03f78eba4e4591902642a79798ffa",
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "2975f84ac0d3541fc356e4a61e83c008f0b46b0ef0ddb776ad10ad41d9a59821",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "e1ff796919752f335b55cc5e4cb26720319dea393a6b7acac9d019c4aa2f402a",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "7190e4888aeebe84c3b61847013cb40db6be6db9999c4e13866c3f6e98caccb0",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "df4b9346341fda99860a53431fdccc2b3ed1299de41619540f40829abcd4200b",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "a13fde646f37f753bee85455d55fba0032121214d91239bcd059fc84899e3ac2",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "dc58104b839569f63821c15453dec7315b2f71dcb7f16b9981a88edb370dfac6",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        },
+        {
+          "protocol": "responses",
+          "request_sha256": "62f34ce572ef90242e21681365ca9d54f8c46f7bc87db8d61a1bdc100259a871",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        }
+      ],
+      "usage_complete": true,
+      "reported_usage": {
+        "requests": 7,
+        "requests_with_usage": 7,
+        "input_tokens": 13029,
+        "output_tokens": 852,
+        "reasoning_tokens": 750,
+        "requests_with_reasoning_usage": 7
+      },
+      "total_input_tokens": 13029,
+      "total_output_tokens": 852
+    }
+  ],
+  "plan_binding": {
+    "plan_sha256": "1dde7f3e9c701022ff2790aa898e8722489bd5f7b2ea1d24cb18ca2a5063fe60",
+    "manifest_sha256": "8c2cd59ea143e393255c548c2f878f0f612272b17359389b385f7b05670156f8"
+  },
+  "launcher_check": {
+    "settings_and_auth_bytes_unchanged": true
+  }
+}

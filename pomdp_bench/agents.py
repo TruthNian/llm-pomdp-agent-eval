@@ -5,7 +5,7 @@ import json
 import math
 import random
 
-from .model_io import AdapterError, ChatAgent, ResponsesAgent, strict_json
+from .model_io import AdapterError, ChatAgent, ResponsesAgent, response_byte_limit, strict_json
 from .planning import consistent_candidates, diagnostic_plan
 from .interventions import RESERVE_TEXT
 from .coverage import POLICIES as COVER_POLICIES, policy_action as cover_action
@@ -15,13 +15,18 @@ POLICIES = (*BUILTINS, "reserve_probe", *COVER_POLICIES)
 
 
 def validate_config(config: dict) -> None:
-    allowed = {"name", "kind", "model", "endpoint_env", "api_key_env", "options", "timeout_seconds", "headers_env"}
+    allowed = {"name", "kind", "model", "endpoint_env", "api_key_env", "options",
+               "timeout_seconds", "headers_env", "max_response_bytes"}
     if not isinstance(config, dict) or set(config) - allowed:
         raise ValueError("Unknown agent configuration fields")
     if not isinstance(config.get("name"), str) or not config["name"].strip():
         raise ValueError("Every agent needs a nonempty name")
     if config.get("kind") not in (*POLICIES, "chat", "responses"):
         raise ValueError("Unknown agent kind")
+    if "max_response_bytes" in config:
+        if config["kind"] not in ("chat", "responses"):
+            raise ValueError("max_response_bytes applies only to HTTP agents")
+        response_byte_limit(config)
     if config["kind"] in ("chat", "responses"):
         for field in ("model", "endpoint_env", "api_key_env"):
             if not isinstance(config.get(field), str) or not config[field]:
@@ -47,7 +52,9 @@ def validate_config(config: dict) -> None:
 
 
 def validate_agent_version(config, version):
-    if config["kind"] in COVER_POLICIES and version not in ("2.5.0", "2.5.1"):
+    if "max_response_bytes" in config and version != "2.5.2":
+        raise ValueError("Explicit response byte limits require framework 2.5.2")
+    if config["kind"] in COVER_POLICIES and version not in ("2.5.0", "2.5.1", "2.5.2"):
         raise ValueError("Coverage policies require framework 2.5")
     if version in ("2.0.0", "2.1.0", "2.2.0") and (config["kind"] == "responses" or "headers_env" in config):
         raise ValueError("This HTTP configuration requires framework 2.3 or later")

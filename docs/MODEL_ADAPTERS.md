@@ -38,6 +38,17 @@ Use options actually supported by the provider. The example does not assert that
 
 From 2.2, `timeout_seconds` may be any finite positive value; the previous arbitrary 60-second maximum is removed. Each request is still capped by the remaining episode wall budget. Declare the limit before collection and keep it identical across study arms. A larger timeout is an experimental setting, not a silent retry or a guarantee of remote cancellation.
 
+From 2.5.2, the optional top-level HTTP-agent field `max_response_bytes` declares
+the cumulative response-body allowance, including SSE framing and reasoning
+events. It defaults to 2,000,000 bytes and accepts integers from 1 to 64,000,000.
+For example, `"max_response_bytes": 16000000` permits a larger reasoning stream.
+It is a local transport limit, not a provider token option or a task work budget.
+Preparation freezes it; every new request audit records the effective value.
+Declare it before collection and preserve failed attempts after any correction.
+Old versions reject the new field; old traces without it retain their 2 MB limit.
+The [2.5.1 calibration](../studies/coverage-calibration-v2/README.md) explains the
+observed size failure and the subsequent local-fixture validation.
+
 Environment variables contain the full HTTPS endpoint, such as a provider's `/v1/chat/completions` URL, and its key. Do not put secrets in command-line arguments or the configuration file. The runner records environment variable **names**, never their contents. URLs with embedded credentials, query parameters or fragments are rejected. HTTP is allowed only on loopback for local integration tests. Redirects are rejected to avoid forwarding credentials to another host.
 
 The adapter uses a system message requiring a single JSON action, and a user message containing the complete public request. It does not expose function tools or shell execution. The benchmark is therefore evaluating the model with **this particular JSON-action harness**. It does not estimate performance of every provider's optimized agent product.
@@ -81,7 +92,7 @@ Before drawing evaluation cases, distinguish four prerequisites: the endpoint is
 
 ## One request deadline and inspectable failures
 
-The shared transport has no redirects, automatic retries or implicit environment-proxy discovery. It verifies HTTPS using Python's default TLS context; an explicitly configured gateway can be the endpoint. One deadline covers the active socket exchange, including slow response headers and body reads; a deadline watchdog shuts down the local socket. DNS resolution and OS connection establishment are not an externally enforced process timeout, and local shutdown does not prove upstream cancellation. Every response is bounded to 2 MB, including stream bytes, and a body shorter than its declared content length is incomplete.
+The shared transport has no redirects, automatic retries or implicit environment-proxy discovery. It verifies HTTPS using Python's default TLS context; an explicitly configured gateway can be the endpoint. One deadline covers the active socket exchange, including slow response headers and body reads; a deadline watchdog shuts down the local socket. DNS resolution and OS connection establishment are not an externally enforced process timeout, and local shutdown does not prove upstream cancellation. Every response is bounded by its declared byte allowance (2 MB by default), including stream bytes, and a body shorter than its declared content length is incomplete.
 
 `request_audit` records the public request body's SHA-256, protocol, declared empty-tool policy, selected timeout, outcome code and whether a supplied response model label matches the requested string. An alias mismatch is evidence to inspect, not proof of model substitution or a silently rewritten request. No header values, credentials, provider body or reasoning is included. The hash is local provenance, not provider attestation. A crash during a request can leave only the earlier audit prefix and an in-flight checkpoint; the existing interruption rules preserve that uncertainty.
 

@@ -158,6 +158,19 @@ remain unchanged; old runs replay, but source/version drift still forbids resume
 
 The [first calibration record](../studies/coverage-calibration-v1/README.md) and
 [corrected follow-up](../studies/coverage-calibration-v2/README.md)
-distinguishes implemented structural difficulty from demonstrated model headroom.
+distinguish implemented structural difficulty from demonstrated model headroom.
+The follow-up records Sol solving both sampled scales and GLM solving sanity;
+GLM's extreme attempt exhausted a transport byte limit. That failure does not
+establish a model boundary. A [separate public solver screen](../studies/coverage-search-v1/README.md)
+finds at most 36 search states per released extreme decision, exposing the need
+for stronger structural candidates and separately declared solver-assisted controls.
+Its 24-build candidates exceed 5,000 states on all 12 tested seeds, but remain
+exploratory, uncalibrated and outside the released ladder. Solver effort alone
+cannot satisfy the strong-model discrimination gate.
+
+Version 2.5.2 allows a declared response byte limit so long reasoning streams need
+not hit an undeclared experimental constraint. It does not change task difficulty,
+upgrade earlier failures into successes, or establish live reliability at the
+larger limit. Keep transport settings fixed within a planned comparison.
 Difficulty and discrimination are necessary; real-work predictive validity
 remains a separate P4 gate.

@@ -12,6 +12,12 @@ The unit of evaluation is an interaction trajectory. Actions reveal evidence, ch
 
 High and discriminating difficulty is a [core maintenance contract](docs/DIFFICULTY.md): measure ceiling/floor effects, preserve immutable anchors, and version new scales as models improve. A larger task name or longer transcript does not establish difficulty.
 
+**Calibration finding:** in the [completed follow-up](studies/coverage-calibration-v2/README.md),
+Sol solved the current top scale on one public seed; GLM's corresponding run hit
+a transport-size limit. Frontier headroom remains unproven. The
+[reproducible solver screen](studies/coverage-search-v1/README.md) retains all 180
+searches and investigates deeper combinations before promoting new scales.
+
 Development follows [explicit stages and acceptance gates](docs/ROADMAP.md): reliable collection → isolated intervention studies → new task structures → external validity → measured acceleration. Requirements are questioned, unnecessary work is removed, and the remaining workflow is simplified before it is automated. For long collections, use [`prepare`, `status` and `resume`](docs/COLLECTION.md); completed and interrupted attempts are never silently replaced.
 
 For a single-intervention experiment, use [`prepare-study`](docs/STUDIES.md). The [offline example](examples/study-reserve.pilot.json) checks a deliberately budget-blind control, a successful reference and a failing cosmetic-status policy. Study analysis reports a reminder contrast within each agent; it does not automatically rank the models or turn a tiny perfect-success pilot into a precise population claim.

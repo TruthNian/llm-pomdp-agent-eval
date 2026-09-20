@@ -145,6 +145,17 @@ new version with overlapping anchors; if failures are transport-dominated, repai
 the public-input channel gate before expanding private evaluation. Do not add
 domains, scheduling, a plugin framework or a new overall score.
 
+**Current evidence and next implementation:** the [completed follow-up](../studies/coverage-calibration-v2/README.md)
+records Sol succeeding at the released top scale on one public seed; GLM's
+corresponding attempt is censored by a transport-size limit. The default remains
+unchanged, with an explicitly configurable allowance and boundary tests in 2.5.2.
+The [180-call solver screen](../studies/coverage-search-v1/README.md) finds that the
+released eight-build tasks remain easy for exact search. Candidate 18/24-build
+structures are exploratory. Next, check their bounded reference runtime and
+recovery ablations, freeze useful candidates and structural holdouts, and compare
+direct-model and solver-assisted configurations under declared compute budgets.
+Do not promote them solely because this reference exhausts a screening limit.
+
 ## P4 — Test whether the benchmark predicts real outcomes
 
 Freeze an externally scored sample of real delegated tasks and a rubric for acceptance and human intervention time. Score benchmark configurations before revealing those outcomes. Compare prediction with static domain-skill and simple cost baselines; hold out task sources, not merely repeated runs.
