@@ -34,7 +34,7 @@ jobs:
         run: python -m pomdp_bench validate artifacts/repair-controls
       - name: Build isolated portfolio runtime
         run: |
-          docker build --build-arg BASE_IMAGE="$REPAIR_IMAGE" -t pomdp-repair-portfolio studies/repository-portfolio-v1
+          docker build -t pomdp-repair-portfolio studies/repository-portfolio-v1
           image=$(docker image inspect pomdp-repair-portfolio --format '{{.Id}}')
           echo "PORTFOLIO_IMAGE=$image" >> "$GITHUB_ENV"
           docker image inspect "$image" --format '{{json .Id}}' > artifacts/portfolio-image.json

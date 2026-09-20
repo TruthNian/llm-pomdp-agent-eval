@@ -42,9 +42,7 @@ The worker explicitly loads the container's dependency directory with site
 startup disabled. It returns behavior values; expected answers remain outside.
 
 ```bash
-docker pull python:3.13-slim
-BASE=$(docker image inspect python:3.13-slim --format '{{.Id}}')
-docker build --build-arg BASE_IMAGE="$BASE" -t pomdp-repair-portfolio studies/repository-portfolio-v1
+docker build -t pomdp-repair-portfolio studies/repository-portfolio-v1
 IMAGE=$(docker image inspect pomdp-repair-portfolio --format '{{.Id}}')
 python studies/repository-portfolio-v1/controls.py --image "$IMAGE" --out artifacts/portfolio-controls
 python -m pomdp_bench prepare-repair-suite --image "$IMAGE" --tasks werkzeug_routing attrs_preinit urllib3_read --out artifacts/portfolio-suite.json
@@ -58,3 +56,11 @@ availability is a prerequisite for scored interactive model runs.
 
 Implementation and control matrix are prepared. Real execution results will be
 recorded after CI; local response-fixture tests are not execution evidence.
+
+The [first CI attempt](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/runs/35498144035)
+at source `4974c51a2f45c328422cea87c0f5e5e6570a2f14` stopped during image build:
+BuildKit interpreted a local image ID as a registry name. Zero of the twelve
+portfolio trajectories executed. The original packaging controls passed.
+The correction removes the build argument and pins the base repository digest
+directly in the Dockerfile. This infrastructure failure is retained; it is not
+a task or model failure.
