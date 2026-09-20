@@ -84,7 +84,19 @@ Model calls run locally through the existing HTTP adapter. Only reviewed patch
 artifacts reach CI for independent execution; no provider credentials are sent
 to CI. There is no test feedback, correction or replacement attempt. Missing
 usage and failed/interrupted requests remain visible. Calls start only after the
-artifact gate and publication of the plan/source. Results will be added after collection.
+artifact gate and publication of the plan/source.
+
+All six requests have completed under clean prepared source
+`b4eb5cf9eb9424f7aee7fe276b18dc8b7c253f08`.
+[model-proposals.json](model-proposals.json) retains five valid submissions and
+one 600-second request timeout; no retry or correction was made. All six request
+fingerprints were verified. Local configuration and authentication bytes were
+unchanged. Independent container acceptance is pending.
+
+Sol completed all three requests and reported the requested model name. The two
+completed GLM-routed requests did not report an exact match to the requested
+`custom/z-ai/glm-5.3` alias. The adapter retains that mismatch, not an independently
+verified provider identity. The timeout has unknown usage, not zero usage.
 
 ## Development corrections retained
 
@@ -117,3 +129,12 @@ requires unchanged code to fail the reproduction for every task.
 
 The corrected read-check contract is `urllib3_read/2`; the earlier development
 matrices retain `urllib3_read/1` and their original source commits.
+
+[Cross-version CI](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/runs/35498753295)
+then found that host-generated gzip headers differ between Python 3.11 and 3.13,
+so recorded raw-read inputs could not be replayed across versions. Python 3.12
+reproduced the mismatch locally. The correction stores the six compressed wire
+inputs verbatim, preserving every byte of the successful Python 3.13 execution.
+It changes neither acceptance nor the already-frozen model requests. Candidate
+decoding still executes in the pinned container. This compatibility correction
+was applied only after the six model attempts and their source bindings were exported.

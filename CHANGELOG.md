@@ -9,6 +9,14 @@
   plausible partial repairs, immutable runtime dependencies and a 12-row
   real-execution matrix. Difficulty claims require model calibration.
 - Keep source tasks distinct from synthetic seeds. Preserve all historical data.
+- Retain the failed build, the first complete matrix with missing build metadata,
+  and the initial screen with an ineffective urllib3 smoke example. The corrected
+  `urllib3_read/2` reproduction fails unchanged code without changing full checks.
+- Freeze six localized-source, single-proposal Sol/GLM attempts before requests.
+  Model artifacts are independently executed; this is separate from interactive
+  agent completion and receives no test feedback or corrected retry.
+- Preserve the executed compressed input bytes across Python versions, fixing
+  3.11/3.12 replay without changing the accepted Python 3.13 inputs or the oracle.
 
 ## 2.7.0 — 2026-09-20
 

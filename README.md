@@ -7,16 +7,18 @@ Evaluate whether an agent can turn incomplete information into an **accepted,
 useful outcome** under resource constraints. The unit is a complete interaction
 trajectory, including unsuccessful actions, execution failures and delivery costs.
 
-**2.7 makes real repository repair the development mainline.** Agents inspect
-real source, locate causes, edit code, execute behavioral checks and deliver a
-patch. The first fixture reproduces a serialization defect in pypa/packaging.
-Its 118 checks cover the reported problem, related behavior and compatibility.
+**2.8 adds three independently sourced real compatibility defects.** Agents inspect
+source, locate causes, edit code, execute behavioral checks and deliver a patch.
+The [new portfolio](studies/repository-portfolio-v1/README.md) covers Werkzeug
+routing, attrs initialization and urllib3 response reading, with 329 checks.
+All twelve artifact controls and their fresh execution rechecks pass; development
+failures remain published. The original packaging fixture keeps its 118 checks.
 [Contract and execution instructions](docs/REPOSITORY_REPAIR.md).
 
-The first public issue validates execution and acceptance. High difficulty is
-a requirement for the next task portfolio: consequential real repairs, tested
-with strong models and useful tools. Catalogue size and transport timeouts
-cannot substitute for demonstrated task difficulty.
+High difficulty remains a requirement. A frozen six-proposal Sol/GLM baseline
+tests patch construction with localized source; it does not measure autonomous
+localization or interactive recovery. Real provenance, catalogue size and
+transport timeouts cannot substitute for demonstrated task difficulty.
 
 ## Architecture
 
@@ -120,6 +122,6 @@ python tools/check_docs.py
 [Contributing](CONTRIBUTING.md) · [Isolation](SECURITY.md) ·
 [Changelog](CHANGELOG.md) · [Citation](CITATION.cff) · [Related work](docs/RELATED_WORK.md)
 
-Project code and docs use [Apache-2.0](LICENSE). Bundled packaging source retains
-its [upstream dual license](pomdp_bench/repair_data/packaging_state/LICENSE).
+Project code and docs use [Apache-2.0](LICENSE). Bundled source snapshots retain
+their [upstream licenses](pomdp_bench/repair_data/README.md).
 This independent project has no provider affiliation or endorsement.

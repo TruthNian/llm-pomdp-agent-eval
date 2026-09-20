@@ -91,6 +91,13 @@ class PortfolioTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 replay(trace, case)
 
+    def test_read_inputs_preserve_the_executed_cross_version_anchor(self):
+        # Python 3.11/3.12 gzip headers used to change the raw-read inputs.
+        # This fingerprint is the input set already executed by the published
+        # Python 3.13 control matrix, not a regenerated host-dependent reference.
+        inputs = [r["input"] for r in selected("urllib3_read", "all")]
+        self.assertEqual(digest(inputs), "4d3278facd92fe0648c6794695a37569e84818b9aa846c59092c22ba0ada55de")
+
 
 if __name__ == "__main__":
     unittest.main()

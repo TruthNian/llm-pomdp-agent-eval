@@ -1,7 +1,12 @@
 """Expected behavior derived from each public contract, never candidate imports."""
-import gzip
 import hashlib
-import zlib
+
+# Fixed wire bytes from the validated Python 3.13 run; gzip OS headers vary by host.
+RAW_WIRE = (
+    ('1f8b08000000000002ff4bcbcf4f4a2c4a4aac0200aa27781a09000000', '789c4bcbcf4f4a2c4a4aac0200127b03b7'),
+    ('1f8b08000000000002ffedc6490100200800b0ac7820da3f8041d85e8b31d7ce53f7859999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999959fb7d88a491ee409c0000', '789cedc6490100200800b0ac7820da3f8041d85e8b31d7ce53f7859999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999959fb7de175f6f4'),
+    ('1f8b08000000000002ffedcc572202000000d0b3244413211132334221241a28195112eaf4ced0ff7b07788189e0e4d4746866361c89c6e289b9f985e4e2d2726a25bdba9659dfd8cc6e6defeceeede70e0e8f8ef327a76785e2f9c565e9eafaa67c5bb9bbafd6ea8d87c7a766ebb9fdf2faf6def9f8ecf6befadf839fdfbfe12860369bcd66b3d96c369bcd66b3d96c369bcd66b3d96c369bcd66b3d96c369bcd66b3d96c369bcd66b3d96c369bcd66b3d96c369bcd66b3d96c369bcd66b3d96c369bcde631e67f34ff966b204e0000', '789cedcc572202000000d0b3244413211132334221241a28195112eaf4ced0ff7b07788189e0e4d4746866361c89c6e289b9f985e4e2d2726a25bdba9659dfd8cc6e6defeceeede70e0e8f8ef327a76785e2f9c565e9eafaa67c5bb9bbafd6ea8d87c7a766ebb9fdf2faf6def9f8ecf6befadf839fdfbfe12860369bcd66b3d96c369bcd66b3d96c369bcd66b3d96c369bcd66b3d96c369bcd66b3d96c369bcd66b3d96c369bcd66b3d96c369bcd66b3d96c369bcd66b3d96c369bcde631e67f93e3a54e'),
+)
 
 
 def routing():
@@ -59,7 +64,7 @@ def preinit():
 def reads():
     rows = []
     # Highly compressible and varied bodies exercise real decoder buffering.
-    for payload in ("foobarbaz", "abcdefghij" * 4000, "".join(chr(33 + i % 90) for i in range(20000))):
+    for payload_index, payload in enumerate(("foobarbaz", "abcdefghij" * 4000, "".join(chr(33 + i % 90) for i in range(20000)))):
         raw = payload.encode()
         for encoding in ("br", "gzip", "deflate", "identity"):
             for parts in ([3], [0, 1, 7, 512], [512, 1024], [], [len(raw) + 1]):
@@ -76,7 +81,8 @@ def reads():
                     rows.append({"input": {"task": "urllib3_read", "payload": payload, "encoding": encoding,
                                            "parts": parts, "cache": cache, "decode": True}, "expected": expected})
         # Raw mode must keep compressed bytes intact; no decoder private-state injection.
-        for encoding, body in (("gzip", gzip.compress(raw, mtime=0)), ("deflate", zlib.compress(raw))):
+        for encoding, wire_hex in zip(("gzip", "deflate"), RAW_WIRE[payload_index]):
+            body = bytes.fromhex(wire_hex)
             rows.append({"input": {"task": "urllib3_read", "wire_hex": body.hex(), "encoding": encoding,
                                    "parts": [3], "cache": False, "decode": False},
                          "expected": {"chunk_sha256": [hashlib.sha256(body[:3]).hexdigest()],

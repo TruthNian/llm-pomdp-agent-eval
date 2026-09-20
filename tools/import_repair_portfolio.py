@@ -60,9 +60,10 @@ def main():
                       "base_commit": base, "fix_commit": fix,
                       "selection": "Complete package Python source/type stubs, root licenses/metadata, selected pre-fix docs/tests; no future fix in workspace",
                       "file_sha256": {n: hashlib.sha256(t.encode()).hexdigest() for n, t in files.items() if n not in generated},
-                      "generated_files": generated,
-                      "generated_file_sha256": {n: hashlib.sha256(t.encode()).hexdigest() for n, t in generated.items()},
                       "upstream_patch_sha256": hashlib.sha256(patch).hexdigest()}
+        if generated:
+            provenance["generated_files"] = generated
+            provenance["generated_file_sha256"] = {n: hashlib.sha256(t.encode()).hexdigest() for n, t in generated.items()}
         destination = args.out / task
         destination.mkdir(exist_ok=False)
         for name, data in (("base.json", files), ("provenance.json", provenance), ("upstream-actions.json", actions)):

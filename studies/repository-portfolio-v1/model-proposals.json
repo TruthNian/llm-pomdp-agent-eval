@@ -1,0 +1,617 @@
+{
+  "purpose": "Single-proposal strong-model baseline to screen public task headroom. Not an interactive POMDP score or model ranking.",
+  "localization_assistance": "Selected context includes known affected files and neighboring source. This deliberately gives the baseline localization help. Success measures patch construction under that help, not autonomous repository-wide localization.",
+  "framework_version": "2.8.0",
+  "plan_sha256": "88932a631d22f6fe28dff4df5d47a77ffaedb332c031ca6c709fd207e0822fb4",
+  "preparation_git_revision": "b4eb5cf9eb9424f7aee7fe276b18dc8b7c253f08",
+  "source_sha256": {
+    "__init__.py": "f16e141f5559b45f33eb3d6ab8e3ca1e00683bc0d2f237cf96f1a7450726b44b",
+    "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "agents.py": "b3b7ead69de707819dc41d3de1515a35b412bf2e986e0a25c354bafbad50bc98",
+    "cli.py": "466aabfeda52cd697390a21ab0c3d3996677fe59b80f79341ac2ff7486f6c503",
+    "collection.py": "e0d649807c184c606d24764e636856094fde528c81881a66151b441955dd80ed",
+    "coverage.py": "961fdbf6b82ef8fb313a26babfa4f92d9973049066a6212affdf1dc9cae9e5ea",
+    "discovery.py": "5d4d1e82d3297915413bee3f6c7dd8f757e2b6c033f56e1067de14ea4b64a62e",
+    "discovery_controls.py": "6e04efa6315c360e3590d8befcae6fdbe78b760a656f62e6b885fa685df42cfb",
+    "environment.py": "36e54dab9298e89cb38aec9f9d196ad6d18f6bd482f92dfed2b744907cf4b3f4",
+    "evaluation.py": "18484818ea24d5ea51ef9d6c71d020cd6278d650a331fd076a39880c5f8f4110",
+    "generator.py": "5927978a301c50c703cc3450b03e0774abf803122386744cb5dcab434d6f9d69",
+    "interventions.py": "a111d6dc5cfbba6e8ac0bab1d1f026b906683f28a487183742f7469e8fb89dd0",
+    "model_io.py": "1494e3a03f422ef102a89f333c6969c9d5e2a77cf7d82253cd1492a9940ee70d",
+    "planning.py": "4a136bcd587e069b716f63cc1c9f1607da6d3f966a5d4f3e7ea8ed57695fcb93",
+    "repair.py": "a69fd1376b09e3a5b4fa2245caecf393d25c5b82a0f5bf073da8a6edd6209aaf",
+    "repair_checks.py": "5e9f4800dd85f9025ac220c90bda4eb8c054ad81743fdc4c53950ddd06475bba",
+    "repair_data/attrs_preinit/base.json": "4d7ccb3d7d026951788bb8736c99c27cddc7ae65ba8760ac2e48b5fb43419d72",
+    "repair_data/attrs_preinit/LICENSE": "882115c95dfc2af1eeb6714f8ec6d5cbcabf667caff8729f42420da63f714e9f",
+    "repair_data/attrs_preinit/provenance.json": "f0e69b36576742cf90f34c26b69a3236b46867401570f1da88c6e99f285e2ed0",
+    "repair_data/attrs_preinit/upstream-actions.json": "bc6ce3083ff137de7b864a7fc8520a5b1bb4f4c0caf3ee554a37a307f564f262",
+    "repair_data/attrs_preinit/upstream.patch": "08e34491e147903d560807b3e9c964d95803985a408eb8c1583a9dac2507edef",
+    "repair_data/packaging_state/base.json": "184c3dec5c695635b5cac60105f40484cc2eefc3e2fa7a97ef0dd01f4dd87da0",
+    "repair_data/packaging_state/LICENSE": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48",
+    "repair_data/packaging_state/LICENSE.APACHE": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+    "repair_data/packaging_state/LICENSE.BSD": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5",
+    "repair_data/packaging_state/provenance.json": "8df5df721dc568186c2e0c38b1106fa12cbbf856636b30772b0999fffc3d3880",
+    "repair_data/packaging_state/README.md": "ba8efc5676f1d55811f1619270089f6b55d5bf48cddb234e8918bc5e17a5b19e",
+    "repair_data/packaging_state/upstream-actions.json": "4d174945b861574108774fed615e7be8dd6c1a1e47acde9cb107e7f123a47059",
+    "repair_data/packaging_state/upstream.patch": "dbe3151d4ade45f8104af420610b25ae4b5072c3d059e0a73e640e45b6bc96b1",
+    "repair_data/README.md": "52b5a1099f7e92cf59e53cb06b7046627a9882be38b7297669d3df3cd36bceb1",
+    "repair_data/urllib3_read/base.json": "eaacd8f34fadc6c966fc4ee66a3cd75edda5cbefbe0020faa0c6afc39a57ee18",
+    "repair_data/urllib3_read/LICENSE.txt": "130e3a64d5fdd5d096a752694634a7d9df284469de86e5732100268041e3d686",
+    "repair_data/urllib3_read/provenance.json": "0cf22133cb49aaf2c98a20f9898cfd9574b5412ca9afccf3895896d2e5fd84b5",
+    "repair_data/urllib3_read/upstream-actions.json": "3efded4b5cb6b20f003cbfb429579d2ffe31ef31f3997b1b79342a4e25775bec",
+    "repair_data/urllib3_read/upstream.patch": "d72fa1838f00bdedfee27875ea8505848732b60f889c0c31fe9d0b79b6b23520",
+    "repair_data/werkzeug_routing/base.json": "b1ea61705ac84806430e4265dff73e08d103a3af0a4df2c049c772d356eefd73",
+    "repair_data/werkzeug_routing/LICENSE.rst": "3b49dcee4105eb37bac10faf1be260408fe85d252b8e9df2e0979fc1e094437b",
+    "repair_data/werkzeug_routing/provenance.json": "ece7930c14a47b30f7d0227ad1feee6710c0e227260a2c0fb882cfb0cff28ebb",
+    "repair_data/werkzeug_routing/upstream-actions.json": "4de1bd6895552c0079303932e2473b14ef43c868b92855d550644fd3d6be4e79",
+    "repair_data/werkzeug_routing/upstream.patch": "3927908ca9b8ff2624719587ae0ca2c0665e6b2ed458fbc2b0dda54b2b142381",
+    "repair_portfolio.py": "d71468a50650ee579b8c58b827e7fa21837015bc16eca7913ea943b31234db7c",
+    "repair_portfolio_checks.py": "118a65fee4b8ea4ba1c5129f67c1fdc8bc61a2ac4a4ab860de542bc97b9119f4",
+    "repair_portfolio_worker.py": "bfe4499a5a60c4f8a25ea4be2528e1569523f334bfcb86a1d5455bc198b3db75",
+    "repair_runtime.py": "5631ef3f9024b6b75e1a65fa9336a4999122454bad800e87a7698d05b29318e9",
+    "repair_worker.py": "ac12e83ee1dd423bf013eee0a9c7d94b60016ebeeaf029ae55e76725ff9bde80",
+    "reporting.py": "6fe21de86269330289ece68ce8677bd9b0d5b9d9eea2f538dc731d9dec05e989",
+    "storage.py": "463c36e711458a1e8e401d9d5540ea5dcee5f262cbb8e201217e6f5f20934c84",
+    "studies.py": "42785fbf96a8caccd07c2dca2e3ec2197251431a26830d77f046f379f46f02ee",
+    "worlds.py": "3156c4596264c4c02ce12baaba8a31d8699d67599911a21654c663df3a724d60"
+  },
+  "launcher_sha256": "fcb82197ca924ae47f4dd1fec09307f10b3c0cd9657ac4197cbae29c3463f909",
+  "manifest_sha256": "78ff684822393d4c21f8138e856ed0514bdb8438f54d711638bd5b08ff29b303",
+  "expected_attempts": 6,
+  "retained_attempts": 6,
+  "request_fingerprints_verified": 6,
+  "settings_and_auth_bytes_unchanged": true,
+  "attempts": [
+    {
+      "index": 0,
+      "task": "werkzeug_routing",
+      "agent": {
+        "name": "gpt-5.6-sol",
+        "kind": "responses",
+        "model": "gpt-5.6-sol",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "NATIVE_KEY",
+        "headers_env": "NATIVE_HEADERS",
+        "timeout_seconds": 600,
+        "max_response_bytes": 16000000,
+        "options": {
+          "reasoning_effort": "high"
+        }
+      },
+      "action": {
+        "command": "submit_patch",
+        "target": [
+          {
+            "path": "src/werkzeug/routing/map.py",
+            "old": "        self.default_subdomain = default_subdomain\n        self.strict_slashes = strict_slashes\n        self.merge_slashes = merge_slashes\n        self.redirect_defaults = redirect_defaults\n",
+            "new": "        self.default_subdomain = default_subdomain\n        self.strict_slashes = strict_slashes\n        self._merge_slashes = merge_slashes\n        self.redirect_defaults = redirect_defaults\n"
+          },
+          {
+            "path": "src/werkzeug/routing/map.py",
+            "old": "        for rulefactory in rules or ():\n            self.add(rulefactory)\n\n    def is_endpoint_expecting(self, endpoint: str, *arguments: str) -> bool:\n",
+            "new": "        for rulefactory in rules or ():\n            self.add(rulefactory)\n\n    @property\n    def merge_slashes(self) -> bool:\n        return self._merge_slashes\n\n    @merge_slashes.setter\n    def merge_slashes(self, value: bool) -> None:\n        if value == self._merge_slashes:\n            return\n\n        self._merge_slashes = value\n        matcher = StateMachineMatcher(value)\n\n        for rule in self._rules:\n            if rule._merge_slashes is None:\n                rule.merge_slashes = value\n                rule.compile()\n\n            if not rule.build_only:\n                matcher.add(rule)\n\n        self._matcher = matcher\n        self._remap = True\n\n    def is_endpoint_expecting(self, endpoint: str, *arguments: str) -> bool:\n"
+          },
+          {
+            "path": "src/werkzeug/routing/map.py",
+            "old": "        path_part = f\"/{path_info.lstrip('/')}\" if path_info else \"\"\n",
+            "new": "        path_part = (\n            path_info if not path_info or path_info.startswith(\"/\") else f\"/{path_info}\"\n        )\n"
+          },
+          {
+            "path": "src/werkzeug/routing/rules.py",
+            "old": "                yield Rule(\n                    Template(rule.rule).substitute(self.context),\n                    new_defaults,\n                    subdomain,\n                    rule.methods,\n                    rule.build_only,\n                    new_endpoint,\n                    rule.strict_slashes,\n                )\n",
+            "new": "                yield Rule(\n                    Template(rule.rule).substitute(self.context),\n                    new_defaults,\n                    subdomain,\n                    rule.methods,\n                    rule.build_only,\n                    new_endpoint,\n                    rule.strict_slashes,\n                    merge_slashes=rule.merge_slashes,\n                )\n"
+          },
+          {
+            "path": "src/werkzeug/routing/rules.py",
+            "old": "        self.map: Map = None  # type: ignore\n        self.strict_slashes = strict_slashes\n        self.merge_slashes = merge_slashes\n        self.subdomain = subdomain\n",
+            "new": "        self.map: Map = None  # type: ignore\n        self.strict_slashes = strict_slashes\n        self._merge_slashes = merge_slashes\n        self.merge_slashes = merge_slashes\n        self.subdomain = subdomain\n"
+          },
+          {
+            "path": "src/werkzeug/routing/rules.py",
+            "old": "            endpoint=self.endpoint,\n            strict_slashes=self.strict_slashes,\n            redirect_to=self.redirect_to,\n",
+            "new": "            endpoint=self.endpoint,\n            strict_slashes=self.strict_slashes,\n            merge_slashes=self._merge_slashes,\n            redirect_to=self.redirect_to,\n"
+          },
+          {
+            "path": "src/werkzeug/routing/matcher.py",
+            "old": "        def _match(\n            state: State, parts: list[str], values: list[str]\n        ) -> tuple[Rule, list[str]] | None:\n",
+            "new": "        def _match(\n            state: State,\n            parts: list[str],\n            values: list[str],\n            merged: bool,\n        ) -> tuple[Rule, list[str]] | None:\n"
+          },
+          {
+            "path": "src/werkzeug/routing/matcher.py",
+            "old": "            if parts == []:\n                for rule in state.rules:\n                    if rule.methods is not None and method not in rule.methods:\n",
+            "new": "            if parts == []:\n                for rule in state.rules:\n                    if merged and not rule.merge_slashes:\n                        continue\n                    if rule.methods is not None and method not in rule.methods:\n"
+          },
+          {
+            "path": "src/werkzeug/routing/matcher.py",
+            "old": "                if \"\" in state.static:\n                    for rule in state.static[\"\"].rules:\n                        if websocket == rule.websocket and (\n",
+            "new": "                if \"\" in state.static:\n                    for rule in state.static[\"\"].rules:\n                        if merged and not rule.merge_slashes:\n                            continue\n                        if websocket == rule.websocket and (\n"
+          },
+          {
+            "path": "src/werkzeug/routing/matcher.py",
+            "old": "            if part in state.static:\n                rv = _match(state.static[part], parts[1:], values)\n",
+            "new": "            if part in state.static:\n                rv = _match(state.static[part], parts[1:], values, merged)\n"
+          },
+          {
+            "path": "src/werkzeug/routing/matcher.py",
+            "old": "                    rv = _match(new_state, remaining, values + groups)\n",
+            "new": "                    rv = _match(new_state, remaining, values + groups, merged)\n"
+          },
+          {
+            "path": "src/werkzeug/routing/matcher.py",
+            "old": "            if parts == [\"\"]:\n                for rule in state.rules:\n                    if rule.strict_slashes:\n",
+            "new": "            if parts == [\"\"]:\n                for rule in state.rules:\n                    if merged and not rule.merge_slashes:\n                        continue\n                    if rule.strict_slashes:\n"
+          },
+          {
+            "path": "src/werkzeug/routing/matcher.py",
+            "old": "        try:\n            rv = _match(self._root, [domain, *path.split(\"/\")], [])\n        except SlashRequired:\n            raise RequestPath(f\"{path}/\") from None\n\n        if self.merge_slashes and rv is None:\n            # Try to match again, but with slashes merged\n            path = re.sub(\"/{2,}?\", \"/\", path)\n            try:\n                rv = _match(self._root, [domain, *path.split(\"/\")], [])\n            except SlashRequired:\n                raise RequestPath(f\"{path}/\") from None\n            if rv is None:\n                raise NoMatch(have_match_for, websocket_mismatch)\n            else:\n                raise RequestPath(f\"{path}\")\n        elif rv is not None:\n",
+            "new": "        try:\n            rv = _match(self._root, [domain, *path.split(\"/\")], [], False)\n        except SlashRequired:\n            raise RequestPath(f\"{path}/\") from None\n\n        if rv is None:\n            # Try to match again with repeated slashes merged. Rules can\n            # independently disable this even when it is enabled on the map.\n            merged_path = re.sub(\"/{2,}?\", \"/\", path)\n\n            if merged_path != path:\n                path = merged_path\n                try:\n                    rv = _match(\n                        self._root, [domain, *path.split(\"/\")], [], True\n                    )\n                except SlashRequired:\n                    raise RequestPath(f\"{path}/\") from None\n\n                if rv is not None:\n                    raise RequestPath(path)\n\n            raise NoMatch(have_match_for, websocket_mismatch)\n\n        if rv is not None:\n"
+          }
+        ]
+      },
+      "edits": [
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/werkzeug/routing/map.py",
+            "old": "        self.default_subdomain = default_subdomain\n        self.strict_slashes = strict_slashes\n        self.merge_slashes = merge_slashes\n        self.redirect_defaults = redirect_defaults\n",
+            "new": "        self.default_subdomain = default_subdomain\n        self.strict_slashes = strict_slashes\n        self._merge_slashes = merge_slashes\n        self.redirect_defaults = redirect_defaults\n"
+          }
+        },
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/werkzeug/routing/map.py",
+            "old": "        for rulefactory in rules or ():\n            self.add(rulefactory)\n\n    def is_endpoint_expecting(self, endpoint: str, *arguments: str) -> bool:\n",
+            "new": "        for rulefactory in rules or ():\n            self.add(rulefactory)\n\n    @property\n    def merge_slashes(self) -> bool:\n        return self._merge_slashes\n\n    @merge_slashes.setter\n    def merge_slashes(self, value: bool) -> None:\n        if value == self._merge_slashes:\n            return\n\n        self._merge_slashes = value\n        matcher = StateMachineMatcher(value)\n\n        for rule in self._rules:\n            if rule._merge_slashes is None:\n                rule.merge_slashes = value\n                rule.compile()\n\n            if not rule.build_only:\n                matcher.add(rule)\n\n        self._matcher = matcher\n        self._remap = True\n\n    def is_endpoint_expecting(self, endpoint: str, *arguments: str) -> bool:\n"
+          }
+        },
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/werkzeug/routing/map.py",
+            "old": "        path_part = f\"/{path_info.lstrip('/')}\" if path_info else \"\"\n",
+            "new": "        path_part = (\n            path_info if not path_info or path_info.startswith(\"/\") else f\"/{path_info}\"\n        )\n"
+          }
+        },
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/werkzeug/routing/rules.py",
+            "old": "                yield Rule(\n                    Template(rule.rule).substitute(self.context),\n                    new_defaults,\n                    subdomain,\n                    rule.methods,\n                    rule.build_only,\n                    new_endpoint,\n                    rule.strict_slashes,\n                )\n",
+            "new": "                yield Rule(\n                    Template(rule.rule).substitute(self.context),\n                    new_defaults,\n                    subdomain,\n                    rule.methods,\n                    rule.build_only,\n                    new_endpoint,\n                    rule.strict_slashes,\n                    merge_slashes=rule.merge_slashes,\n                )\n"
+          }
+        },
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/werkzeug/routing/rules.py",
+            "old": "        self.map: Map = None  # type: ignore\n        self.strict_slashes = strict_slashes\n        self.merge_slashes = merge_slashes\n        self.subdomain = subdomain\n",
+            "new": "        self.map: Map = None  # type: ignore\n        self.strict_slashes = strict_slashes\n        self._merge_slashes = merge_slashes\n        self.merge_slashes = merge_slashes\n        self.subdomain = subdomain\n"
+          }
+        },
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/werkzeug/routing/rules.py",
+            "old": "            endpoint=self.endpoint,\n            strict_slashes=self.strict_slashes,\n            redirect_to=self.redirect_to,\n",
+            "new": "            endpoint=self.endpoint,\n            strict_slashes=self.strict_slashes,\n            merge_slashes=self._merge_slashes,\n            redirect_to=self.redirect_to,\n"
+          }
+        },
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/werkzeug/routing/matcher.py",
+            "old": "        def _match(\n            state: State, parts: list[str], values: list[str]\n        ) -> tuple[Rule, list[str]] | None:\n",
+            "new": "        def _match(\n            state: State,\n            parts: list[str],\n            values: list[str],\n            merged: bool,\n        ) -> tuple[Rule, list[str]] | None:\n"
+          }
+        },
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/werkzeug/routing/matcher.py",
+            "old": "            if parts == []:\n                for rule in state.rules:\n                    if rule.methods is not None and method not in rule.methods:\n",
+            "new": "            if parts == []:\n                for rule in state.rules:\n                    if merged and not rule.merge_slashes:\n                        continue\n                    if rule.methods is not None and method not in rule.methods:\n"
+          }
+        },
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/werkzeug/routing/matcher.py",
+            "old": "                if \"\" in state.static:\n                    for rule in state.static[\"\"].rules:\n                        if websocket == rule.websocket and (\n",
+            "new": "                if \"\" in state.static:\n                    for rule in state.static[\"\"].rules:\n                        if merged and not rule.merge_slashes:\n                            continue\n                        if websocket == rule.websocket and (\n"
+          }
+        },
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/werkzeug/routing/matcher.py",
+            "old": "            if part in state.static:\n                rv = _match(state.static[part], parts[1:], values)\n",
+            "new": "            if part in state.static:\n                rv = _match(state.static[part], parts[1:], values, merged)\n"
+          }
+        },
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/werkzeug/routing/matcher.py",
+            "old": "                    rv = _match(new_state, remaining, values + groups)\n",
+            "new": "                    rv = _match(new_state, remaining, values + groups, merged)\n"
+          }
+        },
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/werkzeug/routing/matcher.py",
+            "old": "            if parts == [\"\"]:\n                for rule in state.rules:\n                    if rule.strict_slashes:\n",
+            "new": "            if parts == [\"\"]:\n                for rule in state.rules:\n                    if merged and not rule.merge_slashes:\n                        continue\n                    if rule.strict_slashes:\n"
+          }
+        },
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/werkzeug/routing/matcher.py",
+            "old": "        try:\n            rv = _match(self._root, [domain, *path.split(\"/\")], [])\n        except SlashRequired:\n            raise RequestPath(f\"{path}/\") from None\n\n        if self.merge_slashes and rv is None:\n            # Try to match again, but with slashes merged\n            path = re.sub(\"/{2,}?\", \"/\", path)\n            try:\n                rv = _match(self._root, [domain, *path.split(\"/\")], [])\n            except SlashRequired:\n                raise RequestPath(f\"{path}/\") from None\n            if rv is None:\n                raise NoMatch(have_match_for, websocket_mismatch)\n            else:\n                raise RequestPath(f\"{path}\")\n        elif rv is not None:\n",
+            "new": "        try:\n            rv = _match(self._root, [domain, *path.split(\"/\")], [], False)\n        except SlashRequired:\n            raise RequestPath(f\"{path}/\") from None\n\n        if rv is None:\n            # Try to match again with repeated slashes merged. Rules can\n            # independently disable this even when it is enabled on the map.\n            merged_path = re.sub(\"/{2,}?\", \"/\", path)\n\n            if merged_path != path:\n                path = merged_path\n                try:\n                    rv = _match(\n                        self._root, [domain, *path.split(\"/\")], [], True\n                    )\n                except SlashRequired:\n                    raise RequestPath(f\"{path}/\") from None\n\n                if rv is not None:\n                    raise RequestPath(path)\n\n            raise NoMatch(have_match_for, websocket_mismatch)\n\n        if rv is not None:\n"
+          }
+        }
+      ],
+      "patch": "--- a/src/werkzeug/routing/map.py\n+++ b/src/werkzeug/routing/map.py\n@@ -109,7 +109,7 @@\n \n         self.default_subdomain = default_subdomain\n         self.strict_slashes = strict_slashes\n-        self.merge_slashes = merge_slashes\n+        self._merge_slashes = merge_slashes\n         self.redirect_defaults = redirect_defaults\n         self.host_matching = host_matching\n \n@@ -122,6 +122,29 @@\n \n         for rulefactory in rules or ():\n             self.add(rulefactory)\n+\n+    @property\n+    def merge_slashes(self) -> bool:\n+        return self._merge_slashes\n+\n+    @merge_slashes.setter\n+    def merge_slashes(self, value: bool) -> None:\n+        if value == self._merge_slashes:\n+            return\n+\n+        self._merge_slashes = value\n+        matcher = StateMachineMatcher(value)\n+\n+        for rule in self._rules:\n+            if rule._merge_slashes is None:\n+                rule.merge_slashes = value\n+                rule.compile()\n+\n+            if not rule.build_only:\n+                matcher.add(rule)\n+\n+        self._matcher = matcher\n+        self._remap = True\n \n     def is_endpoint_expecting(self, endpoint: str, *arguments: str) -> bool:\n         \"\"\"Iterate over all rules and check if the endpoint expects\n@@ -594,7 +617,9 @@\n         if not self.map.host_matching and self.subdomain is not None:\n             domain_part = self.subdomain\n \n-        path_part = f\"/{path_info.lstrip('/')}\" if path_info else \"\"\n+        path_part = (\n+            path_info if not path_info or path_info.startswith(\"/\") else f\"/{path_info}\"\n+        )\n \n         try:\n             result = self.map._matcher.match(domain_part, path_part, method, websocket)\n--- a/src/werkzeug/routing/matcher.py\n+++ b/src/werkzeug/routing/matcher.py\n@@ -77,7 +77,10 @@\n         websocket_mismatch = False\n \n         def _match(\n-            state: State, parts: list[str], values: list[str]\n+            state: State,\n+            parts: list[str],\n+            values: list[str],\n+            merged: bool,\n         ) -> tuple[Rule, list[str]] | None:\n             # This function is meant to be called recursively, and will attempt\n             # to match the head part to the state's transitions.\n@@ -89,6 +92,8 @@\n             # extracted.\n             if parts == []:\n                 for rule in state.rules:\n+                    if merged and not rule.merge_slashes:\n+                        continue\n                     if rule.methods is not None and method not in rule.methods:\n                         have_match_for.update(rule.methods)\n                     elif rule.websocket != websocket:\n@@ -101,6 +106,8 @@\n                 # that matching is possible with an additional slash\n                 if \"\" in state.static:\n                     for rule in state.static[\"\"].rules:\n+                        if merged and not rule.merge_slashes:\n+                            continue\n                         if websocket == rule.websocket and (\n                             rule.methods is None or method in rule.methods\n                         ):\n@@ -113,7 +120,7 @@\n             part = parts[0]\n             # To match this part try the static transitions first\n             if part in state.static:\n-                rv = _match(state.static[part], parts[1:], values)\n+                rv = _match(state.static[part], parts[1:], values, merged)\n                 if rv is not None:\n                     return rv\n             # No match via the static transitions, so try the dynamic\n@@ -144,7 +151,7 @@\n                         for key, value in converter_groups\n                         if key[:11] == \"__werkzeug_\"\n                     ]\n-                    rv = _match(new_state, remaining, values + groups)\n+                    rv = _match(new_state, remaining, values + groups, merged)\n                     if rv is not None:\n                         return rv\n \n@@ -154,6 +161,8 @@\n             # slash part.\n             if parts == [\"\"]:\n                 for rule in state.rules:\n+                    if merged and not rule.merge_slashes:\n+                        continue\n                     if rule.strict_slashes:\n                         continue\n                     if rule.methods is not None and method not in rule.methods:\n@@ -166,22 +175,30 @@\n             return None\n \n         try:\n-            rv = _match(self._root, [domain, *path.split(\"/\")], [])\n+            rv = _match(self._root, [domain, *path.split(\"/\")], [], False)\n         except SlashRequired:\n             raise RequestPath(f\"{path}/\") from None\n \n-        if self.merge_slashes and rv is None:\n-            # Try to match again, but with slashes merged\n-            path = re.sub(\"/{2,}?\", \"/\", path)\n-            try:\n-                rv = _match(self._root, [domain, *path.split(\"/\")], [])\n-            except SlashRequired:\n-                raise RequestPath(f\"{path}/\") from None\n-            if rv is None:\n-                raise NoMatch(have_match_for, websocket_mismatch)\n-            else:\n-                raise RequestPath(f\"{path}\")\n-        elif rv is not None:\n+        if rv is None:\n+            # Try to match again with repeated slashes merged. Rules can\n+            # independently disable this even when it is enabled on the map.\n+            merged_path = re.sub(\"/{2,}?\", \"/\", path)\n+\n+            if merged_path != path:\n+                path = merged_path\n+                try:\n+                    rv = _match(\n+                        self._root, [domain, *path.split(\"/\")], [], True\n+                    )\n+                except SlashRequired:\n+                    raise RequestPath(f\"{path}/\") from None\n+\n+                if rv is not None:\n+                    raise RequestPath(path)\n+\n+            raise NoMatch(have_match_for, websocket_mismatch)\n+\n+        if rv is not None:\n             rule, values = rv\n \n             result = {}\n--- a/src/werkzeug/routing/rules.py\n+++ b/src/werkzeug/routing/rules.py\n@@ -283,6 +283,7 @@\n                     rule.build_only,\n                     new_endpoint,\n                     rule.strict_slashes,\n+                    merge_slashes=rule.merge_slashes,\n                 )\n \n \n@@ -462,6 +463,7 @@\n \n         self.map: Map = None  # type: ignore\n         self.strict_slashes = strict_slashes\n+        self._merge_slashes = merge_slashes\n         self.merge_slashes = merge_slashes\n         self.subdomain = subdomain\n         self.host = host\n@@ -529,6 +531,7 @@\n             build_only=self.build_only,\n             endpoint=self.endpoint,\n             strict_slashes=self.strict_slashes,\n+            merge_slashes=self._merge_slashes,\n             redirect_to=self.redirect_to,\n             alias=self.alias,\n             host=self.host,\n",
+      "usage": {
+        "requests": 1,
+        "requests_with_usage": 1,
+        "input_tokens": 22198,
+        "output_tokens": 8980,
+        "reasoning_tokens": 7339,
+        "requests_with_reasoning_usage": 1
+      },
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "7be4f9a462feb5680eb7e874f5c194c5f0b1903ac5a5f75af8dc90d959053e3b",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        }
+      ],
+      "error": null,
+      "elapsed_seconds": 212.723273,
+      "partial_usage": {
+        "requests": 1,
+        "requests_with_usage": 1,
+        "input_tokens": 22198,
+        "output_tokens": 8980,
+        "reasoning_tokens": 7339,
+        "requests_with_reasoning_usage": 1
+      }
+    },
+    {
+      "index": 1,
+      "task": "werkzeug_routing",
+      "agent": {
+        "name": "custom/z-ai/glm-5.3",
+        "kind": "responses",
+        "model": "custom/z-ai/glm-5.3",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "ROUTER_KEY",
+        "headers_env": "ROUTER_HEADERS",
+        "timeout_seconds": 600,
+        "max_response_bytes": 16000000,
+        "options": {
+          "reasoning_effort": "high"
+        }
+      },
+      "action": null,
+      "edits": null,
+      "patch": null,
+      "usage": null,
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "f8c440729104c95b0ca99808b57490d8908b8e14e6e8b5f62c6e7b7f4676ef6b",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "timeout"
+        }
+      ],
+      "error": "Endpoint request deadline exceeded",
+      "elapsed_seconds": 600.002528,
+      "partial_usage": {
+        "requests": 1,
+        "requests_with_usage": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_tokens": 0,
+        "requests_with_reasoning_usage": 0
+      }
+    },
+    {
+      "index": 2,
+      "task": "attrs_preinit",
+      "agent": {
+        "name": "custom/z-ai/glm-5.3",
+        "kind": "responses",
+        "model": "custom/z-ai/glm-5.3",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "ROUTER_KEY",
+        "headers_env": "ROUTER_HEADERS",
+        "timeout_seconds": 600,
+        "max_response_bytes": 16000000,
+        "options": {
+          "reasoning_effort": "high"
+        }
+      },
+      "action": {
+        "command": "submit_patch",
+        "target": [
+          {
+            "path": "src/attr/_make.py",
+            "old": "    args = \", \".join(args)\n    pre_init_args = args\n    if kw_only_args:\n        # leading comma & kw_only args\n        args += f\"{', ' if args else ''}*, {', '.join(kw_only_args)}\"\n        pre_init_kw_only_args = \", \".join(\n            [\n                f\"{kw_arg_name}={kw_arg_name}\"\n                # We need to remove the defaults from the kw_only_args.\n                for kw_arg_name in (kwa.split(\"=\")[0] for kwa in kw_only_args)\n            ]\n        )\n        pre_init_args += \", \" if pre_init_args else \"\"\n        pre_init_args += pre_init_kw_only_args",
+            "new": "    # Build the arguments for `__attrs_pre_init__` from the parameter\n    # names, so that it receives the values that were actually passed in\n    # (or the values bound by the signature's defaults -- including NOTHING\n    # for fields with factories, which must not run before initialization)\n    # instead of re-evaluating the default expressions.\n    pre_init_args = \", \".join(\n        [\n            f\"{arg_name}={arg_name}\"\n            # We need to remove the defaults from the args.\n            for arg_name in (arg.split(\"=\")[0] for arg in args)\n        ]\n    )\n    args = \", \".join(args)\n    if kw_only_args:\n        # leading comma & kw_only args\n        args += f\"{', ' if args else ''}*, {', '.join(kw_only_args)}\"\n        pre_init_kw_only_args = \", \".join(\n            [\n                f\"{kw_arg_name}={kw_arg_name}\"\n                # We need to remove the defaults from the kw_only_args.\n                for kw_arg_name in (kwa.split(\"=\")[0] for kwa in kw_only_args)\n            ]\n        )\n        if pre_init_args:\n            pre_init_args += \", \"\n        pre_init_args += pre_init_kw_only_args"
+          }
+        ]
+      },
+      "edits": [
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/attr/_make.py",
+            "old": "    args = \", \".join(args)\n    pre_init_args = args\n    if kw_only_args:\n        # leading comma & kw_only args\n        args += f\"{', ' if args else ''}*, {', '.join(kw_only_args)}\"\n        pre_init_kw_only_args = \", \".join(\n            [\n                f\"{kw_arg_name}={kw_arg_name}\"\n                # We need to remove the defaults from the kw_only_args.\n                for kw_arg_name in (kwa.split(\"=\")[0] for kwa in kw_only_args)\n            ]\n        )\n        pre_init_args += \", \" if pre_init_args else \"\"\n        pre_init_args += pre_init_kw_only_args",
+            "new": "    # Build the arguments for `__attrs_pre_init__` from the parameter\n    # names, so that it receives the values that were actually passed in\n    # (or the values bound by the signature's defaults -- including NOTHING\n    # for fields with factories, which must not run before initialization)\n    # instead of re-evaluating the default expressions.\n    pre_init_args = \", \".join(\n        [\n            f\"{arg_name}={arg_name}\"\n            # We need to remove the defaults from the args.\n            for arg_name in (arg.split(\"=\")[0] for arg in args)\n        ]\n    )\n    args = \", \".join(args)\n    if kw_only_args:\n        # leading comma & kw_only args\n        args += f\"{', ' if args else ''}*, {', '.join(kw_only_args)}\"\n        pre_init_kw_only_args = \", \".join(\n            [\n                f\"{kw_arg_name}={kw_arg_name}\"\n                # We need to remove the defaults from the kw_only_args.\n                for kw_arg_name in (kwa.split(\"=\")[0] for kwa in kw_only_args)\n            ]\n        )\n        if pre_init_args:\n            pre_init_args += \", \"\n        pre_init_args += pre_init_kw_only_args"
+          }
+        }
+      ],
+      "patch": "--- a/src/attr/_make.py\n+++ b/src/attr/_make.py\n@@ -2321,8 +2321,19 @@\n \n         lines.append(f\"BaseException.__init__(self, {vals})\")\n \n+    # Build the arguments for `__attrs_pre_init__` from the parameter\n+    # names, so that it receives the values that were actually passed in\n+    # (or the values bound by the signature's defaults -- including NOTHING\n+    # for fields with factories, which must not run before initialization)\n+    # instead of re-evaluating the default expressions.\n+    pre_init_args = \", \".join(\n+        [\n+            f\"{arg_name}={arg_name}\"\n+            # We need to remove the defaults from the args.\n+            for arg_name in (arg.split(\"=\")[0] for arg in args)\n+        ]\n+    )\n     args = \", \".join(args)\n-    pre_init_args = args\n     if kw_only_args:\n         # leading comma & kw_only args\n         args += f\"{', ' if args else ''}*, {', '.join(kw_only_args)}\"\n@@ -2333,7 +2344,8 @@\n                 for kw_arg_name in (kwa.split(\"=\")[0] for kwa in kw_only_args)\n             ]\n         )\n-        pre_init_args += \", \" if pre_init_args else \"\"\n+        if pre_init_args:\n+            pre_init_args += \", \"\n         pre_init_args += pre_init_kw_only_args\n \n     if call_pre_init and pre_init_has_args:\n",
+      "usage": {
+        "requests": 1,
+        "requests_with_usage": 1,
+        "input_tokens": 33844,
+        "output_tokens": 4737,
+        "reasoning_tokens": 4237,
+        "requests_with_reasoning_usage": 1
+      },
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "4f77ede46fd5c97b51d6c288d255680b4202c7be61b0817e4a5f1e049e5c7187",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        }
+      ],
+      "error": null,
+      "elapsed_seconds": 76.85852,
+      "partial_usage": {
+        "requests": 1,
+        "requests_with_usage": 1,
+        "input_tokens": 33844,
+        "output_tokens": 4737,
+        "reasoning_tokens": 4237,
+        "requests_with_reasoning_usage": 1
+      }
+    },
+    {
+      "index": 3,
+      "task": "attrs_preinit",
+      "agent": {
+        "name": "gpt-5.6-sol",
+        "kind": "responses",
+        "model": "gpt-5.6-sol",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "NATIVE_KEY",
+        "headers_env": "NATIVE_HEADERS",
+        "timeout_seconds": 600,
+        "max_response_bytes": 16000000,
+        "options": {
+          "reasoning_effort": "high"
+        }
+      },
+      "action": {
+        "command": "submit_patch",
+        "target": [
+          {
+            "path": "src/attr/_make.py",
+            "old": "    args = \", \".join(args)\n    pre_init_args = args\n    if kw_only_args:\n",
+            "new": "    pre_init_args = \", \".join(arg.split(\"=\")[0] for arg in args)\n    args = \", \".join(args)\n    if kw_only_args:\n"
+          }
+        ]
+      },
+      "edits": [
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/attr/_make.py",
+            "old": "    args = \", \".join(args)\n    pre_init_args = args\n    if kw_only_args:\n",
+            "new": "    pre_init_args = \", \".join(arg.split(\"=\")[0] for arg in args)\n    args = \", \".join(args)\n    if kw_only_args:\n"
+          }
+        }
+      ],
+      "patch": "--- a/src/attr/_make.py\n+++ b/src/attr/_make.py\n@@ -2321,8 +2321,8 @@\n \n         lines.append(f\"BaseException.__init__(self, {vals})\")\n \n+    pre_init_args = \", \".join(arg.split(\"=\")[0] for arg in args)\n     args = \", \".join(args)\n-    pre_init_args = args\n     if kw_only_args:\n         # leading comma & kw_only args\n         args += f\"{', ' if args else ''}*, {', '.join(kw_only_args)}\"\n",
+      "usage": {
+        "requests": 1,
+        "requests_with_usage": 1,
+        "input_tokens": 34153,
+        "output_tokens": 1211,
+        "reasoning_tokens": 1114,
+        "requests_with_reasoning_usage": 1
+      },
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "267bb4ad31b47e752161143f83491464885386d1c07cde345c3561fbab0ff5ad",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        }
+      ],
+      "error": null,
+      "elapsed_seconds": 28.558602,
+      "partial_usage": {
+        "requests": 1,
+        "requests_with_usage": 1,
+        "input_tokens": 34153,
+        "output_tokens": 1211,
+        "reasoning_tokens": 1114,
+        "requests_with_reasoning_usage": 1
+      }
+    },
+    {
+      "index": 4,
+      "task": "urllib3_read",
+      "agent": {
+        "name": "gpt-5.6-sol",
+        "kind": "responses",
+        "model": "gpt-5.6-sol",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "NATIVE_KEY",
+        "headers_env": "NATIVE_HEADERS",
+        "timeout_seconds": 600,
+        "max_response_bytes": 16000000,
+        "options": {
+          "reasoning_effort": "high"
+        }
+      },
+      "action": {
+        "command": "submit_patch",
+        "target": [
+          {
+            "path": "src/urllib3/response.py",
+            "old": "        if amt and amt < 0:\n            # Negative numbers and `None` should be treated the same.\n            amt = None\n        elif amt is not None:\n            cache_content = False\n\n            if self._decoder and self._decoder.has_unconsumed_tail:\n                decoded_data = self._decode(\n                    b\"\",\n                    decode_content,\n                    flush_decoder=False,\n                    max_length=amt - len(self._decoded_buffer),\n                )\n                self._decoded_buffer.put(decoded_data)\n            if len(self._decoded_buffer) >= amt:\n                return self._decoded_buffer.get(amt)\n",
+            "new": "        if amt and amt < 0:\n            # Negative numbers and `None` should be treated the same.\n            amt = None\n        elif amt is not None:\n            cache_content = False\n\n        # Drain output already held by the decoder before giving it more input.\n        # This is also necessary for decoders such as Brotli which may reject\n        # additional input while output from a previous call is pending.\n        if self._decoder and self._decoder.has_unconsumed_tail:\n            decoded_data = self._decode(\n                b\"\",\n                decode_content,\n                flush_decoder=False,\n                max_length=(\n                    amt - len(self._decoded_buffer) if amt is not None else None\n                ),\n            )\n            self._decoded_buffer.put(decoded_data)\n        if amt is not None and len(self._decoded_buffer) >= amt:\n            return self._decoded_buffer.get(amt)\n"
+          },
+          {
+            "path": "src/urllib3/response.py",
+            "old": "        if amt is None:\n            data = self._decode(data, decode_content, flush_decoder)\n            if cache_content:\n                self._body = data\n",
+            "new": "        if amt is None:\n            decoded_data = self._decode(data, decode_content, flush_decoder)\n            # Partial decoded reads can leave output buffered. It precedes\n            # anything decoded from the newly-read raw data.\n            data = self._decoded_buffer.get_all() + decoded_data\n            if cache_content:\n                self._body = data\n"
+          }
+        ]
+      },
+      "edits": [
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/urllib3/response.py",
+            "old": "        if amt and amt < 0:\n            # Negative numbers and `None` should be treated the same.\n            amt = None\n        elif amt is not None:\n            cache_content = False\n\n            if self._decoder and self._decoder.has_unconsumed_tail:\n                decoded_data = self._decode(\n                    b\"\",\n                    decode_content,\n                    flush_decoder=False,\n                    max_length=amt - len(self._decoded_buffer),\n                )\n                self._decoded_buffer.put(decoded_data)\n            if len(self._decoded_buffer) >= amt:\n                return self._decoded_buffer.get(amt)\n",
+            "new": "        if amt and amt < 0:\n            # Negative numbers and `None` should be treated the same.\n            amt = None\n        elif amt is not None:\n            cache_content = False\n\n        # Drain output already held by the decoder before giving it more input.\n        # This is also necessary for decoders such as Brotli which may reject\n        # additional input while output from a previous call is pending.\n        if self._decoder and self._decoder.has_unconsumed_tail:\n            decoded_data = self._decode(\n                b\"\",\n                decode_content,\n                flush_decoder=False,\n                max_length=(\n                    amt - len(self._decoded_buffer) if amt is not None else None\n                ),\n            )\n            self._decoded_buffer.put(decoded_data)\n        if amt is not None and len(self._decoded_buffer) >= amt:\n            return self._decoded_buffer.get(amt)\n"
+          }
+        },
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/urllib3/response.py",
+            "old": "        if amt is None:\n            data = self._decode(data, decode_content, flush_decoder)\n            if cache_content:\n                self._body = data\n",
+            "new": "        if amt is None:\n            decoded_data = self._decode(data, decode_content, flush_decoder)\n            # Partial decoded reads can leave output buffered. It precedes\n            # anything decoded from the newly-read raw data.\n            data = self._decoded_buffer.get_all() + decoded_data\n            if cache_content:\n                self._body = data\n"
+          }
+        }
+      ],
+      "patch": "--- a/src/urllib3/response.py\n+++ b/src/urllib3/response.py\n@@ -1090,16 +1090,21 @@\n         elif amt is not None:\n             cache_content = False\n \n-            if self._decoder and self._decoder.has_unconsumed_tail:\n-                decoded_data = self._decode(\n-                    b\"\",\n-                    decode_content,\n-                    flush_decoder=False,\n-                    max_length=amt - len(self._decoded_buffer),\n-                )\n-                self._decoded_buffer.put(decoded_data)\n-            if len(self._decoded_buffer) >= amt:\n-                return self._decoded_buffer.get(amt)\n+        # Drain output already held by the decoder before giving it more input.\n+        # This is also necessary for decoders such as Brotli which may reject\n+        # additional input while output from a previous call is pending.\n+        if self._decoder and self._decoder.has_unconsumed_tail:\n+            decoded_data = self._decode(\n+                b\"\",\n+                decode_content,\n+                flush_decoder=False,\n+                max_length=(\n+                    amt - len(self._decoded_buffer) if amt is not None else None\n+                ),\n+            )\n+            self._decoded_buffer.put(decoded_data)\n+        if amt is not None and len(self._decoded_buffer) >= amt:\n+            return self._decoded_buffer.get(amt)\n \n         data = self._raw_read(amt)\n \n@@ -1113,7 +1118,10 @@\n             return data\n \n         if amt is None:\n-            data = self._decode(data, decode_content, flush_decoder)\n+            decoded_data = self._decode(data, decode_content, flush_decoder)\n+            # Partial decoded reads can leave output buffered. It precedes\n+            # anything decoded from the newly-read raw data.\n+            data = self._decoded_buffer.get_all() + decoded_data\n             if cache_content:\n                 self._body = data\n         else:\n",
+      "usage": {
+        "requests": 1,
+        "requests_with_usage": 1,
+        "input_tokens": 21136,
+        "output_tokens": 4913,
+        "reasoning_tokens": 4415,
+        "requests_with_reasoning_usage": 1
+      },
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "befab11bb5c388d104e64e2a399ed31989693e69e8d4d5f485a837d6810f067f",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": true
+        }
+      ],
+      "error": null,
+      "elapsed_seconds": 100.476951,
+      "partial_usage": {
+        "requests": 1,
+        "requests_with_usage": 1,
+        "input_tokens": 21136,
+        "output_tokens": 4913,
+        "reasoning_tokens": 4415,
+        "requests_with_reasoning_usage": 1
+      }
+    },
+    {
+      "index": 5,
+      "task": "urllib3_read",
+      "agent": {
+        "name": "custom/z-ai/glm-5.3",
+        "kind": "responses",
+        "model": "custom/z-ai/glm-5.3",
+        "endpoint_env": "DIRECT_ENDPOINT",
+        "api_key_env": "ROUTER_KEY",
+        "headers_env": "ROUTER_HEADERS",
+        "timeout_seconds": 600,
+        "max_response_bytes": 16000000,
+        "options": {
+          "reasoning_effort": "high"
+        }
+      },
+      "action": {
+        "command": "submit_patch",
+        "target": [
+          {
+            "path": "src/urllib3/response.py",
+            "old": "        if amt is None:\n            data = self._decode(data, decode_content, flush_decoder)\n            if cache_content:\n                self._body = data\n        else:\n            # do not waste memory on buffer when not decoding",
+            "new": "        if amt is None:\n            data = self._decode(data, decode_content, flush_decoder)\n            if len(self._decoded_buffer) > 0:\n                # A previous read(amt) may have left decoded bytes in the\n                # buffer (for example when the decoder produced more than\n                # the requested amount, or when flushing the decoder at\n                # EOF). Those bytes must be returned before the newly\n                # decoded data so that the body is not truncated and the\n                # byte order is preserved without duplication.\n                data = self._decoded_buffer.get_all() + data\n            if cache_content:\n                self._body = data\n        else:\n            # do not waste memory on buffer when not decoding"
+          }
+        ]
+      },
+      "edits": [
+        {
+          "command": "edit",
+          "target": {
+            "path": "src/urllib3/response.py",
+            "old": "        if amt is None:\n            data = self._decode(data, decode_content, flush_decoder)\n            if cache_content:\n                self._body = data\n        else:\n            # do not waste memory on buffer when not decoding",
+            "new": "        if amt is None:\n            data = self._decode(data, decode_content, flush_decoder)\n            if len(self._decoded_buffer) > 0:\n                # A previous read(amt) may have left decoded bytes in the\n                # buffer (for example when the decoder produced more than\n                # the requested amount, or when flushing the decoder at\n                # EOF). Those bytes must be returned before the newly\n                # decoded data so that the body is not truncated and the\n                # byte order is preserved without duplication.\n                data = self._decoded_buffer.get_all() + data\n            if cache_content:\n                self._body = data\n        else:\n            # do not waste memory on buffer when not decoding"
+          }
+        }
+      ],
+      "patch": "--- a/src/urllib3/response.py\n+++ b/src/urllib3/response.py\n@@ -1114,6 +1114,14 @@\n \n         if amt is None:\n             data = self._decode(data, decode_content, flush_decoder)\n+            if len(self._decoded_buffer) > 0:\n+                # A previous read(amt) may have left decoded bytes in the\n+                # buffer (for example when the decoder produced more than\n+                # the requested amount, or when flushing the decoder at\n+                # EOF). Those bytes must be returned before the newly\n+                # decoded data so that the body is not truncated and the\n+                # byte order is preserved without duplication.\n+                data = self._decoded_buffer.get_all() + data\n             if cache_content:\n                 self._body = data\n         else:\n",
+      "usage": {
+        "requests": 1,
+        "requests_with_usage": 1,
+        "input_tokens": 21040,
+        "output_tokens": 7879,
+        "reasoning_tokens": 7627,
+        "requests_with_reasoning_usage": 1
+      },
+      "request_audit": [
+        {
+          "protocol": "responses",
+          "request_sha256": "7dd509a6daabf4284179e49dfc7e28acd8bc6dd6b9d0d40f36833d016bfa7736",
+          "declared_tools": [],
+          "tool_choice": "none",
+          "timeout_seconds": 600,
+          "max_response_bytes": 16000000,
+          "outcome": "action",
+          "reported_model_matches_request": false
+        }
+      ],
+      "error": null,
+      "elapsed_seconds": 135.228202,
+      "partial_usage": {
+        "requests": 1,
+        "requests_with_usage": 1,
+        "input_tokens": 21040,
+        "output_tokens": 7879,
+        "reasoning_tokens": 7627,
+        "requests_with_reasoning_usage": 1
+      }
+    }
+  ]
+}

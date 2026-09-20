@@ -14,7 +14,8 @@ def main():
         if hashlib.sha256((root / name).read_bytes()).hexdigest() != expected_hash:
             raise ValueError("Published execution bytes changed")
     evidence = read_json(root / "control-evidence.json")
-    if evidence["git_revision"] != execution["source_commit"] or evidence["working_tree_dirty"]:
+    if (evidence["git_revision"] != execution["source_commit"] or evidence["working_tree_dirty"]
+            or evidence["image_id"] != execution["image_id"]):
         raise ValueError("Execution source identity changed")
     rows = evidence["outcomes"]
     keys = {(r["task"], r["control"]) for r in rows}
@@ -47,12 +48,21 @@ def main():
         if outcomes["proposal_file_sha256"] != digest(data) or len(outcomes["outcomes"]) != 6:
             raise ValueError("Model submission binding changed")
         for i, row in enumerate(outcomes["outcomes"]):
-            if row["index"] != i or row["proposal_sha256"] != digest(data["attempts"][i]):
+            proposal = data["attempts"][i]
+            if (row["index"] != i or row["proposal_sha256"] != digest(proposal)
+                    or row["task"] != proposal["task"] or row["model"] != proposal["agent"]["name"]
+                    or row["proposal_error"] != proposal["error"]
+                    or row["acceptance_executed"] != (proposal["error"] is None)):
                 raise ValueError("Model attempt identity changed")
             if row["acceptance_executed"]:
+                actions = [*proposal["edits"], {"command": "verify"}, {"command": "finish"}]
+                if [e["action"] for e in row["trace"]["events"]] != actions:
+                    raise ValueError("Acceptance did not execute the original proposed edits")
                 grade = replay(row["trace"], make_case(outcomes["image_id"], row["task"]))
                 if grade["success"] != row["accepted"] or row["fresh_recheck_error"] is not None:
                     raise ValueError("Model artifact acceptance mismatch")
+            elif row["accepted"] or row["trace"] is not None:
+                raise ValueError("Unexecuted model proposal cannot have an acceptance result")
         print("Regraded frozen model artifacts; these are single proposals, not interactive episodes.")
 
 

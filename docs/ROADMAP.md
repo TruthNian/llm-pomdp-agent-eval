@@ -51,11 +51,24 @@ retaining failures. No retries, plugin registry, database or model ranking.
 
 ### R1 — Difficult, valuable real tasks
 
-**Next implementation stage:** add three independently sourced real defects
+**R1a implemented:** three independently sourced real defects
 with multi-file behavior or interacting compatibility requirements. Pin each
 before-state, describe the concrete user failure, specify executable acceptance,
 retain an accepted upstream solution as an artifact control, and construct a
 plausible partial repair that fails a related regression.
+
+The 2.8 routing, initialization and response-reading tasks pass twelve artifact
+controls and fresh rechecks. Missing build metadata and an ineffective smoke
+example were corrected with all earlier results retained. The
+[six-proposal baseline](../studies/repository-portfolio-v1/proposal_plan.json)
+explicitly supplies localization help and tests patch construction. It does not
+replace an interactive evaluation.
+
+**R1b next: autonomous localization and recovery.** With execution available,
+compare problem-only versus file-localized conditions on identical tasks and
+budgets. Require plausible incomplete repairs, obtainable evidence and executable
+regression constraints. Retain easily repaired cases as regression anchors;
+do not manufacture difficulty by enlarging catalogues or hiding acceptance requirements.
 
 Freeze tasks and budgets before model attempts. Run available Sol and GLM
 configurations on the same tasks with useful tools. Retain all attempts, including

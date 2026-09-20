@@ -1,6 +1,12 @@
-# Diagnostic benchmark specification — frameworks 2.0–2.7
+# Diagnostic benchmark specification — frameworks 2.0–2.8
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
+
+2.8 registers the separate `repository-repair/2`
+[compatibility portfolio](../studies/repository-portfolio-v1/README.md).
+Three source tasks and their behavioral oracles share the repair state machine.
+The localized single-proposal model screen is an artifact baseline, not an
+interactive episode or a change to the diagnostic specification below.
 
 2.7 registers `repository-repair/1`, specified in the separate
 [real repair contract](REPOSITORY_REPAIR.md). It uses actual code execution,
