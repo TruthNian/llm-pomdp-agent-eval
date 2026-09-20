@@ -19,4 +19,4 @@ pomdp-bench = "pomdp_bench.cli:main"
 include = ["pomdp_bench*"]
 
 [tool.setuptools.package-data]
-pomdp_bench = ["repair_data/*/*"]
+pomdp_bench = ["repair_data/*.md", "repair_data/*/*"]

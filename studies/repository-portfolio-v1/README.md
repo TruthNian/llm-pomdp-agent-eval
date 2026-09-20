@@ -54,8 +54,39 @@ availability is a prerequisite for scored interactive model runs.
 
 ## Status
 
-Implementation and control matrix are prepared. Real execution results will be
-recorded after CI; local response-fixture tests are not execution evidence.
+**Final qualification passed** at clean source
+`42ffa1a73b83a2417620ff6551396448fab5acfa` in
+[CI run 35498639649](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/runs/35498639649).
+All twelve rows, eighteen original executions and eighteen fresh rechecks are
+retained in [control-evidence.json](control-evidence.json).
+[execution.json](execution.json) binds source, image, dependencies and evidence bytes.
+
+| Task | Unchanged full checks | Partial repair full checks | Upstream full checks |
+|---|---:|---:|---:|
+| Werkzeug routing | 148/166 | 154/166 | 166/166 |
+| attrs initialization | 28/37 | 25/37 | 37/37 |
+| urllib3 reading | 114/126 | 118/126 | 126/126 |
+
+Every unchanged source fails its reproduction; every partial repair passes
+reproduction but fails full acceptance. Later edits expire all earlier PASSes.
+All fresh rechecks agree. Run `python studies/repository-portfolio-v1/verify.py`
+to regrade the recorded final matrix without candidate execution.
+
+## Frozen model screen
+
+[proposal_plan.json](proposal_plan.json) declares six single-proposal attempts,
+two user-authorized models on the three public tasks. Source context deliberately
+includes known affected files and neighbors: this baseline has localization help.
+It measures construction of a patch from that context, not autonomous repository
+localization, interactive recovery, or end-to-end POMDP completion.
+
+Model calls run locally through the existing HTTP adapter. Only reviewed patch
+artifacts reach CI for independent execution; no provider credentials are sent
+to CI. There is no test feedback, correction or replacement attempt. Missing
+usage and failed/interrupted requests remain visible. Calls start only after the
+artifact gate and publication of the plan/source. Results will be added after collection.
+
+## Development corrections retained
 
 The [first CI attempt](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/runs/35498144035)
 at source `4974c51a2f45c328422cea87c0f5e5e6570a2f14` stopped during image build:
