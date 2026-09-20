@@ -19,6 +19,16 @@
 
 ## 无需模型账号即可运行
 
+新任务结构已有[版本化的依赖发现与恢复离线原型](docs/DISCOVERY_RECOVERY.md)。
+[60 条完整对照轨迹](studies/discovery-recovery-v1/README.md)检验未知操作的获取、变化后的信息失效与重建，
+并通过移除对应障碍，让相关失败策略恢复成功。它尚未加入正式评分家族，也不是模型成绩。
+原型单独运行与重放：
+
+```powershell
+python -m pomdp_bench.discovery_controls --out artifacts/discovery-controls.json
+python -m pomdp_bench.discovery_controls --validate artifacts/discovery-controls.json
+```
+
 Python 3.11+，运行时只使用标准库。在仓库根目录执行：
 
 ```powershell

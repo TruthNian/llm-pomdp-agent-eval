@@ -36,6 +36,12 @@ jobs:
         run: python -m pomdp_bench validate artifacts/ci-demo
       - name: Verify documentation links
         run: python tools/check_docs.py
+      - name: Verify published discovery and recovery controls
+        run: python -m pomdp_bench.discovery_controls --validate studies/discovery-recovery-v1/controls.json
+      - name: Reproduce discovery and recovery controls
+        run: python -m pomdp_bench.discovery_controls --out artifacts/discovery-controls.json
+      - name: Replay reproduced discovery and recovery controls
+        run: python -m pomdp_bench.discovery_controls --validate artifacts/discovery-controls.json
       - name: Recompute analysis
         run: python harness/analyze_results.py > analysis-output.json
       - name: Verify recomputed outputs

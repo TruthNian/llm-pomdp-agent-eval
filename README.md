@@ -20,6 +20,16 @@ The [first direct-channel validation](studies/direct-channel-validation-v1/READM
 
 ## Run without an API key
 
+The next task structure now has a [versioned offline discovery/recovery prototype](docs/DISCOVERY_RECOVERY.md).
+Its [60-trajectory control matrix](studies/discovery-recovery-v1/README.md) tests unavailable operations,
+announced invalidation and rebuilding, with ablations that rescue the relevant failing controls.
+It is not a registered scored family or evidence of model performance. Run and replay it separately:
+
+```bash
+python -m pomdp_bench.discovery_controls --out artifacts/discovery-controls.json
+python -m pomdp_bench.discovery_controls --validate artifacts/discovery-controls.json
+```
+
 Python 3.11+; no runtime dependencies. From the repository root:
 
 ```bash

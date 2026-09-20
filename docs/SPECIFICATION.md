@@ -114,4 +114,12 @@ Each trace stores the initial public observation, exact task contract, every pub
 
 ## Versioning
 
+`dependency-recovery/1` is a separately versioned [offline prototype](DISCOVERY_RECOVERY.md)
+with its own observation, transition, control and acceptance contract. It is not
+accepted as a `diagnostic-graphs/1` case and cannot be pooled into its metrics.
+The scored framework remains 2.4; prototype reports bind their implementation
+source hashes and require that source for replay. Added package source changes
+the collector's fingerprint, so an unfinished collection still needs its original
+checkout even when the scored semantics have not changed.
+
 Any change to generation distributions, observations, action semantics, acceptance, or prompts requires a new generator/protocol or benchmark version and an explicit migration note. Historical studies remain byte-for-byte frozen. Nonsemantic runtime improvements still require recording software/source hashes. Scores from different suites or versions must not be silently pooled.

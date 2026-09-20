@@ -25,6 +25,8 @@ Before adding a feature, record the decision it enables, the failure of the smal
 | Native authentication requires global session sharing | Remove the shared-state dependency from the validation launcher | Supply the explicitly authorized login on this client's requests; leave global login/router/consent files unchanged |
 | Concurrent workers, automatic retries, plugin systems and dashboards are prerequisites | Defer them | Add only after a measured bottleneck or a second independent family requires them |
 | A single autonomy score is necessary | Do not introduce one | An application must first declare its utility and show the aggregation is useful |
+| Discovery needs a random generator and live model calls before its construct can be checked | Delete that dependency | `dependency-recovery/1` first tests a 2×2 ablation with fixed public fixtures and observation-only controls |
+| A negative control failing proves the intended obstacle was measured | Require a rescue ablation | Static execution succeeds when the dependency is visible and stable; discovery without revision succeeds when replacement is removed |
 
 ## Dependency order
 
@@ -111,7 +113,25 @@ Start with one generated dependency-discovery environment. A public probe reveal
 
 **Removal rule:** if the family is equivalent to choosing another label from an already complete catalogue, simplify it back into a diagnostic profile and drop the broader claim.
 
-**Next bounded development iteration:** define the smallest public observation/transition contract with a hidden dependency, a probe that reveals it, and one recoverable revision change. Build a public-information constructive witness and static/no-revision negative controls before any model calls. Only introduce a new generator if these controls demonstrate a structural distinction from the existing catalogue-based tasks. Do not add domains, scheduling, a plugin framework or a new overall score to this prototype.
+**P3.1 delivered as an offline prototype:** [the versioned contract](DISCOVERY_RECOVERY.md)
+implements one unknown dependency and an operation revealed by probing. A single
+announced replacement after the first PASS invalidates the old handle, completed
+work and verification. [All 60 public control trajectories](../studies/discovery-recovery-v1/README.md)
+replay under the same 12-point/20-step limits. The adaptive witness succeeds in
+all four ablations; static execution is rescued by visible/stable state, and
+discovery without revision is rescued by removing replacement. Premature finish
+and over-investigation fail throughout. A separate public-history acceptance
+check agrees with the state grader. This closes the minimal contract/control gate,
+not P3, model readiness, arbitrary hypothesis discovery or external validity.
+
+**Next bounded development iteration:** challenge a small structural generator
+before implementing it. Depth, shared prerequisites or selective invalidation
+must alter required decisions and costs; changing handles alone is insufficient.
+Require a public-information witness and truth-independent solvability budgets
+for every supported structure, then reuse the existing collector and replay
+without filling diagnostic-only metrics with invented zeroes. Keep prototype
+records separate until that integration and its failure accounting are verified.
+Do not add domains, scheduling, a plugin framework or a new overall score.
 
 ## P4 — Test whether the benchmark predicts real outcomes
 
@@ -131,4 +151,10 @@ Profile actual collection, replay, analysis and maintenance costs. Remove avoida
 
 Public development seeds support debugging; private evaluation seeds support prospective collection; held-out structures test a different generalization claim. Retire and publish reviewed manifests/traces with versioned sources and exclusions. Never silently change a released study or erase failed collection attempts. New seeds alone do not establish contamination resistance.
 
-The next implementation work is **P3's minimal discovery/recovery contract and offline controls**, with its removal rule applied before expanding the generator. Keep endpoint diagnosis as a separate bounded public-input activity; the 2.4 live gate remains failed despite two complete tasks. Do not expand the completed pilots or infer model mechanisms from their execution failures. Neither transport corrections nor a new synthetic structure close P2's mechanism gate or P4's external-validity gate.
+The next implementation work is **P3.2's bounded structural generation and shared evidence path**,
+after the P3.1 offline contract/control gate. Apply the removal rule to each proposed
+source of variation. Keep endpoint diagnosis as a separate bounded public-input
+activity; the 2.4 live gate remains failed despite two complete tasks. Do not expand
+the completed pilots or infer model mechanisms from their execution failures.
+Neither transport corrections nor a new synthetic structure close P2's mechanism
+gate or P4's external-validity gate.

@@ -14,6 +14,9 @@ python tools/verify_study.py
 python tools/check_docs.py
 python -m pomdp_bench demo --out artifacts/contribution-check --count 4
 python -m pomdp_bench validate artifacts/contribution-check
+python -m pomdp_bench.discovery_controls --out artifacts/discovery-check.json
+python -m pomdp_bench.discovery_controls --validate artifacts/discovery-check.json
+python -m pomdp_bench.discovery_controls --validate studies/discovery-recovery-v1/controls.json
 ```
 
 The v1 study is frozen. Recompute its statistics only for audit, without committing replacements:

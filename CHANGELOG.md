@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased — offline discovery/recovery contract
+
+- Add the separately versioned `dependency-recovery/1` prototype: a probe reveals
+  an unavailable preparation operation; an announced dependency replacement
+  invalidates a prior PASS and completed work, requiring discovery and rebuilding.
+- Add visible/hidden and stable/changing ablations, five public-information
+  policies, an independent public-history acceptance check, strict replay and
+  complete-matrix validation. Publish all 60 public development trajectories.
+- Reject unrevealed handle guesses, stale operations, old verification, evidence
+  edits and incomplete control matrices. Test relabeling, future-information
+  noninterference, exact budget/horizon boundaries and exclusive report creation.
+- Keep random generation, live model calls, diagnostic metric pooling and a
+  second durable collector out of this prototype. Update P3's next decision gate
+  to meaningful structural generation and reuse of the existing evidence path.
+
+**Comparability:** the scored framework remains 2.4 with unchanged diagnostic
+semantics. Prototype fixtures are engineering controls, not independent samples,
+model scores or real-work evidence. New package source changes collection
+fingerprints; resume existing runs in their original checkout.
+
 ## 2.4.0 — 2026-09-18
 
 - Correct the 2.3 parser's rejection of documented reasoning content parts; bind parts to declared item identities and ignore reasoning as action content.

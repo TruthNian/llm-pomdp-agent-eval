@@ -54,6 +54,14 @@ The framework does not yet establish:
 
 These are concrete extension and validation targets, not properties inferred from calling a task a POMDP. See [the roadmap](ROADMAP.md).
 
+The separate [offline discovery/recovery prototype](DISCOVERY_RECOVERY.md) now
+tests obtaining an initially unavailable preparation operation and rebuilding
+after an announced dependency replacement invalidates completed work and a PASS.
+Its visible/hidden and stable/changing ablations distinguish discovery from
+revision handling. These are fixed development fixtures, not a new scored family,
+general hypothesis-space discovery, or independent population samples. The
+released diagnostic kernel and the broader validity boundaries above are unchanged.
+
 ## Fair information and acceptance
 
 The remote model receives a JSON allowlist: contract, current observation, and public history. It never receives the case identifier, generation seed, sampled answer, run directory, manifest, or hidden score. The reference policy receives the same representation. No action lets the model read files or rewrite the evaluator.
