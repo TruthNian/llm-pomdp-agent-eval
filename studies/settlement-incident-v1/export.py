@@ -1,11 +1,12 @@
 """Export complete records and independently reconstructed final business state."""
 import argparse
+import json
 from pathlib import Path
 
 from pomdp_bench.collection import read_run, source_hashes
 from pomdp_bench.generator import digest
 from pomdp_bench.incident_runtime import Runtime
-from pomdp_bench.storage import read_json, write_json
+from pomdp_bench.storage import read_json
 
 
 def main():
@@ -40,7 +41,10 @@ def main():
                 "cases": manifest["cases"], "expected": manifest["expected_episodes"], "retained": len(records),
                 "settings_check": read_json(settings) if settings.exists() else None,
                 "records": records, "fresh_recheck_errors": errors, "fresh_final_states": final_states}
-    write_json(args.out, evidence, replace=False)
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    with args.out.open("x", encoding="utf-8", newline="\n") as stream:
+        json.dump(evidence, stream, ensure_ascii=False, indent=2, allow_nan=False)
+        stream.write("\n")
     print({"retained": len(records), "accepted": sum(r["grade"]["success"] for r in records), "fresh_disagreements": len(errors)})
     if errors:
         raise SystemExit("Fresh execution disagreement retained")
