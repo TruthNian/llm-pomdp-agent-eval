@@ -1,0 +1,648 @@
+{
+  "purpose": "Post-hoc matched artifact execution of the retained model commands, then a data-only recovery intervention. No model inference and no claim of byte-identical real-time replay.",
+  "source_study": "../stream-recovery-v1/model-evidence.json",
+  "source_evidence_sha256": "209a2beaa2a6dfbb3157db5bf62f7dc6c3b46fdf9b6db7e4a409f83f2269151c",
+  "framework_version": "2.15.0",
+  "arms": [
+    "original",
+    "restore_missing"
+  ],
+  "preloaded_customer_batches": [
+    [
+      {
+        "request_id": "44e7963a-9220-5c58-ba4e-774fae1e0996",
+        "reference": "ORD-4ac6727ec5495beeaf",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-25389",
+        "address": "6071 Rowan Road, Unit 704",
+        "items": [
+          {
+            "sku": "SKU-641",
+            "quantity": 4,
+            "unit_cents": 6192
+          }
+        ]
+      },
+      {
+        "request_id": "63db126f-9bc2-5862-ac1c-51bfa5403bbe",
+        "reference": "ORD-4ac6727ec5495beeaf",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "1af53a57-2e33-58c8-a09e-0b62471c7240",
+        "reference": "ORD-feb226d8129e5841bf",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-29575",
+        "address": "5141 Rowan Road, Unit 841",
+        "items": [
+          {
+            "sku": "SKU-714",
+            "quantity": 1,
+            "unit_cents": 6344
+          },
+          {
+            "sku": "SKU-897",
+            "quantity": 3,
+            "unit_cents": 1981
+          }
+        ]
+      },
+      {
+        "request_id": "e7782d69-62e5-5763-b9ab-32630b8d92b2",
+        "reference": "ORD-feb226d8129e5841bf",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "f4ebb107-0559-5f04-b217-670246fdb4f6",
+        "reference": "ORD-2c6c6f277caf5161be",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-98103",
+        "address": "8286 Rowan Road, Unit 385",
+        "items": [
+          {
+            "sku": "SKU-223",
+            "quantity": 4,
+            "unit_cents": 1932
+          }
+        ]
+      },
+      {
+        "request_id": "1173d744-fdbc-557f-bb7a-71f38f014cf0",
+        "reference": "ORD-2c6c6f277caf5161be",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "4f9369ce-d2fd-537c-989d-1919d2256917",
+        "reference": "ORD-48b6222de6bd5eff94",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-70173",
+        "address": "4219 Rowan Road, Unit 838",
+        "items": [
+          {
+            "sku": "SKU-126",
+            "quantity": 1,
+            "unit_cents": 824
+          }
+        ]
+      },
+      {
+        "request_id": "ff2d7aa5-d3fc-536b-8734-23deeeab5bf8",
+        "reference": "ORD-48b6222de6bd5eff94",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "19aa8e73-ce43-5e2a-a09d-6a4c9946617c",
+        "reference": "ORD-355e655b760553738f",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-75586",
+        "address": "2038 Rowan Road, Unit 766",
+        "items": [
+          {
+            "sku": "SKU-900",
+            "quantity": 4,
+            "unit_cents": 6668
+          }
+        ]
+      },
+      {
+        "request_id": "39b16d87-6a7d-5ddb-9d83-76b046b12b66",
+        "reference": "ORD-355e655b760553738f",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "879c5334-995f-5419-a87a-e3f10103e081",
+        "reference": "ORD-2c8a57f425585a328c",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-62725",
+        "address": "7675 Rowan Road, Unit 794",
+        "items": [
+          {
+            "sku": "SKU-591",
+            "quantity": 4,
+            "unit_cents": 4441
+          }
+        ]
+      },
+      {
+        "request_id": "ad860a1d-f17b-5fcd-a58d-701a466cd357",
+        "reference": "ORD-2c8a57f425585a328c",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "3922493d-a419-5ba4-af7c-23c5cdfc6f0d",
+        "reference": "ORD-addfb0e8fdac5111b0",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-45657",
+        "address": "2162 Rowan Road, Unit 224",
+        "items": [
+          {
+            "sku": "SKU-539",
+            "quantity": 3,
+            "unit_cents": 8271
+          }
+        ]
+      },
+      {
+        "request_id": "1decee67-c314-59ff-811c-701984e37202",
+        "reference": "ORD-addfb0e8fdac5111b0",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "69ce4f0f-21b7-58d6-9bfe-91d6fd3592a3",
+        "reference": "ORD-54afc5eca80a57288d",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-95804",
+        "address": "1721 Rowan Road, Unit 393",
+        "items": [
+          {
+            "sku": "SKU-489",
+            "quantity": 1,
+            "unit_cents": 4238
+          },
+          {
+            "sku": "SKU-937",
+            "quantity": 1,
+            "unit_cents": 2351
+          },
+          {
+            "sku": "SKU-282",
+            "quantity": 2,
+            "unit_cents": 7810
+          }
+        ]
+      },
+      {
+        "request_id": "c5a8e48e-a404-5abf-8f74-33cf7e52635b",
+        "reference": "ORD-54afc5eca80a57288d",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "89a49195-4822-5cb7-844d-d6d152aa2147",
+        "reference": "ORD-ab9d1436cbb9516191",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-23058",
+        "address": "5635 Rowan Road, Unit 432",
+        "items": [
+          {
+            "sku": "SKU-197",
+            "quantity": 2,
+            "unit_cents": 3076
+          },
+          {
+            "sku": "SKU-996",
+            "quantity": 2,
+            "unit_cents": 5565
+          }
+        ]
+      },
+      {
+        "request_id": "f51a7fe7-6493-5e6e-aaed-a0a1f3e425d8",
+        "reference": "ORD-ab9d1436cbb9516191",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "11afa472-0bfd-5621-ae95-4a0c8b541410",
+        "reference": "ORD-73439c467d325d04aa",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-45375",
+        "address": "291 Rowan Road, Unit 74",
+        "items": [
+          {
+            "sku": "SKU-732",
+            "quantity": 4,
+            "unit_cents": 1491
+          }
+        ]
+      },
+      {
+        "request_id": "a70e9fe3-1a3b-5dea-a5a5-0db4272e28c1",
+        "reference": "ORD-73439c467d325d04aa",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "7ee8dc7f-31da-5a6b-9bab-d3c1bf045007",
+        "reference": "ORD-979d92182ceb55ed97",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-99410",
+        "address": "4420 Rowan Road, Unit 241",
+        "items": [
+          {
+            "sku": "SKU-566",
+            "quantity": 1,
+            "unit_cents": 6226
+          },
+          {
+            "sku": "SKU-435",
+            "quantity": 1,
+            "unit_cents": 5592
+          },
+          {
+            "sku": "SKU-763",
+            "quantity": 2,
+            "unit_cents": 734
+          }
+        ]
+      },
+      {
+        "request_id": "ca3a1e2c-01a3-59f1-bca5-3bec4c5eb421",
+        "reference": "ORD-979d92182ceb55ed97",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "a806317f-119f-5491-b75f-07d9f5646d31",
+        "reference": "ORD-0d0e41a1100e5fb694",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-75552",
+        "address": "6741 Rowan Road, Unit 443",
+        "items": [
+          {
+            "sku": "SKU-609",
+            "quantity": 4,
+            "unit_cents": 8359
+          },
+          {
+            "sku": "SKU-927",
+            "quantity": 2,
+            "unit_cents": 6528
+          }
+        ]
+      },
+      {
+        "request_id": "e47215f6-3d86-5bb8-b88c-c8e4e7bd7fb4",
+        "reference": "ORD-0d0e41a1100e5fb694",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "d2b9db69-523e-5434-a3a3-cc5e6dece139",
+        "reference": "ORD-b9234e99d62255cb9a",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-65830",
+        "address": "7194 Rowan Road, Unit 487",
+        "items": [
+          {
+            "sku": "SKU-465",
+            "quantity": 3,
+            "unit_cents": 158
+          }
+        ]
+      },
+      {
+        "request_id": "d889a53e-5d6c-5c70-a0aa-49b2855e1852",
+        "reference": "ORD-b9234e99d62255cb9a",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "8d723998-b182-57c5-8721-0afc4a06d267",
+        "reference": "ORD-5096e607203752a38e",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-37638",
+        "address": "1521 Rowan Road, Unit 372",
+        "items": [
+          {
+            "sku": "SKU-540",
+            "quantity": 4,
+            "unit_cents": 6291
+          }
+        ]
+      },
+      {
+        "request_id": "f3d98a9f-ff6b-54e5-a19c-969788361fe5",
+        "reference": "ORD-5096e607203752a38e",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "46b5ca1c-edf0-51d2-8f49-29b1ee8f1f18",
+        "reference": "ORD-4698e9cfa5be5ae385",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-63648",
+        "address": "6564 Rowan Road, Unit 18",
+        "items": [
+          {
+            "sku": "SKU-408",
+            "quantity": 1,
+            "unit_cents": 6793
+          },
+          {
+            "sku": "SKU-711",
+            "quantity": 2,
+            "unit_cents": 7609
+          },
+          {
+            "sku": "SKU-208",
+            "quantity": 2,
+            "unit_cents": 7601
+          }
+        ]
+      },
+      {
+        "request_id": "b2c0a7ae-8b33-593a-a814-094af324a864",
+        "reference": "ORD-4698e9cfa5be5ae385",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "0ab1fc4a-9fdd-5612-8ff5-49cf7bbcf0c0",
+        "reference": "ORD-4f80811cec4f520e89",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-11762",
+        "address": "2130 Rowan Road, Unit 305",
+        "items": [
+          {
+            "sku": "SKU-947",
+            "quantity": 3,
+            "unit_cents": 4933
+          }
+        ]
+      },
+      {
+        "request_id": "1c8a4681-d377-5d8a-9bed-a051a5203f85",
+        "reference": "ORD-4f80811cec4f520e89",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "166aeddc-babd-58a9-899c-b97025b702ae",
+        "reference": "ORD-c2103967d5b953d4a1",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-41021",
+        "address": "4010 Rowan Road, Unit 536",
+        "items": [
+          {
+            "sku": "SKU-180",
+            "quantity": 2,
+            "unit_cents": 2256
+          }
+        ]
+      },
+      {
+        "request_id": "889f7686-61c7-592e-88a5-8f4048d35a77",
+        "reference": "ORD-c2103967d5b953d4a1",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "9e6da4ed-ab8a-5dd9-9d68-51600334dfe8",
+        "reference": "ORD-6451522fd9505a60a4",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-45328",
+        "address": "5307 Rowan Road, Unit 795",
+        "items": [
+          {
+            "sku": "SKU-613",
+            "quantity": 2,
+            "unit_cents": 311
+          },
+          {
+            "sku": "SKU-705",
+            "quantity": 1,
+            "unit_cents": 3401
+          },
+          {
+            "sku": "SKU-718",
+            "quantity": 3,
+            "unit_cents": 917
+          }
+        ]
+      },
+      {
+        "request_id": "c4aa2faf-6b57-5c4b-a4a2-f08fdb9990f1",
+        "reference": "ORD-6451522fd9505a60a4",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "96193ed8-c0c6-5e95-bce2-f9206cc3031c",
+        "reference": "ORD-844d564307be572ca3",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-82669",
+        "address": "5730 Rowan Road, Unit 127",
+        "items": [
+          {
+            "sku": "SKU-559",
+            "quantity": 4,
+            "unit_cents": 537
+          },
+          {
+            "sku": "SKU-474",
+            "quantity": 1,
+            "unit_cents": 6030
+          },
+          {
+            "sku": "SKU-351",
+            "quantity": 2,
+            "unit_cents": 2898
+          }
+        ]
+      },
+      {
+        "request_id": "3eb4b610-1cb6-5d9c-af00-410d7e54b50d",
+        "reference": "ORD-844d564307be572ca3",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "56b4f798-91cd-5733-9234-85b83aa6a5dd",
+        "reference": "ORD-ae9f50224e245018bb",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-29562",
+        "address": "966 Rowan Road, Unit 724",
+        "items": [
+          {
+            "sku": "SKU-133",
+            "quantity": 4,
+            "unit_cents": 7967
+          },
+          {
+            "sku": "SKU-849",
+            "quantity": 4,
+            "unit_cents": 1715
+          }
+        ]
+      },
+      {
+        "request_id": "0d0d4b2f-f816-53e0-ae49-9be15eb2a5ac",
+        "reference": "ORD-ae9f50224e245018bb",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "4d85f264-b9cf-5832-9d56-e640c7da729f",
+        "reference": "ORD-d3e0ccd19a405a3485",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-38216",
+        "address": "7441 Rowan Road, Unit 84",
+        "items": [
+          {
+            "sku": "SKU-187",
+            "quantity": 4,
+            "unit_cents": 3463
+          },
+          {
+            "sku": "SKU-174",
+            "quantity": 1,
+            "unit_cents": 1512
+          },
+          {
+            "sku": "SKU-404",
+            "quantity": 2,
+            "unit_cents": 1169
+          }
+        ]
+      },
+      {
+        "request_id": "1d90e8bf-0c79-5299-9061-647afa948a5d",
+        "reference": "ORD-d3e0ccd19a405a3485",
+        "revision": 2,
+        "kind": "release"
+      }
+    ],
+    [
+      {
+        "request_id": "4f437adf-df29-50a5-9c34-af113f16f4b2",
+        "reference": "ORD-10d668fc887b5526b9",
+        "revision": 1,
+        "kind": "draft",
+        "customer": "C-79042",
+        "address": "6931 Rowan Road, Unit 713",
+        "items": [
+          {
+            "sku": "SKU-357",
+            "quantity": 4,
+            "unit_cents": 3637
+          }
+        ]
+      },
+      {
+        "request_id": "8154ec81-573f-5b06-aea6-772d2da0293f",
+        "reference": "ORD-10d668fc887b5526b9",
+        "revision": 2,
+        "kind": "release"
+      }
+    ]
+  ],
+  "background_traffic": false,
+  "settle_seconds_before_actions": {
+    "23": 60,
+    "26": 60
+  },
+  "runtime": {
+    "image": "sha256:9ae11d63ae5f3525160b23746fca3f080c976dd9e90956a4f16b12361c33862d",
+    "components": {
+      "POSTGRES": {
+        "tag": "postgres:17-bookworm",
+        "image": "sha256:639ab7ceb90e13123085b741fb31ef493fba25463002f6da665352e7b534b652",
+        "repo_digests": [
+          "postgres@sha256:639ab7ceb90e13123085b741fb31ef493fba25463002f6da665352e7b534b652"
+        ]
+      },
+      "CONNECT": {
+        "tag": "quay.io/debezium/connect:3.2.1.Final",
+        "image": "sha256:13b9eb809050bf615b635686a19ad258ffef011cd7743a83d8f8d0611c216df4",
+        "repo_digests": [
+          "quay.io/debezium/connect@sha256:13b9eb809050bf615b635686a19ad258ffef011cd7743a83d8f8d0611c216df4"
+        ]
+      }
+    },
+    "assets_sha256": {
+      "archive-wal.sh": "631c070ce5e25b4f377d0016e3905b3c27ec9c2a8406fed92ab5b4f7ad4be14c",
+      "broker.properties": "3b7c2faf96efb5665d6d1ba7adca27fb40809aaed407032f8ef054eb2225ccee",
+      "CARRIER.md": "3b86055d8113d6a927e3d88ce22dec555314521cc312a939a43d19341a5a98d9",
+      "connect.properties": "6403da0638ec4409eed8cf31ff06942b0c043ce9c987f7e2fda4075f9ed126a7",
+      "connector.json": "b80f2237de8c964bb097095024639291932616990a38e2555b8f510d98ed38be",
+      "Dockerfile": "a4e8937a34992b672b64d0b50d0e0e2722cc24d6805b7cac7fde8a4163dc2fee",
+      "log4j2.properties": "83615989b7b286effa4904cba122a5007f6ec5e504f5e5e14ee897372597b8ad",
+      "README.md": "f6bee3055a3f97ae6cd4df21e55a0d4469a549b764a4a3ea5d9c712ae13e888d",
+      "schema.sql": "eab6edd9ef5c2b0ad0d1fd2f55b9f82cb32cc894c8559412b60c09d200134130",
+      "service.py": "a644a69139064b58108ca6ed255215f5cb51e7fdeec2e84d7b380f068536be3c",
+      "start-services.sh": "8b38eab0b90a3f25b20b3a2924b9254da8b51784f1d6e745288406847b9ec7b7",
+      "supervisor.conf": "6b010163d4da247c138ecaf2ce4a08cf626342bb3d15ef7721bbaf7f38f21c36"
+    },
+    "debezium_source_commit": "003672a405041d45d406ffac5149203b1a9e6471"
+  },
+  "intervention": "Only restore the ordinary physical backup on timeline 1 and merge missing order/event/request records before finish. Preserve the model-authored consumer, connector configuration and carrier receipts.",
+  "predictions": {
+    "original": {
+      "order_errors": 12,
+      "missing_bookings": 9
+    },
+    "restore_missing": {
+      "delivered": true
+    }
+  },
+  "failure_policy": "Retain every arm, command/result and exit-code mismatch. A protocol/runtime failure or failure to reproduce the mechanism does not validate the proposed cause."
+}

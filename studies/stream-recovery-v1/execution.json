@@ -1,0 +1,19 @@
+{
+  "source_commit": "e88f16029e1510ccbefcc875a98253466d902e2f",
+  "model_episodes": 1,
+  "control_episodes": 4,
+  "recheck_scope": "Recorded-behavior replay and public-only model-request reconstruction. Four fresh artifact controls. No byte-identical real-time replay claim.",
+  "settings_unchanged": true,
+  "file_sha256": {
+    "plan.json": "3e050d95e81b80750a45bfdf0885844208c85a4a27389d481accd11cc77e78cb",
+    "README.md": "d653fb1e291bd6ebd50eb3c65972363009a6f9665ccefa6d279b813f09fa840a",
+    "model-evidence.json": "209a2beaa2a6dfbb3157db5bf62f7dc6c3b46fdf9b6db7e4a409f83f2269151c",
+    "control-evidence.json": "8619d0e10e2f0e69d23b0bb599831b424a6a28ffc44d82d8b25ef3a98edd760b",
+    "trajectories.html": "79f44ef198bfaf18e0d28bee3407cfbe6f256e5c001efe31c09af69eca38724b",
+    "controls.html": "2067996688b425db90b5c68836a585726892cd6ce4351650bb7ae437829ef578",
+    "verify.py": "21e9f217ead93ed577b39d989404f7073aba492dcbef79b5580abecbe78bed3d",
+    "controls/restore.sh": "69d483ed92673cb8a750152be3cf3f531f16425a40bc87d73b44b357199cad8b",
+    "controls/reconcile.sh": "74f618b0bc8549de2f1e154ad03007aeced83faad0dd47b3415f056fb6c3f924",
+    "../../tools/qualify_stream.py": "baa526c12a5dff6b3c3c4e095f14497c90118e6966791d5c013ff2be5342df88"
+  }
+}

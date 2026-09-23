@@ -16,6 +16,12 @@ high-difficulty evidence. Seventeen reads and seventeen writes failed during per
 those costs remain visible. Earlier [text-channel failures](studies/incident-takeover-v1/README.md)
 are retained separately. The high-difficulty objective remains unmet.
 
+The [2.15 destructive recovery study](studies/stream-recovery-v1/README.md) now retains four
+real mechanism controls and a complete Sol max attempt: 29 actions, twelve unrecovered orders
+and nine missing dispatches, without protocol or observer errors. Its stateless history adapter
+does not preserve native reasoning continuity, so this is not yet a continuous-agent ceiling result.
+The next checks isolate missing-data recovery and retest the same incident with native dialogue.
+
 The earlier [settlement incident](docs/SERVICE_INCIDENT.md)
 executes actual HTTP requests and persists orders, an outbox and a ledger. An agent takes over an
 ambiguous fault, investigates, acts, receives feedback, recovers backlog and reconciles accounts.

@@ -48,7 +48,11 @@ Initial symptoms must admit competing causal explanations, with accessible evide
 appropriate intervention. Keep those explanations on the evaluator side. Framework 2.15 now implements
 the [destructive recovery and downstream dispatch candidate](STREAM_RECOVERY.md). A complete development
 recovery passed both business phases, including restart. Frozen controls and the full model screen are
-the next gates; difficulty is still unmeasured. Component counts, waiting time and code volume are not acceptance criteria;
+the next gates. The [completed 2.15 study](../studies/stream-recovery-v1/README.md) now records a
+29-action Sol business failure: twelve orders and nine dispatches remain missing. Its stateless
+history adapter limits ceiling attribution. Execute the [data-only counterfactual](../studies/stream-recovery-counterfactual-v1/README.md)
+and a separately frozen continuous native-session screen before expanding tasks or making a model comparison.
+Component counts, waiting time and code volume are not acceptance criteria;
 demonstrate useful discrimination before expanding a family. The [Chinese roadmap](ROADMAP.zh-CN.md)
 records the same implementation gates.
 
