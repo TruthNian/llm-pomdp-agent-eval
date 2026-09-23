@@ -18,16 +18,20 @@
   "settings_unchanged": true,
   "file_sha256": {
     "plan.json": "3672d55cb7640cd8392691b49f74188e3f2d7fe6b8c045461c8c4f31c6428ec4",
-    "README.md": "3c5636fb92fd191802bb6c8d3d577b1cc389a65d2ef56d7f41292985457fdac6",
+    "README.md": "8a43909a0dcb3dd83d00d57477047c1369d3443d6cfed6ad6e482e9e0822bf98",
     "model-evidence.json": "2a4eb9c98f943a5c7614d3018fa06eefc6e240f09fd9a43ec549fb96f36feaa7",
     "control-evidence.json": "62521ca6c98948938e623e9acabc65f55a6c7517ec0cf1a2337ecd3c2d6df8d5",
     "trajectories.html": "13ddd95ff2c708b244a77b526c98b19b1af7f173c52a1c1117499e7632c37aa5",
     "controls.html": "3aa18325e2bd55cbb20028eceb258fd8f89764b115b83d7f1077b52945f0835d",
-    "verify.py": "b9f067680cc23c2a690e0321b2dfafd05f2fabace6e642f6d9a15de677d1b8e7",
+    "verify.py": "2aa0361ab03771aa6f92b1f908b19b559b11dabc56d2a93d5d8657e7bd588afb",
     "../../tools/service_study.py": "afa205a4572ecd7bf1c6cc02780888bfde9e8de8141c673bec29ab54cd46191a",
     "../../tools/qualify_takeover.py": "628381830da7a20cc11b6fab670a448dcdaf275bbc93033f5a9d704141cae55c",
     "protocol-diagnostic.json": "8c44e769a18cee574f42c732557e4b673fdcc8944c9fdbfc41e07a1011fdf4bd",
     "glm-followup-plan.json": "a49ae4a6e947b592b2160c2d66828a50647bbfe42b76d12d09d60d0f8c5a1211",
-    "../../tools/collect_takeover_followup.py": "8eea35a2948754fb9a78db816352101e798d32c5b33ba2975e4dfc22f5cab1e2"
-  }
+    "../../tools/collect_takeover_followup.py": "8eea35a2948754fb9a78db816352101e798d32c5b33ba2975e4dfc22f5cab1e2",
+    "glm-evidence.json": "6bedfcb8d8a0275aa0bfdbbe890f5ad88afa482a1fa0155de3f14eb9c6002e40",
+    "glm-trajectories.html": "388b5092d88040a3bf13869f07272d3555119d878dc9dc13b934e54d572d4b1b"
+  },
+  "followup_source_commit": "6f237edf6ea2215c170c25e74c4a5aa40c699241",
+  "followup_model_episodes": 1
 }

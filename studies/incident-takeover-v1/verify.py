@@ -72,7 +72,27 @@ def main():
                     raise ValueError('Runtime image differs')
         if (ROOT/report).read_text(encoding='utf-8') != render(data):
             raise ValueError('Readable report differs from evidence')
-    print('Verified one retained model attempt and four actual controls; recorded-behavior replay only.')
+    if 'followup_source_commit' in execution:
+        followup, extra = read('glm-followup-plan.json'), read('glm-evidence.json')
+        if (extra['git_revision'] != execution['followup_source_commit'] or extra['working_tree_dirty']
+                or extra['source_sha256'] != shared or extra['expected'] != 1 or extra['retained'] != 1
+                or len(extra['records']) != 1 or extra['cases'] != data['cases']):
+            raise ValueError('Follow-up changed the frozen source or matrix')
+        record = extra['records'][0]
+        replay(record,extra['cases'][0])
+        if record['agent'] != followup['agents'][0] or record['framework_version'] != followup['framework_version']:
+            raise ValueError('Follow-up agent changed')
+        if digest({'generator_version':followup['generator_version'],'cases':extra['cases']}) != followup['suite_sha256']:
+            raise ValueError('Follow-up suite changed')
+        for call in record['service_evidence']['calls']:
+            if call['response']['audit'] and call['response']['audit']['image'] != followup['runtime']['image']:
+                raise ValueError('Follow-up image changed')
+        hashes = {x['request_sha256'] for x in record.get('request_audit',[])}
+        if any(x['request_sha256'] not in hashes for x in extra['response_shapes']):
+            raise ValueError('Unbound response metadata')
+        if (ROOT/'glm-trajectories.html').read_text(encoding='utf-8') != render(extra):
+            raise ValueError('Follow-up report differs')
+    print('Verified retained model attempts and four actual controls; recorded-behavior replay only.')
 
 
 if __name__ == '__main__':
