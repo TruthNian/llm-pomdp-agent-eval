@@ -6,6 +6,10 @@
 **Stage review:** [2026-09-23 acceptance record (中文)](docs/ACCEPTANCE_2026-09-23.md).
 Further development is paused for user review. The execution and measurement loop works;
 the high-difficulty objective remains unmet.
+The [three user-requested model tests](studies/stream-recovery-requested-models-v1/README.md) have ended:
+GPT-6 Sol delivered in 27 actions; GPT-6 Luna handed over in 28 but left twelve orders and nine dispatches
+missing. GLM's native-tool attempt failed at the interface; its separate text follow-up timed out on
+request ten. All four attempts remain retained. GLM has no comparable complete capability result.
 
 Evaluate whether an agent can turn incomplete information into an **accepted,
 useful outcome** under resource constraints. The unit is a complete interaction

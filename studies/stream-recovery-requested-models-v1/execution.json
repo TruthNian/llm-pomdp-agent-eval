@@ -1,0 +1,29 @@
+{
+  "source_commits": {
+    "gpt6-sol": "7c44c23a17aa89233ef6a92fa34f87f28e78c0de",
+    "gpt6-luna": "7c44c23a17aa89233ef6a92fa34f87f28e78c0de",
+    "glm53": "7c44c23a17aa89233ef6a92fa34f87f28e78c0de",
+    "glm53-text": "1072e1d3f45da88af23682980e9678318a96d179"
+  },
+  "expected_episodes": 4,
+  "retained_episodes": 4,
+  "scope": "Recorded business regrading, complete attempt retention, declared plans and public requests. Native GPT opaque bytes are only hash commitments. GLM has stateless history; no controlled cross-model ranking.",
+  "file_sha256": {
+    "README.md": "7dd905c60bec01e277fb13b7a8a3720764dcbb5101d67d31014b2b804cdfc434",
+    "evidence.py": "85213e44445911f11c85919e2c58cd8516618225d7af03b149268f8d3f2a3058",
+    "../stream-recovery-v1/verify.py": "21e9f217ead93ed577b39d989404f7073aba492dcbef79b5580abecbe78bed3d",
+    "../stream-recovery-continuous-v1/verify.py": "55521629579f0f4ab7667cba79fcba57af2fd35623521c1eb96cb71fc3bda030",
+    "gpt6-sol-plan.json": "9a1a4c5263fbe0ccc1d73a255a7b4e9899942d7d5e98941b7a36bde636ba73ef",
+    "gpt6-sol-evidence.json": "45377b2737dc5186368381464e93d6b7fe54f391a738ca7891b47123df206f02",
+    "gpt6-sol-trajectories.html": "b4ffecd4a205b0590a5c85cf47bb5fe10cdb0d8f8c20b9d1a285b403c439a761",
+    "gpt6-luna-plan.json": "dfa6db57ea94637857a29584e81a632a2b1b215ed1753ce7b3cfdb7a14c169a2",
+    "gpt6-luna-evidence.json": "dec735819c324cb3c6ad8edd5bedcc3b265392effd9c7e6d59a7019dec17d1d9",
+    "gpt6-luna-trajectories.html": "d666d9dc2c14ea491be02d39a712136bf6cf7e398219fd8150aa373598124003",
+    "glm53-plan.json": "6bee3f549aeb2dd793d780109f1409dc4501b2be4fb2f3484ddcd90dd3bd14b0",
+    "glm53-evidence.json": "eb63c7771d261369a72e7e7b4e365cd4cc52545f9e36bc9d8132f6f6d9b56686",
+    "glm53-trajectories.html": "1d8d7295759552d974a9732ad4be8f7d644927aa19e4cbea5ff0f155a28007c6",
+    "glm53-text-plan.json": "87c14c9245c7cbb943995ed955b3d8a4321ad141c39d823913b0f068d2486860",
+    "glm53-text-evidence.json": "df6cb53723d7ee6aba3dda879229041fec7d4fa3bf0cc37b53b4227c48f1c78f",
+    "glm53-text-trajectories.html": "c2b615a8d9e39fd9e7729dd99689b03eddbfcbc07b20e252572afae9cf3c2fa1"
+  }
+}

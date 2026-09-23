@@ -1,4 +1,4 @@
-"""Export and recheck three declared attempts without new model calls."""
+"""Export and recheck all declared attempts without new model calls."""
 import hashlib
 import json
 from pathlib import Path
@@ -13,7 +13,7 @@ from pomdp_bench.evaluation import replay
 from pomdp_bench.generator import digest
 from pomdp_bench.model_io import request_body
 
-SLUGS=('gpt6-sol','gpt6-luna','glm53')
+SLUGS=('gpt6-sol','gpt6-luna','glm53','glm53-text')
 render=runpy.run_path(str(ROOT.parent/'stream-recovery-v1/verify.py'))['render']
 verify_session=runpy.run_path(str(ROOT.parent/'stream-recovery-continuous-v1/verify.py'))['verify_requests']
 
@@ -33,6 +33,8 @@ def check(slug,data):
     assert len(data['cases'])==1
     assert digest({'generator_version':plan['generator_version'],'cases':data['cases']})==plan['suite_sha256']
     assert all(data['source_sha256'][k]==v for k,v in plan['environment_source_sha256'].items())
+    assert data['settings_check']['settings_and_auth_bytes_unchanged']
+    assert all(f['bytes_unchanged'] for f in data['settings_check']['files'])
     record=data['records'][0]
     assert record['agent']==plan['agents'][0]
     assert record['framework_version']==plan['framework_version']
@@ -48,7 +50,9 @@ def check(slug,data):
                      'history':history}
             raw=json.dumps(request_body(record['agent'],request),ensure_ascii=False,allow_nan=False).encode()
             assert hashlib.sha256(raw).hexdigest()==audit['request_sha256']
-            assert audit['declared_tools']==['exec','finish'] and audit['tool_choice']=='required'
+            native=record['agent']['kind']=='responses_tools'
+            assert audit['declared_tools']==(['exec','finish'] if native else [])
+            assert audit['tool_choice']==('required' if native else 'none')
             assert audit['max_response_bytes']==record['agent']['max_response_bytes']
     for call in record['service_evidence']['calls']:
         audit=call['response'].get('audit')
@@ -81,7 +85,7 @@ def seal():
     for slug in SLUGS:
         files.extend(slug+suffix for suffix in ('-plan.json','-evidence.json','-trajectories.html'))
     data={'source_commits':{s:read(ROOT/(s+'-evidence.json'))['git_revision'] for s in SLUGS},
-          'expected_episodes':3,'retained_episodes':3,
+          'expected_episodes':4,'retained_episodes':4,
           'scope':'Recorded business regrading, complete attempt retention, declared plans and public requests. Native GPT opaque bytes are only hash commitments. GLM has stateless history; no controlled cross-model ranking.',
           'file_sha256':{f:hashed(ROOT/f) for f in files}}
     with (ROOT/'execution.json').open('x',encoding='utf-8',newline='\n') as stream:
@@ -90,6 +94,11 @@ def seal():
 
 def verify():
     execution=read(ROOT/'execution.json')
+    assert execution['expected_episodes']==execution['retained_episodes']==len(SLUGS)==4
+    required={'README.md','evidence.py','../stream-recovery-v1/verify.py',
+              '../stream-recovery-continuous-v1/verify.py'}
+    required.update(s+suffix for s in SLUGS for suffix in ('-plan.json','-evidence.json','-trajectories.html'))
+    assert required<=execution['file_sha256'].keys()
     for f,h in execution['file_sha256'].items():
         assert hashed(ROOT/f)==h,f
     sources=[]
@@ -100,7 +109,7 @@ def verify():
         assert (ROOT/(slug+'-trajectories.html')).read_text(encoding='utf-8')==render(data)
         sources.append(data['source_sha256'])
     assert all(source==sources[0] for source in sources)
-    print('Verified all three retained attempts, declared protocol differences, business regrading and public request projections.')
+    print('Verified all four retained attempts for three requested models, declared protocol differences, business regrading and public request projections.')
 
 
 if __name__=='__main__':
