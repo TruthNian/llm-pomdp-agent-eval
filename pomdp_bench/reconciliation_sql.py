@@ -19,15 +19,18 @@ def minor(value, currency, unit):
         raise ValueError("Invalid decimal amount") from exc
 
 
-def transform(sql, stage, rows):
+def transform(sql, stage, rows, *, interface=None):
     if not isinstance(sql, str) or not 1 <= len(sql) <= 6000:
         raise ValueError("SQL must contain 1..6000 characters")
-    columns = ("receipt", "body") if stage == "normalize" else SHAPES[STAGES[STAGES.index(stage)-1]]
+    columns = interface["columns"] if interface is not None else (("receipt", "body") if stage == "normalize" else SHAPES[STAGES[STAGES.index(stage)-1]])
+    table = INPUTS[stage] if interface is None else interface["input"]
+    shape = SHAPES[stage] if interface is None else interface["output"]
+    text_fields = {"merchant", "object", "currency"} if interface is None else set(interface["text_fields"])
     with closing(sqlite3.connect(":memory:")) as con:
         # Only the previous component's PUBLIC rows enter this database. There
         # is no connection/ATTACH path to the provider, host, oracle or secrets.
-        con.execute(f"CREATE TABLE {INPUTS[stage]} ({','.join(columns)})")
-        con.executemany(f"INSERT INTO {INPUTS[stage]} VALUES ({','.join('?' for _ in columns)})", rows)
+        con.execute(f"CREATE TABLE {table} ({','.join(columns)})")
+        con.executemany(f"INSERT INTO {table} VALUES ({','.join('?' for _ in columns)})", rows)
         con.create_function("minor", 3, minor, deterministic=True)
         con.setlimit(sqlite3.SQLITE_LIMIT_LENGTH, 65536)
         con.setlimit(sqlite3.SQLITE_LIMIT_SQL_LENGTH, 6000)
@@ -40,7 +43,7 @@ def transform(sql, stage, rows):
 
         def authorize(action, arg1, arg2, *_):
             if action == sqlite3.SQLITE_READ:
-                return sqlite3.SQLITE_OK if arg1 == INPUTS[stage] else sqlite3.SQLITE_DENY
+                return sqlite3.SQLITE_OK if arg1 == table else sqlite3.SQLITE_DENY
             if action == sqlite3.SQLITE_FUNCTION:
                 return sqlite3.SQLITE_OK if (arg2 or "").lower() in functions else sqlite3.SQLITE_DENY
             return sqlite3.SQLITE_OK if action in (sqlite3.SQLITE_SELECT, sqlite3.SQLITE_RECURSIVE) else sqlite3.SQLITE_DENY
@@ -54,14 +57,13 @@ def transform(sql, stage, rows):
 
         con.set_progress_handler(interrupt, 1000)
         cursor = con.execute(sql)
-        if tuple(c[0] for c in cursor.description or ()) != SHAPES[stage]:
-            raise ValueError(f"{stage} output columns must be {SHAPES[stage]}")
+        if tuple(c[0] for c in cursor.description or ()) != shape:
+            raise ValueError(f"{stage} output columns must be {shape}")
         result = [list(r) for r in cursor.fetchmany(257)]
         if len(result) > 256:
             raise ValueError("Component output exceeds 256 rows")
-        text_fields = {"merchant", "object", "currency"}
         for row in result:
-            for column, value in zip(SHAPES[stage], row):
+            for column, value in zip(shape, row):
                 if column in text_fields:
                     if not isinstance(value, str) or not 1 <= len(value) <= 120:
                         raise ValueError(f"{column} must be a nonempty bounded string")

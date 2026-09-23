@@ -180,3 +180,7 @@ and business totals. This reuses the incident interaction/evidence state machine
 there is no second collector or localized one-shot submission flow. The two public
 contracts need different normalization semantics. Qualification and strong-route
 calibration remain separate: executable source repair alone is not hard-task evidence.
+
+## Coupled repair and irreversible recovery (2.12)
+
+[Refund recovery](REFUND_RECOVERY.md) reuses the external provider and bounded SQL runtime. The operator repairs decode/project/dispatch rules while recovering uncertain and failed partial refunds. Acceptance checks independent transfer history per intent and order, and each refund projection. Correct aggregate totals cannot hide allocation errors. This remains a constructed candidate; a strong-route success rejects the high-difficulty claim.

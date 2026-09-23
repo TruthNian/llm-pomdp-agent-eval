@@ -11,7 +11,9 @@ from .settlement import VERSION as SETTLEMENT_VERSION, SettlementEnvironment, va
 
 from .reconciliation import VERSION as RECONCILIATION_VERSION, ReconciliationEnvironment, validate_case as validate_reconciliation
 
-INCIDENT_VERSIONS = (INCIDENT_VERSION, SETTLEMENT_VERSION, RECONCILIATION_VERSION)
+from .refund_recovery import VERSION as REFUND_VERSION, RefundEnvironment, validate_case as validate_refund
+
+INCIDENT_VERSIONS = (INCIDENT_VERSION, SETTLEMENT_VERSION, RECONCILIATION_VERSION, REFUND_VERSION)
 
 VERSIONS = (GENERATOR_VERSION, *COVER_VERSIONS, *REPAIR_VERSIONS, *INCIDENT_VERSIONS)
 CONDITIONS = (*DIAGNOSTIC_CONDITIONS, "solver_assisted")
@@ -33,6 +35,8 @@ def validate_case(case):
         validate_cover(case)
     elif version in REPAIR_VERSIONS:
         validate_repair(case)
+    elif version == REFUND_VERSION:
+        validate_refund(case)
     elif version == RECONCILIATION_VERSION:
         validate_reconciliation(case)
     elif version == SETTLEMENT_VERSION:
@@ -44,6 +48,8 @@ def validate_case(case):
 
 
 def validate_case_version(case, framework_version):
+    if case["generator_version"] == REFUND_VERSION and not version_at_least(framework_version, "2.12.0"):
+        raise ValueError("Refund recovery requires framework 2.12")
     if case["generator_version"] == RECONCILIATION_VERSION and not version_at_least(framework_version, "2.11.0"):
         raise ValueError("Reconciliation repair requires framework 2.11")
     if case["generator_version"] == SETTLEMENT_VERSION and not version_at_least(framework_version, "2.10.0"):
@@ -66,6 +72,8 @@ def Environment(case, condition="open", noise_seed=0, *, framework_version=__ver
         return CoverageEnvironment(case, condition, noise_seed, framework_version)
     if case["generator_version"] in REPAIR_VERSIONS:
         return RepairEnvironment(case, condition, recorded_calls=recorded_calls)
+    if case["generator_version"] == REFUND_VERSION:
+        return RefundEnvironment(case, condition, recorded_calls=recorded_calls)
     if case["generator_version"] == RECONCILIATION_VERSION:
         return ReconciliationEnvironment(case, condition, recorded_calls=recorded_calls)
     if case["generator_version"] == SETTLEMENT_VERSION:

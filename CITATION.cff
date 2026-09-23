@@ -4,7 +4,7 @@ title: "POMDP Agent Benchmark: Generative Evaluation under Partial Observability
 type: software
 authors:
   - family-names: "TruthNian"
-version: 2.11.0
+version: 2.12.0
 date-released: 2026-09-20
 url: "https://github.com/TruthNian/llm-pomdp-agent-eval"
 repository-code: "https://github.com/TruthNian/llm-pomdp-agent-eval"

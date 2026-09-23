@@ -84,22 +84,25 @@ class Runtime(ServiceIO):
         self.thread = threading.Thread(target=self.server.serve_forever, kwargs={"poll_interval": .02}, daemon=True)
         self.thread.start()
         try:
-            for oid, amount in (("order-a", 1200), ("order-b", 800), ("order-c", 600), ("order-d", 700)):
-                self.add_order(oid, amount, False)
-            self.seed("order-a", 1200, "order-a/request", "succeeded")
-            self.seed("order-a", 1200, "order-a/retry", "pending",
-                      due=None if case["profile"] == "no_cancel_deadline" else 12)
-            self.seed("order-b", 800, "order-b/request", "succeeded")
-            duplicate = self.seed("order-b", 800, "order-b/retry", "succeeded")
-            self.seed("order-b", 800, "order-b/refund", "pending", due=4, kind="refund", parent=duplicate)
-            self.seed("order-d", 700, "order-d/request", "pending", due=8)
-            self.connection.execute("UPDATE outbox SET state='done' WHERE order_id IN ('order-a','order-b')")
-            self.connection.execute("UPDATE outbox SET last_error='503: outcome unknown',attempts=1 WHERE state='ready'")
-            self.connection.commit()
-            self.provider.commit()
+            self.initialize()
         except BaseException:
             self.close()
             raise
+
+    def initialize(self):
+        for oid, amount in (("order-a", 1200), ("order-b", 800), ("order-c", 600), ("order-d", 700)):
+            self.add_order(oid, amount, False)
+        self.seed("order-a", 1200, "order-a/request", "succeeded")
+        self.seed("order-a", 1200, "order-a/retry", "pending",
+                  due=None if self.case["profile"] == "no_cancel_deadline" else 12)
+        self.seed("order-b", 800, "order-b/request", "succeeded")
+        duplicate = self.seed("order-b", 800, "order-b/retry", "succeeded")
+        self.seed("order-b", 800, "order-b/refund", "pending", due=4, kind="refund", parent=duplicate)
+        self.seed("order-d", 700, "order-d/request", "pending", due=8)
+        self.connection.execute("UPDATE outbox SET state='done' WHERE order_id IN ('order-a','order-b')")
+        self.connection.execute("UPDATE outbox SET last_error='503: outcome unknown',attempts=1 WHERE state='ready'")
+        self.connection.commit()
+        self.provider.commit()
 
     def prows(self, sql, values=()):
         return [dict(r) for r in self.provider.execute(sql, values)]
@@ -187,6 +190,13 @@ class Runtime(ServiceIO):
 
     def advance(self):
         self.tick += 1
+        self.process_outbox()
+        self.settle_operations()
+        self.deliver_events()
+        self.connection.commit()
+        self.provider.commit()
+
+    def process_outbox(self):
         if self.settings["enabled"]:
             for row in self.rows("SELECT b.*,o.amount_cents,o.is_probe FROM outbox b JOIN orders o USING(order_id) WHERE state='ready' ORDER BY message_id"):
                 attempt = row["attempts"] + 1
@@ -195,6 +205,8 @@ class Runtime(ServiceIO):
                                                       "key": key, "lose_ack": bool(row["is_probe"] and attempt == 1)})
                 self.connection.execute("UPDATE outbox SET attempts=?,state=?,last_error=? WHERE message_id=?",
                                         (attempt, "done" if status in (200, 202) else "ready", result.get("error"), row["message_id"]))
+
+    def settle_operations(self):
         for obj in self.prows("SELECT * FROM operations WHERE status='pending' AND settle_at<=? ORDER BY operation_id", (self.tick,)):
             enough = obj["kind"] == "charge" or self.provider.execute("SELECT available_cents FROM wallet").fetchone()[0] >= obj["amount_cents"]
             self.provider.execute("UPDATE operations SET status=?,version=version+1 WHERE operation_id=?", ("succeeded" if enough else "failed", obj["operation_id"]))
@@ -204,6 +216,8 @@ class Runtime(ServiceIO):
                 if obj["kind"] == "refund":
                     self.provider.execute("UPDATE wallet SET available_cents=available_cents-?", (obj["amount_cents"],))
             self.notify(obj["operation_id"])
+
+    def deliver_events(self):
         for event in self.prows("SELECT * FROM notifications WHERE delivered=0 AND deliver_at<=? ORDER BY deliver_at,sequence", (self.tick,)):
             obj = json.loads(event["body"])
             fields = tuple(obj[k] for k in ("operation_id", "order_id", "kind", "amount_cents", "status", "version"))
@@ -212,8 +226,6 @@ class Runtime(ServiceIO):
             if not old or self.settings["event_order"] == "arrival" or obj["version"] >= old[0]:
                 self.connection.execute("INSERT OR REPLACE INTO projection VALUES (?,?,?,?,?,?)", fields)
             self.provider.execute("UPDATE notifications SET delivered=1 WHERE sequence=?", (event["sequence"],))
-        self.connection.commit()
-        self.provider.commit()
 
     def audit(self):
         mismatches, external = [], []

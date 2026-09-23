@@ -171,3 +171,7 @@ the collector's fingerprint, so an unfinished collection still needs its origina
 checkout even when the scored semantics have not changed.
 
 Any change to generation distributions, observations, action semantics, acceptance, or prompts requires a new generator/protocol or benchmark version and an explicit migration note. Historical studies remain byte-for-byte frozen. Nonsemantic runtime improvements still require recording software/source hashes. Scores from different suites or versions must not be silently pooled.
+
+## external-settlement/2 migration
+
+Framework 2.12 adds the explicitly versioned [refund recovery contract](REFUND_RECOVERY.md). Its public actions, observation, generator, grader and reference policy differ from external-settlement/1; old contracts and replay remain available. Exactly one canonical scenario, 100 action steps, open interaction, bounded SQL component edits. Records identify sql-refund-recovery-http-sqlite/1. No pooled difficulty claim across framework versions.

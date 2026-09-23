@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.12.0
+
+- Couple executable callback/dispatch repairs to irreversible partial-refund recovery in external-settlement/2; reuse HTTP, provider, clock, SQL boundary and collector.
+- Verify exact intent allocation and individual refund projections as well as order totals.
+- Freeze a strong-route ceiling rejection screen; mechanism qualification is not high-difficulty evidence.
+- Preserve the interrupted reconciliation attempts and separately collect the network-recovery follow-up.
+
 ## 2.11.0
 
 - Add two complete reconciliation repair contracts with actual bounded SQL component edits, delayed HTTP input and independent object/total acceptance.

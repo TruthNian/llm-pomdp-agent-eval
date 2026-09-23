@@ -1,0 +1,44 @@
+{
+  "framework_version": "2.12.0",
+  "generator_version": "external-settlement/2",
+  "suite_sha256": "11be4375ee255b1f1b055a3fbbe8c8a6b16b2fcb88c7507e9880805b6536d4ba",
+  "purpose": "Ceiling rejection screen: executable component repair coupled to irreversible partial-refund recovery; one constructed scenario, not independent upstream application execution.",
+  "expected_episodes": 1,
+  "conditions": [
+    "open"
+  ],
+  "replicates": 1,
+  "wall_seconds": 3600,
+  "agents": [
+    {
+      "name": "gpt-5.6-sol",
+      "kind": "responses",
+      "model": "gpt-5.6-sol",
+      "endpoint_env": "DIRECT_ENDPOINT",
+      "api_key_env": "NATIVE_KEY",
+      "headers_env": "NATIVE_HEADERS",
+      "timeout_seconds": 600,
+      "options": {
+        "reasoning_effort": "max"
+      }
+    }
+  ],
+  "transport": {
+    "base_url": "http://127.0.0.1:4202/v1",
+    "headers": {
+      "x-codex-router-exact-route": "1"
+    }
+  },
+  "stopping_rule": "Exactly one complete Sol max attempt, 100 actions, 600 seconds/request and 3600 seconds/episode. Freeze source and plan before collection. Retain every outcome; no silent retry or selective replacement.",
+  "decision": "A clean delivery rejects this candidate as evidence of high difficulty. A task failure requires fresh replay and causal audit; infrastructure/format/runtime failures do not establish cognitive difficulty. One cognitive failure is only a candidate signal, not broad high-difficulty proof. If solved, stop extending these miniature SQL fixtures as the frontier mainline; retain as regression only.",
+  "controls": [
+    "complete",
+    "new_keys",
+    "updated_only",
+    "charge_amount",
+    "order_identity",
+    "same_failed_key",
+    "no_refresh",
+    "swapped_allocations"
+  ]
+}
