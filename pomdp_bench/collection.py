@@ -16,6 +16,7 @@ from .incident import VERSION as INCIDENT_VERSION, POLICY as INCIDENT_POLICY
 from .settlement import VERSION as SETTLEMENT_VERSION, POLICY as SETTLEMENT_POLICY
 from .reconciliation import VERSION as RECONCILIATION_VERSION, POLICY as RECONCILIATION_POLICY
 from .refund_recovery import VERSION as REFUND_VERSION, POLICY as REFUND_POLICY
+from .takeover import VERSION as TAKEOVER_VERSION
 from .worlds import INCIDENT_VERSIONS, Environment, REPAIR_VERSIONS, cluster_id, validate_case_version, CONDITIONS, validate_condition_version
 from .evaluation import episode_record, recover_interrupted, replay, replay_environment, run_episode, validate_suite
 from .generator import digest
@@ -26,7 +27,8 @@ COLLECTION_VERSION = 1
 
 def source_hashes():
     root = Path(__file__).resolve().parent
-    paths = list(root.glob("*.py")) + [p for p in (root / "repair_data").rglob("*") if p.is_file()]
+    paths = list(root.glob("*.py")) + [p for folder in ('repair_data', 'takeover_data')
+                                     for p in (root / folder).rglob('*') if p.is_file() and '__pycache__' not in p.parts]
     return {p.relative_to(root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}
 
 
@@ -41,7 +43,10 @@ def validate_definition(data, configs, conditions, replicates, wall_seconds):
     if (not isinstance(conditions, list) or not conditions or len(set(conditions)) != len(conditions)
             or set(conditions) - set(CONDITIONS)):
         raise ValueError("Unknown or duplicate conditions")
-    if data["generator_version"] == REFUND_VERSION:
+    if data['generator_version'] == TAKEOVER_VERSION:
+        if conditions != ['open'] or any(c['kind'] not in ('chat','responses','actions') for c in configs):
+            raise ValueError('Takeover requires open and HTTP agents or declared artifact controls')
+    elif data["generator_version"] == REFUND_VERSION:
         if conditions != ["open"] or any(c["kind"] not in ("chat", "responses", "actions", REFUND_POLICY) for c in configs):
             raise ValueError("Refund recovery requires open and declared operators/HTTP agents")
     elif data["generator_version"] == RECONCILIATION_VERSION:

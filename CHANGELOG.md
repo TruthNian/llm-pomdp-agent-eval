@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.13.0
+
+- Add `incident-takeover/1`: sparse symptoms and a generic isolated shell over actual PostgreSQL timelines and an HTTP order service.
+- Run external customer traffic during model inference. Keep receipts and terminal business grading outside the agent filesystem and feedback.
+- Qualify routing-only, actual `pg_rewind`, and record-preserving recovery; freeze image/source and a strong-model screen separately from difficulty claims.
+- Preserve historical contracts. Real-time runs support recorded-behavior regrading; fresh execution is a separate experiment, not byte-identical replay.
+
 ## 2.12.0
 
 - Couple executable callback/dispatch repairs to irreversible partial-refund recovery in external-settlement/2; reuse HTTP, provider, clock, SQL boundary and collector.

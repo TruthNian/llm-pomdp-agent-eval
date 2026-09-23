@@ -7,7 +7,12 @@ Evaluate whether an agent can turn incomplete information into an **accepted,
 useful outcome** under resource constraints. The unit is a complete interaction
 trajectory, including unsuccessful actions, execution failures and delivery costs.
 
-**The mainline is complete open incident response.** The [settlement incident](docs/SERVICE_INCIDENT.md)
+**The mainline is sparse incident takeover.** The [2.13 PostgreSQL candidate](docs/POSTGRES_TAKEOVER.md)
+uses a generic shell, actual divergent database timelines, continuing customer traffic and independent
+business grading. No evaluator verification command or incident-specific operation menu is provided.
+See the [frozen strong-model screen](studies/incident-takeover-v1/README.md) for its empirical status.
+
+The earlier [settlement incident](docs/SERVICE_INCIDENT.md)
 executes actual HTTP requests and persists orders, an outbox and a ledger. An agent takes over an
 ambiguous fault, investigates, acts, receives feedback, recovers backlog and reconciles accounts.
 Temporary excess debits remain visible even when the final state is repaired.

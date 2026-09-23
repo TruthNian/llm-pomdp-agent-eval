@@ -1,6 +1,11 @@
-# Diagnostic benchmark specification — frameworks 2.0–2.11
+# Benchmark specification — frameworks 2.0–2.13
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
+
+The accepted [incident-takeover design](INCIDENT_TAKEOVER.md) is implemented by
+`incident-takeover/1` in framework 2.13, with a separate [runtime contract](POSTGRES_TAKEOVER.md).
+It has sparse handover, a generic shell and independent final grading.
+The explicit action catalogues and verification gates below remain old-family rules.
 
 2.11 adds `reconciliation-repair/1`, with actual bounded SQL component repair over
 delayed HTTP feeds. Its [contract](RECONCILIATION_REPAIR.md) defines two constructed

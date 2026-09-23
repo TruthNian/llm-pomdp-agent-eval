@@ -28,6 +28,11 @@ def main():
     plan = read_json(args.plan)
     if plan["framework_version"] != __version__:
         raise ValueError("Use the declared framework version")
+    if 'runtime' in plan:
+        from pomdp_bench.takeover_runtime import docker_config
+        runtime = docker_config()
+        if any(runtime.get(key) != value for key,value in plan['runtime'].items()):
+            raise ValueError('Runtime differs from the preregistered plan')
     if args.mode == "prepare":
         if subprocess.check_output(["git", "status", "--porcelain"], text=True).strip():
             raise ValueError("Commit the complete implementation and plan before preparing")

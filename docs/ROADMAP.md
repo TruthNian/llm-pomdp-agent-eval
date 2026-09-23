@@ -3,6 +3,24 @@
 Evaluate autonomous investigation, action, observation, recovery and useful delivery under partial observability.
 Calibrate difficulty with useful tools available and complete strong-model interactions.
 
+## Active next step: incident takeover
+
+The user-approved [design constraints](INCIDENT_TAKEOVER.md) start with an incident's
+visible symptoms, minimal background and a generic work entry point. The agent
+discovers tools, causal evidence and operation risks without evaluator coaching.
+Authentic noise and actual irreversible consequences belong to the running system;
+hidden penalties, risk menus and an omniscient verify interface do not.
+
+Select one independently sourced stateful recovery task, write the short handover
+and evaluator-only causal explanation, then execute a complete prototype. Qualify
+an accessible recovery path and actual consequences, and immediately screen full
+Sol/GLM interactions before expanding a family. Preserve ordinary software help,
+warnings, backups and useful tools. Score business outcomes independently of the
+agent's chosen self-checks. The first [PostgreSQL implementation](POSTGRES_TAKEOVER.md)
+has executable recovery and destructive-operation controls. The immediate next gate
+is the frozen [strong-model screen](../studies/incident-takeover-v1/README.md), not more
+scenario generation. Qualification is not high-difficulty evidence. Historical stages below explain existing anchors.
+
 ## Corrected direction
 
 The localized, one-proposal 2.8 screen narrowed the construct and omitted the original demo's
@@ -10,7 +28,7 @@ information choices, budget management and recovery. Repository fixes remain com
 anchors. Reuse isolation, collection and replay; test counts and release counts are not the objective.
 Preserve all historical evidence.
 
-## Current deliverable: executable settlement incident
+## Existing anchor: executable settlement incident
 
 The [incident environment](SERVICE_INCIDENT.md) uses actual HTTP delivery and SQLite transactions.
 An agent receives the incident goal and chooses logs, queries, configuration changes, restarts,

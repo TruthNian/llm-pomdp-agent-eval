@@ -4,12 +4,14 @@ The project's objective is a durable, difficult evaluation of agents delivering 
 
 Question requirements, delete unnecessary dependencies, then simplify and optimize before accelerating or automating. Preserve the information/action/feedback loop when simplifying. Do not substitute localized one-shot answers, CI counts or release counts for complete model trajectories. Follow `docs/ROADMAP.md`.
 
+The mainline follows the accepted [incident-takeover design](docs/INCIDENT_TAKEOVER.md). Framework 2.13 implements the first [PostgreSQL candidate](docs/POSTGRES_TAKEOVER.md); implementation and qualification do not establish high difficulty. Start from sparse incident handover and a generic work entry point. Agents discover evidence, tools and operation risks themselves amid authentic operational noise. Do not supply incident-specific guidance, risk menus, recovery hints or omniscient grading feedback. Actual irreversible effects and recovery work must execute; ordinary software help, warnings and useful tools remain available. Keep evaluator-only design notes outside the agent workspace.
+
 ## Preserve the measurement
 
 - Read `docs/DESIGN.md` and `docs/SPECIFICATION.md` before changing environment semantics.
 - Agents receive only the public observation projection. Do not expose private seeds, answers, case IDs, future catalogues, evaluator files or grading state.
 - A solvability reference must use the public observation history. Label clairvoyant bounds separately.
-- Successful verification is tied to the latest state revision and explicit handover.
+- Existing families require successful verification tied to the latest state revision and explicit handover. The next incident-takeover environment requires independent business-outcome grading after handover, without an evaluator PASS command or mandatory prescribed self-check. Version the new semantics; never reinterpret old traces.
 - Count failures and incomplete matrices honestly. Never drop failed episodes, invent missing usage, or replace a failed run silently.
 - Distinguish planned, executed and unexecuted controls. Missing prerequisites have no observed outcome; do not invent successes/failures or claim every planned row ran. An offline qualification pass is not model-discrimination evidence.
 - New random seeds, repeated model runs, and semantic skins are distinct units. Keep paired design and seed clustering intact.

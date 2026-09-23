@@ -1,10 +1,10 @@
 """Public-observation agent evaluation. Historical v1 lives in harness/."""
 
-__version__ = "2.12.0"
+__version__ = "2.13.0"
 SCHEMA_VERSION = 1
 GENERATOR_VERSION = "diagnostic-graphs/1"
 # The diagnostic kernel is unchanged; 2.5 adds a separately versioned family.
-REPLAY_VERSIONS = ("2.0.0", "2.1.0", "2.2.0", "2.3.0", "2.4.0", "2.5.0", "2.5.1", "2.5.2", "2.5.3", "2.6.0", "2.7.0", "2.8.0", "2.9.0", "2.9.1", "2.9.2", "2.10.0", "2.11.0", "2.12.0")
+REPLAY_VERSIONS = ("2.0.0", "2.1.0", "2.2.0", "2.3.0", "2.4.0", "2.5.0", "2.5.1", "2.5.2", "2.5.3", "2.6.0", "2.7.0", "2.8.0", "2.9.0", "2.9.1", "2.9.2", "2.10.0", "2.11.0", "2.12.0", "2.13.0")
 
 
 def version_at_least(version, minimum):

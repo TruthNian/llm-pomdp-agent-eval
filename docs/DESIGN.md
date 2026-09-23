@@ -1,5 +1,11 @@
 # Design from the task outward
 
+The accepted next mainline is [incident takeover](INCIDENT_TAKEOVER.md): sparse
+handover, agent-discovered tools and evidence amid operational noise, actual
+consequences without evaluator coaching, and independent outcome grading. The first
+[PostgreSQL candidate](POSTGRES_TAKEOVER.md) is implemented in 2.13; this is not a difficulty result. The existing
+family mechanisms below retain their versioned semantics.
+
 ## The durable question
 
 An agent is delegated an outcome before it knows everything needed to produce it. It must select observations and interventions using the history available at that moment. Its actions consume resources and change what remains possible. Evaluation must therefore inspect both the achieved state and the sequence that produced it.
@@ -7,7 +13,7 @@ An agent is delegated an outcome before it knows everything needed to produce it
 This motivates four contracts:
 
 1. **World:** a stateful environment with explicit transition and observation rules.
-2. **Delegation:** a public goal, available actions, costs, and acceptance requirements.
+2. **Delegation:** a business goal, authorized work entry point, and acceptance grounded in the goal and accessible business requirements. How tools, costs and action consequences become known is family-specific; the next mainline requires discovery rather than an incident-specific action/risk catalogue.
 3. **Agent:** a policy receiving only public information.
 4. **Evidence:** an evaluator-owned trajectory and independently recomputable outcome.
 
@@ -68,7 +74,7 @@ The remote model receives a JSON allowlist: contract, current observation, and p
 
 Built-in Python policies execute in the evaluator process and are trusted code. Passing them JSON is an interface discipline, not an OS security boundary. New untrusted local agents require a separate sandbox or remote service with no access to the evaluator's files, environment, or process memory.
 
-An accepted completion requires explicit handover after a passing verification of the current revision. A failed verification is not acceptance. A later mutation invalidates a previous pass even when that mutation is subsequently undone. A green dashboard does not substitute for verification.
+Existing families require explicit handover after a passing verification of the current revision. A failed verification is not acceptance. A later mutation invalidates a previous pass even when that mutation is subsequently undone. A green dashboard does not substitute for verification. The next incident-takeover family instead separates agent-chosen operational checks from evaluator-owned outcome grading; it will not expose a privileged PASS gate or grade on a prescribed command sequence. This requires new semantics, not a retrospective change to old families.
 
 ## Separate measurements from interpretations
 
