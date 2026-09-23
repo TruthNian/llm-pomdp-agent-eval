@@ -23,8 +23,21 @@ def validate_case(case):
 
 
 class TakeoverEnvironment:
-    def __init__(self, case, condition='open', *, recorded_calls=None):
+    generator_version = VERSION
+    runtime_version = 'docker-postgres/1'
+    initial_alert = 'Customers report that some confirmed orders cannot be found. Take over the incident.'
+
+    def validate(self, case):
         validate_case(case)
+
+    def make_runtime(self):
+        return Runtime(self.case)
+
+    def outcome(self):
+        return assess(self.audit)
+
+    def __init__(self, case, condition='open', *, recorded_calls=None):
+        self.validate(case)
         if condition != 'open':
             raise ValueError('Incident takeover supports open only')
         self.case, self.condition = case, condition
@@ -33,7 +46,7 @@ class TakeoverEnvironment:
         self.done, self.reason, self.audit = False, None, None
         self.invalid_actions = 0
         self.audit_error = None
-        self.last_result = {'alert': 'Customers report that some confirmed orders cannot be found. Take over the incident.'}
+        self.last_result = {'alert': self.initial_alert}
 
     def contract(self):
         return {'family': 'incident_takeover',
@@ -54,10 +67,10 @@ class TakeoverEnvironment:
 
     def start(self):
         if self.recorded_calls is None and self.runtime is None:
-            self.runtime = Runtime(self.case)
+            self.runtime = self.make_runtime()
 
     def invoke(self, action, *, internal=False):
-        request_hash = digest([VERSION, self.case, len(self.calls), action])
+        request_hash = digest([self.generator_version, self.case, len(self.calls), action])
         if self.recorded_calls is not None:
             if len(self.calls) >= len(self.recorded_calls):
                 raise ValueError('Missing recorded takeover response')
@@ -99,14 +112,14 @@ class TakeoverEnvironment:
         self.done, self.reason = True, reason
 
     def grade(self):
-        outcome = assess(self.audit)
+        outcome = self.outcome()
         outcome['observer_errors'] += int(self.audit_error is not None)
         return {'success': bool(self.done and self.reason == 'finished' and outcome['delivered']),
                 'termination': self.reason, 'cost': len(self.history), 'steps': len(self.history),
                 'budget': self.case['max_steps'], 'invalid_actions': self.invalid_actions, **outcome}
 
     def evidence(self):
-        return {'runtime':'docker-postgres/1', 'calls':copy.deepcopy(self.calls)}
+        return {'runtime':self.runtime_version, 'calls':copy.deepcopy(self.calls)}
 
     def close(self):
         if self.runtime is not None:

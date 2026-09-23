@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.15.0
+
+- Add separately versioned `stream-recovery/1`: actual destructive PostgreSQL rewind, physical backup/WAL recovery, Debezium/Kafka delivery and an independently persisted carrier ledger.
+- Preserve sparse handover, ordinary operational evidence and real-time customer requests. Grade accepted revisions, historical external effects, new traffic and restart durability without feeding private checks to the agent.
+- Declare four artifact controls and a complete native Sol max ceiling screen. Development recovery is feasible; difficulty remains unmeasured until complete model evidence and causal attribution exist.
+- Preserve earlier runtime semantics, traces and failure classifications.
+
 ## 2.14.0
 
 - Add the separately versioned `responses_tools` adapter for incident takeover: native `exec` and `finish` calls with strict schemas and one call per turn. Commentary is not executable action text.

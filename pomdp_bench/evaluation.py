@@ -10,6 +10,7 @@ from .agents import AdapterError, make_agent, validate_agent_version
 from .generator import digest, keyed_seed
 from .storage import read_json
 from .takeover import VERSION as TAKEOVER_VERSION
+from .stream import VERSION as STREAM_VERSION
 from .worlds import Environment, VERSIONS, REPAIR_VERSIONS, INCIDENT_VERSIONS, cluster_id, validate_case, validate_case_version, validate_condition_version
 
 
@@ -101,7 +102,7 @@ def _run_episode(env, config, replicate, wall_seconds, checkpoint):
 
 
 def replay_environment(trace: dict, case: dict, *, partial=False, execute_checks=False) -> Environment:
-    if execute_checks and case['generator_version'] == TAKEOVER_VERSION:
+    if execute_checks and case['generator_version'] in (TAKEOVER_VERSION, STREAM_VERSION):
         raise ValueError('Real-time takeover requires a fresh run, not byte-identical execution replay')
     if trace.get("schema_version") != SCHEMA_VERSION or trace.get("framework_version") not in REPLAY_VERSIONS:
         raise ValueError("Unsupported trace version")

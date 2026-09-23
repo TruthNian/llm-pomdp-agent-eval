@@ -45,8 +45,10 @@ are absent from this prototype. Any next implementation is still an adaptation, 
    delivery; investigate an effective decision failure through fresh counterfactual execution before a GLM follow-up.
 
 Initial symptoms must admit competing causal explanations, with accessible evidence that changes the
-appropriate intervention. Keep those explanations on the evaluator side. The next candidate is not yet
-implemented or measured. Component counts, waiting time and code volume are not acceptance criteria;
+appropriate intervention. Keep those explanations on the evaluator side. Framework 2.15 now implements
+the [destructive recovery and downstream dispatch candidate](STREAM_RECOVERY.md). A complete development
+recovery passed both business phases, including restart. Frozen controls and the full model screen are
+the next gates; difficulty is still unmeasured. Component counts, waiting time and code volume are not acceptance criteria;
 demonstrate useful discrimination before expanding a family. The [Chinese roadmap](ROADMAP.zh-CN.md)
 records the same implementation gates.
 

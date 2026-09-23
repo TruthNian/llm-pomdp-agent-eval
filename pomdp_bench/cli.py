@@ -18,6 +18,7 @@ from .repair import suite as repair_suite
 from .reconciliation import suite as reconciliation_suite
 from .refund_recovery import suite as refund_suite
 from .takeover import suite as takeover_suite
+from .stream import suite as stream_suite
 from .repair_portfolio import TASKS as REPAIR_TASKS
 from .incident import suite as incident_suite
 from .settlement import suite as settlement_suite
@@ -60,6 +61,8 @@ def main(argv=None) -> int:
     refund.add_argument("--out", type=Path, required=True)
     takeover = commands.add_parser('prepare-takeover-suite', help='Prepare sparse PostgreSQL incident handover; no execution')
     takeover.add_argument('--out', type=Path, required=True)
+    stream = commands.add_parser('prepare-stream-suite', help='Prepare sparse recovery after a destructive database rewind; no execution')
+    stream.add_argument('--out', type=Path, required=True)
     reconciliation = commands.add_parser("prepare-reconciliation-suite", help="Prepare cross-component SQL reconciliation repair")
     reconciliation.add_argument("--out", type=Path, required=True)
     external = commands.add_parser("prepare-settlement-suite", help="Prepare external settlement with separate provider state")
@@ -87,7 +90,10 @@ def main(argv=None) -> int:
         item.add_argument("run_directory", type=Path)
     args = parser.parse_args(argv)
     try:
-        if args.command == 'prepare-takeover-suite':
+        if args.command == 'prepare-stream-suite':
+            write_json(args.out, stream_suite(), replace=False)
+            print('Prepared stream recovery; real execution and model difficulty require separate evidence.')
+        elif args.command == 'prepare-takeover-suite':
             write_json(args.out, takeover_suite(), replace=False)
             print('Prepared incident takeover; Docker runtime and strong-model calibration are separate.')
         elif args.command == "prepare-refund-suite":

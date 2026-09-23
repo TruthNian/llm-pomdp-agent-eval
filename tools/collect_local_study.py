@@ -29,8 +29,12 @@ def main():
     if plan["framework_version"] != __version__:
         raise ValueError("Use the declared framework version")
     if 'runtime' in plan:
-        from pomdp_bench.takeover_runtime import docker_config
-        runtime = docker_config()
+        if plan['generator_version']=='stream-recovery/1':
+            from pomdp_bench.stream_runtime import configuration
+            runtime = configuration()
+        else:
+            from pomdp_bench.takeover_runtime import docker_config
+            runtime = docker_config()
         if any(runtime.get(key) != value for key,value in plan['runtime'].items()):
             raise ValueError('Runtime differs from the preregistered plan')
     if args.mode == "prepare":

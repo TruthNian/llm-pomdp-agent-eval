@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "framework_version": "2.14.0",
+  "framework_version": "2.15.0",
   "generator_version": "diagnostic-graphs/1",
   "study_id": "verification-reserve-controls-v1",
   "purpose": "pilot",

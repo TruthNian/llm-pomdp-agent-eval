@@ -1,0 +1,22 @@
+{
+  "name": "commerce-outbox",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "127.0.0.1",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "",
+    "database.dbname": "commerce",
+    "topic.prefix": "commerce",
+    "plugin.name": "pgoutput",
+    "slot.name": "commerce_outbox",
+    "publication.name": "commerce_changes",
+    "publication.autocreate.mode": "disabled",
+    "table.include.list": "public.outbox",
+    "snapshot.mode": "initial",
+    "heartbeat.interval.ms": "10000",
+    "tombstones.on.delete": "false",
+    "include.schema.changes": "false"
+  }
+}
