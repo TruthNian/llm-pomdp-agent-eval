@@ -18,11 +18,11 @@ def render(data):
     for i, record in enumerate(data["records"], 1):
         grade, agent = record["grade"], record["agent"]
         model = agent["kind"] in ("responses", "chat")
-        status = "已交付" if grade["success"] else "未交付"
+        status = "已交付" if grade["success"] else "未交付（接入错误）" if record.get("error") else "未交付"
         duration = f'{record["elapsed_seconds"]:.1f} 秒' if model else "未测量（脚本）"
         usage = record.get("usage")
         tokens = f'{usage["input_tokens"]:,} / {usage["output_tokens"]:,}' if usage and usage["requests"] == usage["requests_with_usage"] else "未知或不完整" if model else "不适用"
-        overview.append(f'<tr><td><a href="#e{i}">{esc(agent["name"])}</a><small>{esc(record["profile"])}</small></td><td>{status}</td><td>{grade["steps"]}</td><td>{duration}</td><td>{grade["position_errors"]} / {grade["report_errors"]}</td></tr>')
+        overview.append(f'<tr><td><a href="#e{i}">{esc(agent["name"])}</a><small>{esc(record["profile"])}</small></td><td>{status}</td><td>{grade["steps"]}</td><td>{duration}</td><td>{grade["position_errors"] if grade["position_errors"] is not None else "未观察"} / {grade["report_errors"] if grade["report_errors"] is not None else "未观察"}</td></tr>')
         steps = []
         for n, event in enumerate(record["events"], 1):
             action, observation = event["action"], event["observation"]
