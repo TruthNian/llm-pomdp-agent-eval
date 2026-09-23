@@ -1,0 +1,17 @@
+{
+  "source_commit": "9297a3c8e59713e41199a39e52a68160f0b8b5b2",
+  "model_calls": 0,
+  "artifact_arms": 2,
+  "predictions_met": true,
+  "scope": "Matched customer-prefix artifact executions, not byte-identical real-time model replay and not a policy response to assistance.",
+  "file_sha256": {
+    "plan.json": "92ac8ce6c9e2220e85c3bfb2458f1702d0ae8ef3c9ace3ba11a9520269210c8a",
+    "README.md": "df7342235ff085e45484bceeab4c7866bba971c75720c671a4417d164b808178",
+    "original.json": "169b9e9b8ca6caaa7f4de898a86cc44d82f714754af4b1fde47aef0da5533ecf",
+    "restore_missing.json": "151970b7d20e815c4f4758d18ff58fbf171afec6f9fec06485bb01acc30dbc5b",
+    "restore-missing.sh": "09d51a8d1c6ac8d64481de183c98ac712bce895d911a0d8777e763bd05db169b",
+    "verify.py": "21bbef7994aa1f12e3ea92841cd474c90801b0ea176cdaed2daa175359b3fccc",
+    "../../tools/probe_stream_counterfactual.py": "378d715a99d896be7b8bb58ef5b608692e5c619ab4ea92770c02126942ad2917",
+    "../stream-recovery-v1/controls/restore.sh": "69d483ed92673cb8a750152be3cf3f531f16425a40bc87d73b44b357199cad8b"
+  }
+}
