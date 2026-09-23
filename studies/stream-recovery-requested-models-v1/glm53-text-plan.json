@@ -1,0 +1,89 @@
+{
+  "framework_version": "2.16.0",
+  "generator_version": "stream-recovery/1",
+  "suite_sha256": "a2278a96945e95eb8fb5a7e392dc76f7d32795b97e447f9987ec4f0f19278dfd",
+  "purpose": "Separately retained GLM text-action follow-up after first native-tool request returned no valid declared function call. No environment, budget or framework change.",
+  "expected_episodes": 1,
+  "conditions": [
+    "open"
+  ],
+  "replicates": 1,
+  "wall_seconds": 10800,
+  "agents": [
+    {
+      "name": "custom/z-ai/glm-5.3",
+      "kind": "responses",
+      "model": "custom/z-ai/glm-5.3",
+      "endpoint_env": "DIRECT_ENDPOINT",
+      "api_key_env": "ROUTER_KEY",
+      "headers_env": "ROUTER_HEADERS",
+      "timeout_seconds": 600,
+      "options": {
+        "reasoning_effort": "max"
+      },
+      "max_response_bytes": 16000000
+    }
+  ],
+  "transport": {
+    "base_url": "http://127.0.0.1:4202/v1",
+    "headers": {
+      "x-codex-router-exact-route": "1"
+    }
+  },
+  "stopping_rule": "Exactly one additional GLM attempt through the declared responses text-action interface. Same 200 actions, 600 seconds/request, 10800 seconds/episode, 16 MB cap. No rescue, hints or replacement; first native-tool attempt remains published separately.",
+  "decision": "Report observed business delivery and cost for this configured route. Do not infer population success rates, parameter-scale effects or a strict cross-model ranking from single real-time attempts or different continuity policies.",
+  "runtime": {
+    "image": "sha256:9ae11d63ae5f3525160b23746fca3f080c976dd9e90956a4f16b12361c33862d",
+    "components": {
+      "POSTGRES": {
+        "tag": "postgres:17-bookworm",
+        "image": "sha256:639ab7ceb90e13123085b741fb31ef493fba25463002f6da665352e7b534b652",
+        "repo_digests": [
+          "postgres@sha256:639ab7ceb90e13123085b741fb31ef493fba25463002f6da665352e7b534b652"
+        ]
+      },
+      "CONNECT": {
+        "tag": "quay.io/debezium/connect:3.2.1.Final",
+        "image": "sha256:13b9eb809050bf615b635686a19ad258ffef011cd7743a83d8f8d0611c216df4",
+        "repo_digests": [
+          "quay.io/debezium/connect@sha256:13b9eb809050bf615b635686a19ad258ffef011cd7743a83d8f8d0611c216df4"
+        ]
+      }
+    },
+    "assets_sha256": {
+      "archive-wal.sh": "631c070ce5e25b4f377d0016e3905b3c27ec9c2a8406fed92ab5b4f7ad4be14c",
+      "broker.properties": "3b7c2faf96efb5665d6d1ba7adca27fb40809aaed407032f8ef054eb2225ccee",
+      "CARRIER.md": "3b86055d8113d6a927e3d88ce22dec555314521cc312a939a43d19341a5a98d9",
+      "connect.properties": "6403da0638ec4409eed8cf31ff06942b0c043ce9c987f7e2fda4075f9ed126a7",
+      "connector.json": "b80f2237de8c964bb097095024639291932616990a38e2555b8f510d98ed38be",
+      "Dockerfile": "a4e8937a34992b672b64d0b50d0e0e2722cc24d6805b7cac7fde8a4163dc2fee",
+      "log4j2.properties": "83615989b7b286effa4904cba122a5007f6ec5e504f5e5e14ee897372597b8ad",
+      "README.md": "f6bee3055a3f97ae6cd4df21e55a0d4469a549b764a4a3ea5d9c712ae13e888d",
+      "schema.sql": "eab6edd9ef5c2b0ad0d1fd2f55b9f82cb32cc894c8559412b60c09d200134130",
+      "service.py": "a644a69139064b58108ca6ed255215f5cb51e7fdeec2e84d7b380f068536be3c",
+      "start-services.sh": "8b38eab0b90a3f25b20b3a2924b9254da8b51784f1d6e745288406847b9ec7b7",
+      "supervisor.conf": "6b010163d4da247c138ecaf2ce4a08cf626342bb3d15ef7721bbaf7f38f21c36"
+    },
+    "debezium_source_commit": "003672a405041d45d406ffac5149203b1a9e6471"
+  },
+  "controls_reference": "../stream-recovery-v1/control-evidence.json",
+  "environment_source_sha256": {
+    "stream.py": "8b399b5cc0bc5eade5f09b7ffbea2d1a7d1180451af6c0775331a1fdf6977ffe",
+    "stream_data/archive-wal.sh": "631c070ce5e25b4f377d0016e3905b3c27ec9c2a8406fed92ab5b4f7ad4be14c",
+    "stream_data/broker.properties": "3b7c2faf96efb5665d6d1ba7adca27fb40809aaed407032f8ef054eb2225ccee",
+    "stream_data/CARRIER.md": "3b86055d8113d6a927e3d88ce22dec555314521cc312a939a43d19341a5a98d9",
+    "stream_data/connect.properties": "6403da0638ec4409eed8cf31ff06942b0c043ce9c987f7e2fda4075f9ed126a7",
+    "stream_data/connector.json": "b80f2237de8c964bb097095024639291932616990a38e2555b8f510d98ed38be",
+    "stream_data/Dockerfile": "a4e8937a34992b672b64d0b50d0e0e2722cc24d6805b7cac7fde8a4163dc2fee",
+    "stream_data/log4j2.properties": "83615989b7b286effa4904cba122a5007f6ec5e504f5e5e14ee897372597b8ad",
+    "stream_data/README.md": "f6bee3055a3f97ae6cd4df21e55a0d4469a549b764a4a3ea5d9c712ae13e888d",
+    "stream_data/schema.sql": "eab6edd9ef5c2b0ad0d1fd2f55b9f82cb32cc894c8559412b60c09d200134130",
+    "stream_data/service.py": "a644a69139064b58108ca6ed255215f5cb51e7fdeec2e84d7b380f068536be3c",
+    "stream_data/start-services.sh": "8b38eab0b90a3f25b20b3a2924b9254da8b51784f1d6e745288406847b9ec7b7",
+    "stream_data/supervisor.conf": "6b010163d4da247c138ecaf2ce4a08cf626342bb3d15ef7721bbaf7f38f21c36",
+    "stream_runtime.py": "abc22fac2890a717e95703fe641fb4e234dc29a304891df9157e9219ca55765c",
+    "takeover.py": "a135145e3713c68d5802bc3b078c73acf2b84a8ccb5daabbf4fd90687976af5d",
+    "takeover_runtime.py": "adf8ec7b0cd79f1541a4d86613b4d1e109f7704ea706ffb1b7d9692916fe0845"
+  },
+  "protocol_scope": "Existing responses text-action adapter, previously exercised on the GLM route. Reconstruct public history each request; no native reasoning continuation. Completed malformed action text consumes a rejected step with ordinary format feedback; transport/envelope failures remain terminal. Retain original native-tool failure."
+}
