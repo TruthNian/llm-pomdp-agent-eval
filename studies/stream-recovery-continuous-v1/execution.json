@@ -1,0 +1,15 @@
+{
+  "source_commit": "0b60e5d413bd449b53689db3b55dc29f5ffd0179",
+  "model_episodes": 1,
+  "recheck_scope": "Recorded business regrading and reconstructed public native input projections. Full wire bodies require opaque reasoning retained only in process memory.",
+  "file_sha256": {
+    "plan.json": "b203c6dcd876af192f0aa9b74a03523b0ffff83bad9f052ddd5ca6bc21c07788",
+    "README.md": "63d753651601cc752c97ca5e64a0806a4ae839149cced18b960df09b09b2e1f5",
+    "model-evidence.json": "04d7032389d34e6bb4355d411956a4ca01a35cb2330825c9381ad1c1750197cd",
+    "trajectories.html": "e7f06d5237257a66764ecbef3c87c482929f952ba4bd9ed8adf0d7762891cd9f",
+    "verify.py": "55521629579f0f4ab7667cba79fcba57af2fd35623521c1eb96cb71fc3bda030",
+    "development-preflight-01.json": "6e332ece861c57ac147fb728a985e0ec8d76c680c4ae76a4a51dbade83003e40",
+    "development-preflight-02.json": "f744f140632932f6c65f7423e2d72ba24c758c184a4dfd73ac181990339b2d1d",
+    "../stream-recovery-v1/verify.py": "21e9f217ead93ed577b39d989404f7073aba492dcbef79b5580abecbe78bed3d"
+  }
+}
