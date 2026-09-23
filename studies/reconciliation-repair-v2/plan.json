@@ -1,0 +1,36 @@
+{
+  "framework_version": "2.11.0",
+  "generator_version": "reconciliation-repair/1",
+  "suite_sha256": "b08761eb3361afe3f5cbfb6558f0116014a8c0784519d7edcbf04314d9637c7f",
+  "purpose": "Separately retained complete-interaction follow-up after the user reported recovery from a network outage. Same contracts, tools, route and budgets as v1; not a replacement of its two failed attempts.",
+  "expected_episodes": 2,
+  "conditions": [
+    "open"
+  ],
+  "replicates": 1,
+  "wall_seconds": 3600,
+  "agents": [
+    {
+      "name": "gpt-5.6-sol",
+      "kind": "responses",
+      "model": "gpt-5.6-sol",
+      "endpoint_env": "DIRECT_ENDPOINT",
+      "api_key_env": "NATIVE_KEY",
+      "headers_env": "NATIVE_HEADERS",
+      "timeout_seconds": 600,
+      "options": {
+        "reasoning_effort": "max"
+      }
+    }
+  ],
+  "transport": {
+    "base_url": "http://127.0.0.1:4202/v1",
+    "headers": {
+      "x-codex-router-exact-route": "1"
+    }
+  },
+  "stopping_rule": "Exactly one NEW attempt per original contract with unchanged route, max reasoning and budgets. Keep v1 failures. Do not silently retry or replace a follow-up failure. Freeze this plan before any new request.",
+  "decision": "If the requested strong route readily completes both contracts, classify as repair integration/regression evidence, not frontier headroom. A transport failure cannot establish cognitive difficulty. GLM is not scheduled in this screen; no cross-model conclusion.",
+  "continuation_of": "studies/reconciliation-repair-v1",
+  "prior_interruption": "User attributed the interrupted v1 collection to a network outage. Original sanitized traces and outcomes remain unchanged."
+}
