@@ -44,6 +44,9 @@ jobs:
       - name: Regrade PostgreSQL takeover model and actual controls
         if: hashFiles('studies/incident-takeover-v1/execution.json') != ''
         run: python studies/incident-takeover-v1/verify.py
+      - name: Regrade native PostgreSQL takeover and reproduce public model requests
+        if: hashFiles('studies/incident-takeover-native-v1/execution.json') != ''
+        run: python studies/incident-takeover-native-v1/verify.py
       - name: Regrade external settlement model and control evidence
         if: hashFiles('studies/external-settlement-v1/execution.json') != ''
         run: python studies/external-settlement-v1/verify.py

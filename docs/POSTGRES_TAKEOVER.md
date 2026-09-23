@@ -65,10 +65,14 @@ those old-only records from the old database too. This demonstrates destructive 
 not a proof that every conceivable forensic recovery is impossible. A surviving ordinary pre-incident
 backup contains only the common prefix. The complete merge restores all accepted records and survives restart.
 
-The [frozen study](../studies/incident-takeover-v1/README.md) screens a full Sol max interaction next.
-A clean delivery rejects this candidate as high-difficulty evidence. A failure requires causal audit
-and a public-information counterfactual before any difficulty claim. Do not make it harder by hiding
-ordinary useful tools, adding secret requirements or withholding the original business goal.
+The [original text-channel attempts](../studies/incident-takeover-v1/README.md) ended with adapter
+failures. A separately frozen [native-tool Sol max screen](../studies/incident-takeover-native-v1/README.md)
+on the unchanged environment delivered in 9/150 actions and preserved all 110 accepted orders through
+restart. Seventeen reads and seventeen writes failed during permitted maintenance. The preregistered
+rejection rule applies: retain this candidate as a regression anchor, not high-difficulty evidence.
+Do not make it harder by hiding ordinary useful tools, adding secret requirements or withholding
+the original business goal. Future failures require causal audit and a public-information
+counterfactual before any difficulty claim.
 
 ## Run locally
 
@@ -78,11 +82,43 @@ JSON config with `docker_command` argv (normally `["docker"]`). For WSL use the 
 by `docker`, and `keepalive_command` with the same prefix followed by `cat`; its open stdin keeps
 the distribution alive while the runtime owns it. No credentials belong in this file.
 
+For a local Linux Docker installation, first create `artifacts/takeover-docker.json`
+with `{"docker_command":["docker"]}`. For the E-drive Windows/WSL installation used here:
+
+```json
+{
+  "docker_command": ["E:/Apps/WSL/wsl.exe", "-d", "CodexBench", "-u", "root", "--", "docker"],
+  "keepalive_command": ["E:/Apps/WSL/wsl.exe", "-d", "CodexBench", "-u", "root", "--", "cat"]
+}
+```
+
+Adjust executable paths and distribution names to your installation. The builder fills the image
+and asset bindings. Use a fresh local file when building; preserve prior study configurations.
+
 ```bash
 python -m tools.build_takeover artifacts/takeover-docker.json
 export POMDP_TAKEOVER_CONFIG="$PWD/artifacts/takeover-docker.json"
 python -m tools.qualify_takeover artifacts/takeover-controls
 ```
+
+In PowerShell, use `$env:POMDP_TAKEOVER_CONFIG = (Resolve-Path artifacts/takeover-docker.json).Path`
+in place of the `export` line. Qualification executes four known-solution controls, without model calls.
+
+For a fresh model attempt, copy the [native-tool example](../examples/takeover-agent.example.json),
+set its model ID and provider-supported reasoning effort, and supply `BENCH_RESPONSES_ENDPOINT`
+(the full Responses endpoint) and `BENCH_API_KEY` through environment variables as described in
+[model adapters](MODEL_ADAPTERS.md). Keep credentials out of JSON files and the repository.
+The example is a configuration template, not a reproduced study or a held-out task.
+
+```bash
+python -m pomdp_bench prepare-takeover-suite --out artifacts/takeover-suite.json
+python -m pomdp_bench run --suite artifacts/takeover-suite.json --agents examples/takeover-agent.example.json --out artifacts/takeover-run --wall-seconds 3600
+python -m pomdp_bench validate artifacts/takeover-run
+```
+
+Use unused output paths. The run command makes real model requests; validation only regrades retained
+observations and bindings. To inspect the published result without invoking a model or Docker, run
+`python studies/incident-takeover-native-v1/verify.py` instead.
 
 The builder binds normalized asset hashes and an immutable image ID. The base digest is pinned;
 apt repository contents are not a promise of byte-identical future image builds. Archive the built

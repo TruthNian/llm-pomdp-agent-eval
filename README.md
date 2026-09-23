@@ -10,7 +10,11 @@ trajectory, including unsuccessful actions, execution failures and delivery cost
 **The mainline is sparse incident takeover.** The [2.13 PostgreSQL candidate](docs/POSTGRES_TAKEOVER.md)
 uses a generic shell, actual divergent database timelines, continuing customer traffic and independent
 business grading. No evaluator verification command or incident-specific operation menu is provided.
-See the [frozen strong-model screen](studies/incident-takeover-v1/README.md) for its empirical status.
+The [completed native-tool screen](studies/incident-takeover-native-v1/README.md) delivered in
+9/150 actions: all 110 accepted orders survived, including restart. This candidate is rejected as
+high-difficulty evidence. Seventeen reads and seventeen writes failed during permitted maintenance;
+those costs remain visible. Earlier [text-channel failures](studies/incident-takeover-v1/README.md)
+are retained separately. The high-difficulty objective remains unmet.
 
 The earlier [settlement incident](docs/SERVICE_INCIDENT.md)
 executes actual HTTP requests and persists orders, an outbox and a ledger. An agent takes over an
@@ -23,13 +27,14 @@ the three 2.8 source repairs and all historical evidence remain regression ancho
 
 ```bash
 python -m pip install -e .
-python -m pomdp_bench prepare-settlement-suite --out artifacts/external-suite.json
-python -m pomdp_bench run --suite artifacts/external-suite.json --agents examples/settlement-agents.json --out artifacts/external-run
-python -m pomdp_bench validate artifacts/external-run
+python studies/incident-takeover-native-v1/verify.py
 ```
 
-No Docker is needed for this service task. Models operate trusted services through maintenance
-interfaces. Candidate SQL runs only over copied public inputs in bounded SQLite; model-generated shell/Python never executes on the host. [Roadmap](docs/ROADMAP.md).
+This regrades the published complete run without Docker or model calls. Read its
+[full action trace](studies/incident-takeover-native-v1/trajectories.html), or follow the
+[Docker setup and native-model run instructions](docs/POSTGRES_TAKEOVER.md#run-locally)
+for a fresh incident. Candidate shell/Python runs inside the isolated Linux container.
+The older HTTP/SQLite service tasks remain available as regression anchors.
 
 [Complete live trajectories and evidence](studies/settlement-incident-v1/README.md):
 Sol delivered in 20 actions. The original GLM attempt stopped at the old parser after

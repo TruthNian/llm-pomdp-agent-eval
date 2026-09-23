@@ -5,6 +5,7 @@
 - Add the separately versioned `responses_tools` adapter for incident takeover: native `exec` and `finish` calls with strict schemas and one call per turn. Commentary is not executable action text.
 - Preserve all text-channel traces and failures. Incomplete, undeclared, duplicate or conflicting calls never execute. No incident semantics, business grading or image changes.
 - Freeze a separate native Sol screen with a declared 16 MB streaming cap after observed text-format and 2 MB wire-limit failures. No difficulty result is inferred from those failures.
+- Publish the complete native screen: Sol delivered in 9/150 actions, preserving all 110 accepted orders through restart; retain 17 read and 17 write failures during maintenance. Reject this candidate as high-difficulty evidence and preserve it as a regression anchor.
 
 ## 2.13.0
 

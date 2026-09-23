@@ -3,7 +3,9 @@
 The accepted next mainline is [incident takeover](INCIDENT_TAKEOVER.md): sparse
 handover, agent-discovered tools and evidence amid operational noise, actual
 consequences without evaluator coaching, and independent outcome grading. The first
-[PostgreSQL candidate](POSTGRES_TAKEOVER.md) is implemented in 2.13; this is not a difficulty result. The existing
+[PostgreSQL candidate](POSTGRES_TAKEOVER.md), implemented in 2.13, was solved in the
+[2.14 native-tool screen](../studies/incident-takeover-native-v1/README.md) and is now a regression anchor.
+High difficulty remains unestablished. The existing
 family mechanisms below retain their versioned semantics.
 
 ## The durable question

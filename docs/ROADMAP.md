@@ -17,9 +17,38 @@ an accessible recovery path and actual consequences, and immediately screen full
 Sol/GLM interactions before expanding a family. Preserve ordinary software help,
 warnings, backups and useful tools. Score business outcomes independently of the
 agent's chosen self-checks. The first [PostgreSQL implementation](POSTGRES_TAKEOVER.md)
-has executable recovery and destructive-operation controls. The immediate next gate
-is the frozen [strong-model screen](../studies/incident-takeover-v1/README.md), not more
-scenario generation. Qualification is not high-difficulty evidence. Historical stages below explain existing anchors.
+has executable recovery and destructive-operation controls. The completed
+[native-tool screen](../studies/incident-takeover-native-v1/README.md) delivered in 9/150 actions,
+preserving 110 accepted orders through restart. Apply the preregistered rejection rule:
+retain it as a regression anchor, not high-difficulty evidence. Earlier text-channel failures remain
+published separately. Historical stages below explain existing anchors.
+
+## Current implementation path
+
+Question the assumption that real software, sparse handover or dangerous operations establish difficulty.
+The observed solution paused the API, backed up both branches, merged conflict-free records and unified
+routing. This supports a diagnosis of excessive simplification, not a general causal proof from one trial.
+Stop adding seeds, rows or repeat screens of this same candidate. Retain its code and evidence;
+reuse native tools, Linux isolation, receipts and collection instead of building another execution layer.
+
+The next single prototype will preserve recovery dependencies between data consistency and backlog
+processing. The source [GitHub incident analysis](https://github.blog/news-insights/company-news/oct21-post-incident-analysis/)
+also describes replica catch-up under read load and expired events during backlog recovery. Those interactions
+are absent from this prototype. Any next implementation is still an adaptation, not a production reproduction.
+
+1. Identify one causal recovery dependency and the business obligation omitted by simple set union.
+2. Implement persistent asynchronous work and independently controllable processes. Their actual behavior,
+   rather than evaluator ticks, determines what continues after an API pause. Keep ordinary backups and tools.
+3. Execute complete recovery and partial/destructive controls. Demonstrate distinct business consequences
+   and a feasible path discoverable through ordinary operational evidence; do not combine unrelated faults.
+4. Freeze one version, image and budget, then immediately screen a complete Sol max interaction. Reject on
+   delivery; investigate an effective decision failure through fresh counterfactual execution before a GLM follow-up.
+
+Initial symptoms must admit competing causal explanations, with accessible evidence that changes the
+appropriate intervention. Keep those explanations on the evaluator side. The next candidate is not yet
+implemented or measured. Component counts, waiting time and code volume are not acceptance criteria;
+demonstrate useful discrimination before expanding a family. The [Chinese roadmap](ROADMAP.zh-CN.md)
+records the same implementation gates.
 
 ## Corrected direction
 

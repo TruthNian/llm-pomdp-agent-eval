@@ -1,0 +1,12 @@
+[
+  {
+    "name": "your-native-tool-model",
+    "kind": "responses_tools",
+    "model": "your-model-id",
+    "endpoint_env": "BENCH_RESPONSES_ENDPOINT",
+    "api_key_env": "BENCH_API_KEY",
+    "timeout_seconds": 600,
+    "max_response_bytes": 16000000,
+    "options": {"reasoning_effort": "high"}
+  }
+]

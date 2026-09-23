@@ -1,0 +1,32 @@
+{
+  "scored": false,
+  "environment_executed": false,
+  "passed": true,
+  "action": {
+    "command": "finish"
+  },
+  "usage": {
+    "requests": 1,
+    "requests_with_usage": 1,
+    "input_tokens": 206,
+    "output_tokens": 13,
+    "reasoning_tokens": 0,
+    "requests_with_reasoning_usage": 1
+  },
+  "request_audit": [
+    {
+      "protocol": "responses_tools",
+      "request_sha256": "9b1da44ecb44260269449692f269ac27b464311bfcedbab25955269abe8f5d1b",
+      "declared_tools": [
+        "exec",
+        "finish"
+      ],
+      "tool_choice": "required",
+      "timeout_seconds": 120,
+      "max_response_bytes": 16000000,
+      "outcome": "action",
+      "reported_model_matches_request": true
+    }
+  ],
+  "elapsed_seconds": 3.2582806000000346
+}

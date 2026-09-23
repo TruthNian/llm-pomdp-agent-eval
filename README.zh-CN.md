@@ -8,7 +8,10 @@
 
 **当前主线是最少信息的事故接手。** [2.13 PostgreSQL 候选](docs/POSTGRES_TAKEOVER.md)
 提供普通终端，运行真实数据库分叉与持续客户流量，在交付后独立验收业务。
-没有全知 verify 或事故专用操作菜单。[强模型筛选记录](studies/incident-takeover-v1/README.md)单独报告实测结果。
+没有全知 verify 或事故专用操作菜单。[原生工具完整实测](studies/incident-takeover-native-v1/README.md)：
+Sol 9/150 步交付，110 笔已接受订单全部保留且通过重启检查。此候选已按预登记规则淘汰高难度证据资格。
+允许的维护期间发生 17 次读失败、17 次写失败，完整保留。[旧文本通道失败](studies/incident-takeover-v1/README.md)
+单独记录；**高难度目标仍未达到**。
 
 此前的[结算事故环境](docs/SERVICE_INCIDENT.md)
 运行真实 HTTP 请求、持久化订单、消息队列和账本。模型接手模糊故障，自主调查、
@@ -19,13 +22,14 @@
 
 ```powershell
 python -m pip install -e .
-python -m pomdp_bench prepare-settlement-suite --out artifacts/external-suite.json
-python -m pomdp_bench run --suite artifacts/external-suite.json --agents examples/settlement-agents.json --out artifacts/external-run
-python -m pomdp_bench validate artifacts/external-run
+python studies/incident-takeover-native-v1/verify.py
 ```
 
-无需 Docker。模型通过运维接口操作可信服务；候选 SQL 只在受限 SQLite 中读取复制的公开输入，本机不执行模型生成的 shell／Python。
-[逐步路线](docs/ROADMAP.zh-CN.md)与[完整交互规范](docs/SERVICE_INCIDENT.md)。
+该命令直接复核已发布的完整轨迹，无需 Docker，也不调用模型。可阅读
+[全部动作与反馈](studies/incident-takeover-native-v1/trajectories.html)，或按
+[Docker 配置与原生模型运行说明](docs/POSTGRES_TAKEOVER.md#run-locally)执行新事故。
+模型生成的 shell／Python 在隔离的 Linux 容器中运行。旧 HTTP/SQLite 任务继续作为回归参照。
+[逐步路线](docs/ROADMAP.zh-CN.md)。
 
 [实测完整轨迹与证据](studies/settlement-incident-v1/README.md)：Sol 用 20 步完成交付；
 GLM 的原始尝试在 13 步后被旧解析器终止，这不能视为认知难度证据。

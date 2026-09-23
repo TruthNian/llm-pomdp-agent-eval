@@ -1,0 +1,17 @@
+{
+  "source_commit": "c27b72ec1e787e18335248319860e10da0075442",
+  "model_episodes": 1,
+  "control_episodes_executed_in_this_study": 0,
+  "controls_reference": "../incident-takeover-v1/control-evidence.json",
+  "settings_unchanged": true,
+  "decision": "Reject this candidate as high-difficulty evidence under the preregistered rule; retain as an operational regression anchor.",
+  "recheck_scope": "Recorded-behavior replay and public-only request reconstruction; no fresh real-time model reexecution.",
+  "file_sha256": {
+    "plan.json": "7ccffbab8156b40dc149d015647db33f9f5a069d8622f06e5c18c7fcfd619400",
+    "README.md": "f768867dbb75fe852055ce45dd2c5d6efd0be8e2c413e25650655abd6b83fe35",
+    "model-evidence.json": "953c713bd4a494d9c61f91f9de7b4534db4aab07724bd34fea35a2135fcdc5ce",
+    "trajectories.html": "7d41a2f9eaff908d81d369d5d9382f0407df0ded2fb2867447be0b8fe413d202",
+    "preflight.json": "92e871c518decb777f4c0fe9502d3469c118ce1df9fc02898dad2359053496ff",
+    "verify.py": "37b0c3ff39198981aaa8d7d171905695e2b3da18e26136b597e81c49cc29d1ed"
+  }
+}
