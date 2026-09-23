@@ -1,0 +1,1085 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>跨组件对账修复 · 完整轨迹</title><style>
+body{margin:0;background:#eef2f5;color:#182c3c;font:16px/1.65 system-ui,sans-serif}main{max-width:1100px;margin:40px auto;padding:0 22px}h1{font-size:32px}h2{font-size:21px;overflow-wrap:anywhere}section{background:#fff;padding:24px;border:1px solid #cdd9e2;border-radius:10px;margin:25px 0}p{max-width:960px;color:#42566a}.status{font-weight:700;color:#175f5c}table{width:100%;border-collapse:collapse;text-align:left}th,td{padding:12px;border-bottom:1px solid #dce4eb;font-size:14px}small{display:block;color:#637888}.step{display:flex;gap:20px;align-items:center;flex-wrap:wrap}article{padding:15px 0;border-bottom:1px solid #dce4eb}summary{cursor:pointer;color:#17608b;font-size:14px}pre{background:#f2f5f8;padding:16px;font:12px/1.6 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;max-height:550px;overflow:auto}.warning{padding:12px;border:2px solid #a2681e}a{color:#17608b}.scroll{overflow:auto}@media(max-width:700px){main{padding:0 12px}section{padding:14px}.step{gap:8px}h1{font-size:26px}}
+</style><main><header><small>POMDP · EXECUTABLE COMPONENT REPAIR</small><h1>修复处理规则，并交付正确账目</h1><p>两类构造的业务契约：支付快照与可更正流水。操作方读取代码和业务证据，实际修改 SQL，测试、部署、回填、验证并交付。这里完整保留每一步反馈。步骤旁的差异指标来自评测器，未预先提供给模型；逐笔差异按缺失行与多余行分别计数，并非错误对象数。</p><p>这是开发校准，不是生产事故或模型排名。通过验收不等于达到前沿难度；探针批次也不是独立任务。新增代码与测试数量不用于证明模型区分度。</p></header><details><summary>采集前后配置与认证文件逐项不变性</summary><pre>{
+  &quot;settings_and_auth_bytes_unchanged&quot;: true,
+  &quot;files&quot;: [
+    {
+      &quot;name&quot;: &quot;config.toml&quot;,
+      &quot;bytes_unchanged&quot;: true
+    },
+    {
+      &quot;name&quot;: &quot;auth.json&quot;,
+      &quot;bytes_unchanged&quot;: true
+    },
+    {
+      &quot;name&quot;: &quot;native-session-consent.json&quot;,
+      &quot;bytes_unchanged&quot;: true
+    }
+  ]
+}</pre></details><section><h2>全部结果</h2><div class="scroll"><table><thead><tr><th>路由 / 对照与契约</th><th>交付</th><th>动作</th><th>耗时</th><th>逐笔 / 汇总差异</th></tr></thead><tbody><tr><td><a href="#e1">gpt-5.6-sol</a><small>capture_snapshots</small></td><td>未交付</td><td>14</td><td>125.0 秒</td><td>4 / 6</td></tr><tr><td><a href="#e2">gpt-5.6-sol</a><small>posting_corrections</small></td><td>未交付</td><td>0</td><td>2.0 秒</td><td>None / None</td></tr></tbody></table></div></section><section id="e1"><h2>gpt-5.6-sol · capture_snapshots</h2><p class="status">未交付 · 14/80 步 · 125.0 秒</p><p>输入 / 输出 token：未知或不完整；无效动作 0；终止原因 adapter_error。</p><p>模型名称不匹配 0/15；未知 1。服务端名称不是权重认证。</p><p class="warning">错误：Endpoint transport failed。接入错误不证明认知难度。</p><details><summary>最初的公共任务与观察</summary><pre>{
+  &quot;contract&quot;: {
+    &quot;family&quot;: &quot;reconciliation_repair&quot;,
+    &quot;task&quot;: &quot;Deliver correct per-object and per-merchant/currency reconciliation under the documented provider contract. Investigate source and evidence, patch SQL components, deploy and recover materialized output. Exercise at least two new workload batches before verification and explicit handover.&quot;,
+    &quot;workspace&quot;: &quot;Constructed local HTTP provider and separate file-backed SQLite databases; actual SQL transformations over copied public inputs, no arbitrary host code execution.&quot;,
+    &quot;actions&quot;: {
+      &quot;inspect&quot;: &quot;target: operations,contract,schema,pipeline,timing,source,metrics&quot;,
+      &quot;query&quot;: &quot;target: read-only local SQLite SQL, 100-row cap&quot;,
+      &quot;provider&quot;: &quot;target: all; HTTP authoritative CURRENT per-object positions; does not repair output&quot;,
+      &quot;patch&quot;: &quot;target: {stage:normalize|resolve|aggregate,sql:SELECT text}; stage one replacement source&quot;,
+      &quot;test&quot;: &quot;no target; execute staged components on current receipts, return intermediate outputs; no repair&quot;,
+      &quot;deploy&quot;: &quot;no target; validate and atomically activate staged components; no backfill&quot;,
+      &quot;refresh&quot;: &quot;no target; atomically rebuild materialized output with active sources&quot;,
+      &quot;workload&quot;: &quot;target: 1; submit one new business batch, maximum three&quot;,
+      &quot;wait&quot;: &quot;no target; advance one tick and ingest available feed&quot;,
+      &quot;verify&quot;: &quot;no target; read-only business verification, no processing or time advancement&quot;,
+      &quot;finish&quot;: &quot;no target; explicit final handover&quot;
+    },
+    &quot;limits&quot;: &quot;80 actions including finish. Reads, writes and invalid actions run then advance one tick and ingest available HTTP receipts. Valid verify/finish freeze state. Other actions expire PASS. Read pipeline/timing for execution and timing limits.&quot;,
+    &quot;success&quot;: &quot;Every current economic object, including zero amounts, appears exactly once with correct merchant,currency,net minor units. Merchant/currency totals also match provider truth. No pending receipts; outputs reflect current active sources and all received data; at least two new workload batches; current-state verify PASS then finish. Source text is not graded.&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 80,
+    &quot;result&quot;: {
+      &quot;alert&quot;: &quot;Merchant payment reconciliation is incorrect after a pipeline release. Diagnose component rules, repair the running pipeline and historical output, test new business, and hand over.&quot;,
+      &quot;current_tick&quot;: 0
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details><article><div class="step"><b>01 · inspect</b><span>已执行</span><small>逐笔差异 6 · 汇总差异 6 · 待收事件 2</small></div><details><summary>完整动作、SQL 与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;operations&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 79,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;Repair the deployed three-component reconciliation pipeline, recover historical output, exercise two new workload batches, and hand over. The provider&#x27;s current positions are authoritative. Its notification feed is delayed, duplicated and out of order. Reads and rejected actions advance one tick. Each tick imports available HTTP feed receipts; output is NOT automatically rebuilt. There is no config switch implementing a repair. Read contract, source and schema; patch actual SQL; test/deploy/refresh deliberately.&quot;,
+      &quot;current_tick&quot;: 1
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></article><article><div class="step"><b>02 · inspect</b><span>已执行</span><small>逐笔差异 6 · 汇总差异 6 · 待收事件 2</small></div><details><summary>完整动作、SQL 与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;contract&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 78,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;The upstream feed contains FULL CAPTURE SNAPSHOTS, not deltas. A capture is identified by (merchant, capture_id); capture IDs are only merchant-local. Within a capture choose greatest (generation, revision), lexicographically: revision resets on generation change. received order and sent_at are not business revision order. Equal business versions are exact duplicate payloads. Wire schema 1: merchant,capture_id,currency,generation,revision,captured,refunded; captured/refunded are integer minor units. Wire schema 2: merchant,capture_id,currency,generation,revision,money:{captured,refunded}; amounts are decimal major-unit STRINGS. Net per capture is captured minus refunded. Preserve zero-net captures. Sum distinct current captures per merchant AND currency. Both schemas coexist. Currency exponents: USD=2, JPY=0, KWD=3. The public minor(value,currency,unit) SQL function converts exactly; unit is minor or major. Never sum snapshot revisions or combine currencies.&quot;,
+      &quot;current_tick&quot;: 2
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></article><article><div class="step"><b>03 · inspect</b><span>已执行</span><small>逐笔差异 6 · 汇总差异 6 · 待收事件 1</small></div><details><summary>完整动作、SQL 与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;pipeline&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 77,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;normalize SELECT reads ONLY receipts and outputs receipt,merchant,object,currency,epoch,revision,amount_minor. resolve SELECT reads ONLY normalized and outputs merchant,object,currency,amount_minor. aggregate SELECT reads ONLY positions and outputs merchant,currency,net_minor. Column names/order are exact. Stages run in separate in-memory SQLite databases containing only their public input. SQL supports CTEs, joins, grouping, window functions, JSON extraction and exact minor(value,currency,unit). No DDL/DML, ATTACH, extensions, random/clock functions, files or provider/oracle access. Numbers must be integers; currency/merchant/object nonempty strings. Limits: 6000 SQL chars/stage,256 output rows,1000000 VM instructions. patch changes one staged source only. test runs the whole staged pipeline against currently received data, returning actual intermediate output; it is not an oracle and does not change production. deploy validates then atomically activates all staged SQL without rebuilding old output. refresh atomically replaces all materialized outputs using active SQL and current receipts; failures preserve the previous output. A successful SQL execution does not establish business correctness. No source-string matching is used for acceptance.&quot;,
+      &quot;current_tick&quot;: 3
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></article><article><div class="step"><b>04 · inspect</b><span>已执行</span><small>逐笔差异 6 · 汇总差异 6 · 待收事件 0</small></div><details><summary>完整动作、SQL 与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;timing&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 76,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;80 actions including finish. Each normal action runs BEFORE advancing one tick and importing all newly available feed receipts. Payload delay is at most 8 ticks after a workload. No wall-clock-dependent changes. work is bounded to three extra batches; at least two required. verify/finish are read-only stable boundaries (no tick, traffic or processing); invalid calls still advance. Wait for pending deliveries, then refresh; query/provider/test/deploy never repair stored output. Every action other than valid verify/finish expires a PASS, including reads. Provider queries return state at that call.&quot;,
+      &quot;current_tick&quot;: 4
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></article><article><div class="step"><b>05 · inspect</b><span>已执行</span><small>逐笔差异 6 · 汇总差异 6 · 待收事件 0</small></div><details><summary>完整动作、SQL 与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;schema&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 75,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;Local SQL tables: receipts(receipt INTEGER,body TEXT); normalized(receipt,merchant,object,currency,epoch,revision,amount_minor); positions(merchant,object,currency,amount_minor); report(merchant,currency,net_minor); components(stage,active,staged); meta(key,value). These materialized outputs change only on refresh. query is read-only, maximum 100 rows. The provider database, future feed and authoritative positions are NOT in this connection.&quot;,
+      &quot;current_tick&quot;: 5
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></article><article><div class="step"><b>06 · inspect</b><span>已执行</span><small>逐笔差异 6 · 汇总差异 6 · 待收事件 0</small></div><details><summary>完整动作、SQL 与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;source&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 74,
+    &quot;result&quot;: {
+      &quot;components&quot;: [
+        {
+          &quot;stage&quot;: &quot;aggregate&quot;,
+          &quot;active&quot;: &quot;SELECT merchant,currency,sum(amount_minor) AS net_minor FROM positions GROUP BY merchant,currency&quot;,
+          &quot;staged&quot;: &quot;SELECT merchant,currency,sum(amount_minor) AS net_minor FROM positions GROUP BY merchant,currency&quot;
+        },
+        {
+          &quot;stage&quot;: &quot;normalize&quot;,
+          &quot;active&quot;: &quot;SELECT receipt,json_extract(body,&#x27;$.merchant&#x27;) AS merchant,json_extract(body,&#x27;$.capture_id&#x27;) AS object,json_extract(body,&#x27;$.currency&#x27;) AS currency,json_extract(body,&#x27;$.generation&#x27;) AS epoch,json_extract(body,&#x27;$.revision&#x27;) AS revision,coalesce(json_extract(body,&#x27;$.captured&#x27;),0)-coalesce(json_extract(body,&#x27;$.refunded&#x27;),0) AS amount_minor FROM receipts&quot;,
+          &quot;staged&quot;: &quot;SELECT receipt,json_extract(body,&#x27;$.merchant&#x27;) AS merchant,json_extract(body,&#x27;$.capture_id&#x27;) AS object,json_extract(body,&#x27;$.currency&#x27;) AS currency,json_extract(body,&#x27;$.generation&#x27;) AS epoch,json_extract(body,&#x27;$.revision&#x27;) AS revision,coalesce(json_extract(body,&#x27;$.captured&#x27;),0)-coalesce(json_extract(body,&#x27;$.refunded&#x27;),0) AS amount_minor FROM receipts&quot;
+        },
+        {
+          &quot;stage&quot;: &quot;resolve&quot;,
+          &quot;active&quot;: &quot;SELECT merchant,object,currency,amount_minor FROM (SELECT *,row_number() OVER (PARTITION BY object ORDER BY revision DESC,receipt DESC) AS n FROM normalized) WHERE n=1&quot;,
+          &quot;staged&quot;: &quot;SELECT merchant,object,currency,amount_minor FROM (SELECT *,row_number() OVER (PARTITION BY object ORDER BY revision DESC,receipt DESC) AS n FROM normalized) WHERE n=1&quot;
+        }
+      ],
+      &quot;current_tick&quot;: 6
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></article><article><div class="step"><b>07 · query</b><span>已执行</span><small>逐笔差异 6 · 汇总差异 6 · 待收事件 0</small></div><details><summary>完整动作、SQL 与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;query&quot;,
+    &quot;target&quot;: &quot;SELECT receipt, body FROM receipts ORDER BY receipt LIMIT 100&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 73,
+    &quot;result&quot;: {
+      &quot;columns&quot;: [
+        &quot;receipt&quot;,
+        &quot;body&quot;
+      ],
+      &quot;rows&quot;: [
+        [
+          1,
+          &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;captured\&quot;: 1200, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;refunded\&quot;: 200, \&quot;revision\&quot;: 9, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 99}&quot;
+        ],
+        [
+          2,
+          &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 2, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;money\&quot;: {\&quot;captured\&quot;: \&quot;12.00\&quot;, \&quot;refunded\&quot;: \&quot;4.00\&quot;}, \&quot;revision\&quot;: 1, \&quot;schema\&quot;: 2, \&quot;sent_at\&quot;: 97}&quot;
+        ],
+        [
+          3,
+          &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;captured\&quot;: 1200, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;refunded\&quot;: 200, \&quot;revision\&quot;: 9, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 92}&quot;
+        ],
+        [
+          4,
+          &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;captured\&quot;: 900, \&quot;currency\&quot;: \&quot;JPY\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;west\&quot;, \&quot;refunded\&quot;: 0, \&quot;revision\&quot;: 1, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 98}&quot;
+        ],
+        [
+          5,
+          &quot;{\&quot;capture_id\&quot;: \&quot;dinar-0\&quot;, \&quot;currency\&quot;: \&quot;KWD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;money\&quot;: {\&quot;captured\&quot;: \&quot;2.345\&quot;, \&quot;refunded\&quot;: \&quot;0.345\&quot;}, \&quot;revision\&quot;: 3, \&quot;schema\&quot;: 2, \&quot;sent_at\&quot;: 96}&quot;
+        ],
+        [
+          6,
+          &quot;{\&quot;capture_id\&quot;: \&quot;zero-0\&quot;, \&quot;captured\&quot;: 500, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;west\&quot;, \&quot;refunded\&quot;: 500, \&quot;revision\&quot;: 2, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 95}&quot;
+        ],
+        [
+          7,
+          &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 2, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;money\&quot;: {\&quot;captured\&quot;: \&quot;12.00\&quot;, \&quot;refunded\&quot;: \&quot;4.00\&quot;}, \&quot;revision\&quot;: 1, \&quot;schema\&quot;: 2, \&quot;sent_at\&quot;: 97}&quot;
+        ]
+      ],
+      &quot;truncated&quot;: false,
+      &quot;current_tick&quot;: 7
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></article><article><div class="step"><b>08 · provider</b><span>已执行</span><small>逐笔差异 6 · 汇总差异 6 · 待收事件 0</small></div><details><summary>完整动作、SQL 与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;provider&quot;,
+    &quot;target&quot;: &quot;all&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 72,
+    &quot;result&quot;: {
+      &quot;positions&quot;: [
+        {
+          &quot;merchant&quot;: &quot;east&quot;,
+          &quot;object&quot;: &quot;capture-0&quot;,
+          &quot;currency&quot;: &quot;USD&quot;,
+          &quot;amount_minor&quot;: 800
+        },
+        {
+          &quot;merchant&quot;: &quot;east&quot;,
+          &quot;object&quot;: &quot;dinar-0&quot;,
+          &quot;currency&quot;: &quot;KWD&quot;,
+          &quot;amount_minor&quot;: 2000
+        },
+        {
+          &quot;merchant&quot;: &quot;west&quot;,
+          &quot;object&quot;: &quot;capture-0&quot;,
+          &quot;currency&quot;: &quot;JPY&quot;,
+          &quot;amount_minor&quot;: 900
+        },
+        {
+          &quot;merchant&quot;: &quot;west&quot;,
+          &quot;object&quot;: &quot;zero-0&quot;,
+          &quot;currency&quot;: &quot;USD&quot;,
+          &quot;amount_minor&quot;: 0
+        }
+      ],
+      &quot;at_tick&quot;: 7,
+      &quot;current_tick&quot;: 8
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></article><article><div class="step"><b>09 · patch</b><span>已执行</span><small>逐笔差异 6 · 汇总差异 6 · 待收事件 0</small></div><details><summary>完整动作、SQL 与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;patch&quot;,
+    &quot;target&quot;: {
+      &quot;stage&quot;: &quot;normalize&quot;,
+      &quot;sql&quot;: &quot;SELECT receipt, json_extract(body,&#x27;$.merchant&#x27;) AS merchant, json_extract(body,&#x27;$.capture_id&#x27;) AS object, json_extract(body,&#x27;$.currency&#x27;) AS currency, CAST(json_extract(body,&#x27;$.generation&#x27;) AS INTEGER) AS epoch, CAST(json_extract(body,&#x27;$.revision&#x27;) AS INTEGER) AS revision, CASE CAST(json_extract(body,&#x27;$.schema&#x27;) AS INTEGER) WHEN 1 THEN minor(json_extract(body,&#x27;$.captured&#x27;),json_extract(body,&#x27;$.currency&#x27;),&#x27;minor&#x27;)-minor(json_extract(body,&#x27;$.refunded&#x27;),json_extract(body,&#x27;$.currency&#x27;),&#x27;minor&#x27;) WHEN 2 THEN minor(json_extract(body,&#x27;$.money.captured&#x27;),json_extract(body,&#x27;$.currency&#x27;),&#x27;major&#x27;)-minor(json_extract(body,&#x27;$.money.refunded&#x27;),json_extract(body,&#x27;$.currency&#x27;),&#x27;major&#x27;) END AS amount_minor FROM receipts&quot;
+    }
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 71,
+    &quot;result&quot;: {
+      &quot;staged&quot;: &quot;normalize&quot;,
+      &quot;deployed&quot;: false,
+      &quot;current_tick&quot;: 9
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></article><article><div class="step"><b>10 · patch</b><span>已执行</span><small>逐笔差异 6 · 汇总差异 6 · 待收事件 0</small></div><details><summary>完整动作、SQL 与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;patch&quot;,
+    &quot;target&quot;: {
+      &quot;stage&quot;: &quot;resolve&quot;,
+      &quot;sql&quot;: &quot;SELECT merchant,object,currency,amount_minor FROM (SELECT merchant,object,currency,amount_minor,row_number() OVER (PARTITION BY merchant,object ORDER BY epoch DESC,revision DESC,receipt DESC) AS n FROM normalized) WHERE n=1&quot;
+    }
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 70,
+    &quot;result&quot;: {
+      &quot;staged&quot;: &quot;resolve&quot;,
+      &quot;deployed&quot;: false,
+      &quot;current_tick&quot;: 10
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></article><article><div class="step"><b>11 · test</b><span>已执行</span><small>逐笔差异 6 · 汇总差异 6 · 待收事件 0</small></div><details><summary>完整动作、SQL 与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;test&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 69,
+    &quot;result&quot;: {
+      &quot;execution_ok&quot;: true,
+      &quot;business_correctness&quot;: &quot;not established by execution&quot;,
+      &quot;outputs&quot;: {
+        &quot;normalize&quot;: [
+          [
+            1,
+            &quot;east&quot;,
+            &quot;capture-0&quot;,
+            &quot;USD&quot;,
+            1,
+            9,
+            1000
+          ],
+          [
+            2,
+            &quot;east&quot;,
+            &quot;capture-0&quot;,
+            &quot;USD&quot;,
+            2,
+            1,
+            800
+          ],
+          [
+            3,
+            &quot;east&quot;,
+            &quot;capture-0&quot;,
+            &quot;USD&quot;,
+            1,
+            9,
+            1000
+          ],
+          [
+            4,
+            &quot;west&quot;,
+            &quot;capture-0&quot;,
+            &quot;JPY&quot;,
+            1,
+            1,
+            900
+          ],
+          [
+            5,
+            &quot;east&quot;,
+            &quot;dinar-0&quot;,
+            &quot;KWD&quot;,
+            1,
+            3,
+            2000
+          ],
+          [
+            6,
+            &quot;west&quot;,
+            &quot;zero-0&quot;,
+            &quot;USD&quot;,
+            1,
+            2,
+            0
+          ],
+          [
+            7,
+            &quot;east&quot;,
+            &quot;capture-0&quot;,
+            &quot;USD&quot;,
+            2,
+            1,
+            800
+          ]
+        ],
+        &quot;resolve&quot;: [
+          [
+            &quot;east&quot;,
+            &quot;capture-0&quot;,
+            &quot;USD&quot;,
+            800
+          ],
+          [
+            &quot;east&quot;,
+            &quot;dinar-0&quot;,
+            &quot;KWD&quot;,
+            2000
+          ],
+          [
+            &quot;west&quot;,
+            &quot;capture-0&quot;,
+            &quot;JPY&quot;,
+            900
+          ],
+          [
+            &quot;west&quot;,
+            &quot;zero-0&quot;,
+            &quot;USD&quot;,
+            0
+          ]
+        ],
+        &quot;aggregate&quot;: [
+          [
+            &quot;east&quot;,
+            &quot;KWD&quot;,
+            2000
+          ],
+          [
+            &quot;east&quot;,
+            &quot;USD&quot;,
+            800
+          ],
+          [
+            &quot;west&quot;,
+            &quot;JPY&quot;,
+            900
+          ],
+          [
+            &quot;west&quot;,
+            &quot;USD&quot;,
+            0
+          ]
+        ]
+      },
+      &quot;columns&quot;: {
+        &quot;normalize&quot;: [
+          &quot;receipt&quot;,
+          &quot;merchant&quot;,
+          &quot;object&quot;,
+          &quot;currency&quot;,
+          &quot;epoch&quot;,
+          &quot;revision&quot;,
+          &quot;amount_minor&quot;
+        ],
+        &quot;resolve&quot;: [
+          &quot;merchant&quot;,
+          &quot;object&quot;,
+          &quot;currency&quot;,
+          &quot;amount_minor&quot;
+        ],
+        &quot;aggregate&quot;: [
+          &quot;merchant&quot;,
+          &quot;currency&quot;,
+          &quot;net_minor&quot;
+        ]
+      },
+      &quot;current_tick&quot;: 11
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></article><article><div class="step"><b>12 · deploy</b><span>已执行</span><small>逐笔差异 6 · 汇总差异 6 · 待收事件 0</small></div><details><summary>完整动作、SQL 与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;deploy&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 68,
+    &quot;result&quot;: {
+      &quot;deployed&quot;: true,
+      &quot;materialized_output_rebuilt&quot;: false,
+      &quot;current_tick&quot;: 12
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></article><article><div class="step"><b>13 · refresh</b><span>已执行</span><small>逐笔差异 0 · 汇总差异 0 · 待收事件 0</small></div><details><summary>完整动作、SQL 与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;refresh&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 67,
+    &quot;result&quot;: {
+      &quot;materialized_rows&quot;: {
+        &quot;normalize&quot;: 7,
+        &quot;resolve&quot;: 4,
+        &quot;aggregate&quot;: 4
+      },
+      &quot;current_tick&quot;: 13
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></article><article><div class="step"><b>14 · workload</b><span>已执行</span><small>逐笔差异 4 · 汇总差异 6 · 待收事件 6</small></div><details><summary>完整动作、SQL 与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;workload&quot;,
+    &quot;target&quot;: 1
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 66,
+    &quot;result&quot;: {
+      &quot;submitted_batch&quot;: 1,
+      &quot;maximum_delivery_delay&quot;: 8,
+      &quot;current_tick&quot;: 14
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></article><details><summary>重新执行后的完整数据库（散列与原记录一致）</summary><pre>{
+  &quot;local&quot;: {
+    &quot;receipts&quot;: [
+      {
+        &quot;receipt&quot;: 1,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;captured\&quot;: 1200, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;refunded\&quot;: 200, \&quot;revision\&quot;: 9, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 99}&quot;
+      },
+      {
+        &quot;receipt&quot;: 2,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 2, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;money\&quot;: {\&quot;captured\&quot;: \&quot;12.00\&quot;, \&quot;refunded\&quot;: \&quot;4.00\&quot;}, \&quot;revision\&quot;: 1, \&quot;schema\&quot;: 2, \&quot;sent_at\&quot;: 97}&quot;
+      },
+      {
+        &quot;receipt&quot;: 3,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;captured\&quot;: 1200, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;refunded\&quot;: 200, \&quot;revision\&quot;: 9, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 92}&quot;
+      },
+      {
+        &quot;receipt&quot;: 4,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;captured\&quot;: 900, \&quot;currency\&quot;: \&quot;JPY\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;west\&quot;, \&quot;refunded\&quot;: 0, \&quot;revision\&quot;: 1, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 98}&quot;
+      },
+      {
+        &quot;receipt&quot;: 5,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;dinar-0\&quot;, \&quot;currency\&quot;: \&quot;KWD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;money\&quot;: {\&quot;captured\&quot;: \&quot;2.345\&quot;, \&quot;refunded\&quot;: \&quot;0.345\&quot;}, \&quot;revision\&quot;: 3, \&quot;schema\&quot;: 2, \&quot;sent_at\&quot;: 96}&quot;
+      },
+      {
+        &quot;receipt&quot;: 6,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;zero-0\&quot;, \&quot;captured\&quot;: 500, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;west\&quot;, \&quot;refunded\&quot;: 500, \&quot;revision\&quot;: 2, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 95}&quot;
+      },
+      {
+        &quot;receipt&quot;: 7,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 2, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;money\&quot;: {\&quot;captured\&quot;: \&quot;12.00\&quot;, \&quot;refunded\&quot;: \&quot;4.00\&quot;}, \&quot;revision\&quot;: 1, \&quot;schema\&quot;: 2, \&quot;sent_at\&quot;: 97}&quot;
+      },
+      {
+        &quot;receipt&quot;: 8,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-1\&quot;, \&quot;captured\&quot;: 1300, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;refunded\&quot;: 200, \&quot;revision\&quot;: 9, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 99}&quot;
+      }
+    ],
+    &quot;normalized&quot;: [
+      {
+        &quot;receipt&quot;: 1,
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;capture-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;epoch&quot;: 1,
+        &quot;revision&quot;: 9,
+        &quot;amount_minor&quot;: 1000
+      },
+      {
+        &quot;receipt&quot;: 2,
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;capture-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;epoch&quot;: 2,
+        &quot;revision&quot;: 1,
+        &quot;amount_minor&quot;: 800
+      },
+      {
+        &quot;receipt&quot;: 3,
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;capture-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;epoch&quot;: 1,
+        &quot;revision&quot;: 9,
+        &quot;amount_minor&quot;: 1000
+      },
+      {
+        &quot;receipt&quot;: 4,
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;object&quot;: &quot;capture-0&quot;,
+        &quot;currency&quot;: &quot;JPY&quot;,
+        &quot;epoch&quot;: 1,
+        &quot;revision&quot;: 1,
+        &quot;amount_minor&quot;: 900
+      },
+      {
+        &quot;receipt&quot;: 5,
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;dinar-0&quot;,
+        &quot;currency&quot;: &quot;KWD&quot;,
+        &quot;epoch&quot;: 1,
+        &quot;revision&quot;: 3,
+        &quot;amount_minor&quot;: 2000
+      },
+      {
+        &quot;receipt&quot;: 6,
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;object&quot;: &quot;zero-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;epoch&quot;: 1,
+        &quot;revision&quot;: 2,
+        &quot;amount_minor&quot;: 0
+      },
+      {
+        &quot;receipt&quot;: 7,
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;capture-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;epoch&quot;: 2,
+        &quot;revision&quot;: 1,
+        &quot;amount_minor&quot;: 800
+      }
+    ],
+    &quot;positions&quot;: [
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;capture-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;amount_minor&quot;: 800
+      },
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;dinar-0&quot;,
+        &quot;currency&quot;: &quot;KWD&quot;,
+        &quot;amount_minor&quot;: 2000
+      },
+      {
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;object&quot;: &quot;capture-0&quot;,
+        &quot;currency&quot;: &quot;JPY&quot;,
+        &quot;amount_minor&quot;: 900
+      },
+      {
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;object&quot;: &quot;zero-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;amount_minor&quot;: 0
+      }
+    ],
+    &quot;report&quot;: [
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;currency&quot;: &quot;KWD&quot;,
+        &quot;net_minor&quot;: 2000
+      },
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;net_minor&quot;: 800
+      },
+      {
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;currency&quot;: &quot;JPY&quot;,
+        &quot;net_minor&quot;: 900
+      },
+      {
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;net_minor&quot;: 0
+      }
+    ],
+    &quot;components&quot;: [
+      {
+        &quot;stage&quot;: &quot;aggregate&quot;,
+        &quot;active&quot;: &quot;SELECT merchant,currency,sum(amount_minor) AS net_minor FROM positions GROUP BY merchant,currency&quot;,
+        &quot;staged&quot;: &quot;SELECT merchant,currency,sum(amount_minor) AS net_minor FROM positions GROUP BY merchant,currency&quot;
+      },
+      {
+        &quot;stage&quot;: &quot;normalize&quot;,
+        &quot;active&quot;: &quot;SELECT receipt, json_extract(body,&#x27;$.merchant&#x27;) AS merchant, json_extract(body,&#x27;$.capture_id&#x27;) AS object, json_extract(body,&#x27;$.currency&#x27;) AS currency, CAST(json_extract(body,&#x27;$.generation&#x27;) AS INTEGER) AS epoch, CAST(json_extract(body,&#x27;$.revision&#x27;) AS INTEGER) AS revision, CASE CAST(json_extract(body,&#x27;$.schema&#x27;) AS INTEGER) WHEN 1 THEN minor(json_extract(body,&#x27;$.captured&#x27;),json_extract(body,&#x27;$.currency&#x27;),&#x27;minor&#x27;)-minor(json_extract(body,&#x27;$.refunded&#x27;),json_extract(body,&#x27;$.currency&#x27;),&#x27;minor&#x27;) WHEN 2 THEN minor(json_extract(body,&#x27;$.money.captured&#x27;),json_extract(body,&#x27;$.currency&#x27;),&#x27;major&#x27;)-minor(json_extract(body,&#x27;$.money.refunded&#x27;),json_extract(body,&#x27;$.currency&#x27;),&#x27;major&#x27;) END AS amount_minor FROM receipts&quot;,
+        &quot;staged&quot;: &quot;SELECT receipt, json_extract(body,&#x27;$.merchant&#x27;) AS merchant, json_extract(body,&#x27;$.capture_id&#x27;) AS object, json_extract(body,&#x27;$.currency&#x27;) AS currency, CAST(json_extract(body,&#x27;$.generation&#x27;) AS INTEGER) AS epoch, CAST(json_extract(body,&#x27;$.revision&#x27;) AS INTEGER) AS revision, CASE CAST(json_extract(body,&#x27;$.schema&#x27;) AS INTEGER) WHEN 1 THEN minor(json_extract(body,&#x27;$.captured&#x27;),json_extract(body,&#x27;$.currency&#x27;),&#x27;minor&#x27;)-minor(json_extract(body,&#x27;$.refunded&#x27;),json_extract(body,&#x27;$.currency&#x27;),&#x27;minor&#x27;) WHEN 2 THEN minor(json_extract(body,&#x27;$.money.captured&#x27;),json_extract(body,&#x27;$.currency&#x27;),&#x27;major&#x27;)-minor(json_extract(body,&#x27;$.money.refunded&#x27;),json_extract(body,&#x27;$.currency&#x27;),&#x27;major&#x27;) END AS amount_minor FROM receipts&quot;
+      },
+      {
+        &quot;stage&quot;: &quot;resolve&quot;,
+        &quot;active&quot;: &quot;SELECT merchant,object,currency,amount_minor FROM (SELECT merchant,object,currency,amount_minor,row_number() OVER (PARTITION BY merchant,object ORDER BY epoch DESC,revision DESC,receipt DESC) AS n FROM normalized) WHERE n=1&quot;,
+        &quot;staged&quot;: &quot;SELECT merchant,object,currency,amount_minor FROM (SELECT merchant,object,currency,amount_minor,row_number() OVER (PARTITION BY merchant,object ORDER BY epoch DESC,revision DESC,receipt DESC) AS n FROM normalized) WHERE n=1&quot;
+      }
+    ],
+    &quot;meta&quot;: [
+      {
+        &quot;key&quot;: &quot;materialized&quot;,
+        &quot;value&quot;: &quot;1355c8e5137dd779348e8e787e14bb55c9562d9549c1832be786fa066d3edbb8&quot;
+      },
+      {
+        &quot;key&quot;: &quot;probes&quot;,
+        &quot;value&quot;: &quot;1&quot;
+      },
+      {
+        &quot;key&quot;: &quot;tick&quot;,
+        &quot;value&quot;: &quot;14&quot;
+      }
+    ]
+  },
+  &quot;provider&quot;: {
+    &quot;feed&quot;: [
+      {
+        &quot;receipt&quot;: 1,
+        &quot;due&quot;: -3,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;captured\&quot;: 1200, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;refunded\&quot;: 200, \&quot;revision\&quot;: 9, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 99}&quot;
+      },
+      {
+        &quot;receipt&quot;: 2,
+        &quot;due&quot;: -1,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 2, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;money\&quot;: {\&quot;captured\&quot;: \&quot;12.00\&quot;, \&quot;refunded\&quot;: \&quot;4.00\&quot;}, \&quot;revision\&quot;: 1, \&quot;schema\&quot;: 2, \&quot;sent_at\&quot;: 97}&quot;
+      },
+      {
+        &quot;receipt&quot;: 3,
+        &quot;due&quot;: 4,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;captured\&quot;: 1200, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;refunded\&quot;: 200, \&quot;revision\&quot;: 9, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 92}&quot;
+      },
+      {
+        &quot;receipt&quot;: 4,
+        &quot;due&quot;: -2,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;captured\&quot;: 900, \&quot;currency\&quot;: \&quot;JPY\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;west\&quot;, \&quot;refunded\&quot;: 0, \&quot;revision\&quot;: 1, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 98}&quot;
+      },
+      {
+        &quot;receipt&quot;: 5,
+        &quot;due&quot;: 0,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;dinar-0\&quot;, \&quot;currency\&quot;: \&quot;KWD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;money\&quot;: {\&quot;captured\&quot;: \&quot;2.345\&quot;, \&quot;refunded\&quot;: \&quot;0.345\&quot;}, \&quot;revision\&quot;: 3, \&quot;schema\&quot;: 2, \&quot;sent_at\&quot;: 96}&quot;
+      },
+      {
+        &quot;receipt&quot;: 6,
+        &quot;due&quot;: 1,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;zero-0\&quot;, \&quot;captured\&quot;: 500, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;west\&quot;, \&quot;refunded\&quot;: 500, \&quot;revision\&quot;: 2, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 95}&quot;
+      },
+      {
+        &quot;receipt&quot;: 7,
+        &quot;due&quot;: 3,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-0\&quot;, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 2, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;money\&quot;: {\&quot;captured\&quot;: \&quot;12.00\&quot;, \&quot;refunded\&quot;: \&quot;4.00\&quot;}, \&quot;revision\&quot;: 1, \&quot;schema\&quot;: 2, \&quot;sent_at\&quot;: 97}&quot;
+      },
+      {
+        &quot;receipt&quot;: 8,
+        &quot;due&quot;: 14,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-1\&quot;, \&quot;captured\&quot;: 1300, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;refunded\&quot;: 200, \&quot;revision\&quot;: 9, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 99}&quot;
+      },
+      {
+        &quot;receipt&quot;: 9,
+        &quot;due&quot;: 16,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-1\&quot;, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 2, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;money\&quot;: {\&quot;captured\&quot;: \&quot;13.00\&quot;, \&quot;refunded\&quot;: \&quot;4.00\&quot;}, \&quot;revision\&quot;: 1, \&quot;schema\&quot;: 2, \&quot;sent_at\&quot;: 97}&quot;
+      },
+      {
+        &quot;receipt&quot;: 10,
+        &quot;due&quot;: 21,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-1\&quot;, \&quot;captured\&quot;: 1300, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;refunded\&quot;: 200, \&quot;revision\&quot;: 9, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 92}&quot;
+      },
+      {
+        &quot;receipt&quot;: 11,
+        &quot;due&quot;: 15,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-1\&quot;, \&quot;captured\&quot;: 901, \&quot;currency\&quot;: \&quot;JPY\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;west\&quot;, \&quot;refunded\&quot;: 0, \&quot;revision\&quot;: 1, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 98}&quot;
+      },
+      {
+        &quot;receipt&quot;: 12,
+        &quot;due&quot;: 17,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;dinar-1\&quot;, \&quot;currency\&quot;: \&quot;KWD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;money\&quot;: {\&quot;captured\&quot;: \&quot;2.345\&quot;, \&quot;refunded\&quot;: \&quot;0.345\&quot;}, \&quot;revision\&quot;: 3, \&quot;schema\&quot;: 2, \&quot;sent_at\&quot;: 96}&quot;
+      },
+      {
+        &quot;receipt&quot;: 13,
+        &quot;due&quot;: 18,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;zero-1\&quot;, \&quot;captured\&quot;: 500, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 1, \&quot;merchant\&quot;: \&quot;west\&quot;, \&quot;refunded\&quot;: 500, \&quot;revision\&quot;: 2, \&quot;schema\&quot;: 1, \&quot;sent_at\&quot;: 95}&quot;
+      },
+      {
+        &quot;receipt&quot;: 14,
+        &quot;due&quot;: 20,
+        &quot;body&quot;: &quot;{\&quot;capture_id\&quot;: \&quot;capture-1\&quot;, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;generation\&quot;: 2, \&quot;merchant\&quot;: \&quot;east\&quot;, \&quot;money\&quot;: {\&quot;captured\&quot;: \&quot;13.00\&quot;, \&quot;refunded\&quot;: \&quot;4.00\&quot;}, \&quot;revision\&quot;: 1, \&quot;schema\&quot;: 2, \&quot;sent_at\&quot;: 97}&quot;
+      }
+    ],
+    &quot;truth&quot;: [
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;capture-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;amount_minor&quot;: 800
+      },
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;capture-1&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;amount_minor&quot;: 900
+      },
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;dinar-0&quot;,
+        &quot;currency&quot;: &quot;KWD&quot;,
+        &quot;amount_minor&quot;: 2000
+      },
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;dinar-1&quot;,
+        &quot;currency&quot;: &quot;KWD&quot;,
+        &quot;amount_minor&quot;: 2000
+      },
+      {
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;object&quot;: &quot;capture-0&quot;,
+        &quot;currency&quot;: &quot;JPY&quot;,
+        &quot;amount_minor&quot;: 900
+      },
+      {
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;object&quot;: &quot;capture-1&quot;,
+        &quot;currency&quot;: &quot;JPY&quot;,
+        &quot;amount_minor&quot;: 901
+      },
+      {
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;object&quot;: &quot;zero-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;amount_minor&quot;: 0
+      },
+      {
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;object&quot;: &quot;zero-1&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;amount_minor&quot;: 0
+      }
+    ]
+  }
+}</pre></details></section><section id="e2"><h2>gpt-5.6-sol · posting_corrections</h2><p class="status">未交付 · 0/80 步 · 2.0 秒</p><p>输入 / 输出 token：未知或不完整；无效动作 0；终止原因 adapter_error。</p><p>模型名称不匹配 0/1；未知 1。服务端名称不是权重认证。</p><p class="warning">错误：Endpoint transport failed。接入错误不证明认知难度。</p><details><summary>最初的公共任务与观察</summary><pre>{
+  &quot;contract&quot;: {
+    &quot;family&quot;: &quot;reconciliation_repair&quot;,
+    &quot;task&quot;: &quot;Deliver correct per-object and per-merchant/currency reconciliation under the documented provider contract. Investigate source and evidence, patch SQL components, deploy and recover materialized output. Exercise at least two new workload batches before verification and explicit handover.&quot;,
+    &quot;workspace&quot;: &quot;Constructed local HTTP provider and separate file-backed SQLite databases; actual SQL transformations over copied public inputs, no arbitrary host code execution.&quot;,
+    &quot;actions&quot;: {
+      &quot;inspect&quot;: &quot;target: operations,contract,schema,pipeline,timing,source,metrics&quot;,
+      &quot;query&quot;: &quot;target: read-only local SQLite SQL, 100-row cap&quot;,
+      &quot;provider&quot;: &quot;target: all; HTTP authoritative CURRENT per-object positions; does not repair output&quot;,
+      &quot;patch&quot;: &quot;target: {stage:normalize|resolve|aggregate,sql:SELECT text}; stage one replacement source&quot;,
+      &quot;test&quot;: &quot;no target; execute staged components on current receipts, return intermediate outputs; no repair&quot;,
+      &quot;deploy&quot;: &quot;no target; validate and atomically activate staged components; no backfill&quot;,
+      &quot;refresh&quot;: &quot;no target; atomically rebuild materialized output with active sources&quot;,
+      &quot;workload&quot;: &quot;target: 1; submit one new business batch, maximum three&quot;,
+      &quot;wait&quot;: &quot;no target; advance one tick and ingest available feed&quot;,
+      &quot;verify&quot;: &quot;no target; read-only business verification, no processing or time advancement&quot;,
+      &quot;finish&quot;: &quot;no target; explicit final handover&quot;
+    },
+    &quot;limits&quot;: &quot;80 actions including finish. Reads, writes and invalid actions run then advance one tick and ingest available HTTP receipts. Valid verify/finish freeze state. Other actions expire PASS. Read pipeline/timing for execution and timing limits.&quot;,
+    &quot;success&quot;: &quot;Every current economic object, including zero amounts, appears exactly once with correct merchant,currency,net minor units. Merchant/currency totals also match provider truth. No pending receipts; outputs reflect current active sources and all received data; at least two new workload batches; current-state verify PASS then finish. Source text is not graded.&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 80,
+    &quot;result&quot;: {
+      &quot;alert&quot;: &quot;Merchant payment reconciliation is incorrect after a pipeline release. Diagnose component rules, repair the running pipeline and historical output, test new business, and hand over.&quot;,
+      &quot;current_tick&quot;: 0
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details><details><summary>零动作：新建的初始数据库，仅供参考；原尝试未创建业务运行时</summary><pre>{
+  &quot;local&quot;: {
+    &quot;receipts&quot;: [
+      {
+        &quot;receipt&quot;: 1,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;east\&quot;, \&quot;amount\&quot;: 700, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;entry_id\&quot;: \&quot;entry-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 1, \&quot;sent_at\&quot;: 99, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;minor\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 2,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;east\&quot;, \&quot;amount\&quot;: \&quot;6.50\&quot;, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;entry_id\&quot;: \&quot;entry-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 2, \&quot;sent_at\&quot;: 97, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;major\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 4,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;east\&quot;, \&quot;amount\&quot;: 500, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;entry_id\&quot;: \&quot;split-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 1, \&quot;sent_at\&quot;: 98, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;minor\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 5,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;east\&quot;, \&quot;amount\&quot;: \&quot;2.00\&quot;, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;entry_id\&quot;: \&quot;refund-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;revision\&quot;: 1, \&quot;sent_at\&quot;: 96, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;major\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 6,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;west\&quot;, \&quot;amount\&quot;: 900, \&quot;currency\&quot;: \&quot;JPY\&quot;, \&quot;entry_id\&quot;: \&quot;entry-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 1, \&quot;sent_at\&quot;: 98, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;minor\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 7,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;east\&quot;, \&quot;amount\&quot;: \&quot;1.234\&quot;, \&quot;currency\&quot;: \&quot;KWD\&quot;, \&quot;entry_id\&quot;: \&quot;dinar-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 1, \&quot;sent_at\&quot;: 98, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;major\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 9,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;west\&quot;, \&quot;amount\&quot;: 300, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;entry_id\&quot;: \&quot;void-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 1, \&quot;sent_at\&quot;: 99, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;unit\&quot;: \&quot;minor\&quot;}&quot;
+      }
+    ],
+    &quot;normalized&quot;: [
+      {
+        &quot;receipt&quot;: 1,
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;invoice-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;epoch&quot;: 0,
+        &quot;revision&quot;: 1,
+        &quot;amount_minor&quot;: 700
+      },
+      {
+        &quot;receipt&quot;: 2,
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;invoice-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;epoch&quot;: 0,
+        &quot;revision&quot;: 2,
+        &quot;amount_minor&quot;: 650
+      },
+      {
+        &quot;receipt&quot;: 4,
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;invoice-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;epoch&quot;: 0,
+        &quot;revision&quot;: 1,
+        &quot;amount_minor&quot;: 500
+      },
+      {
+        &quot;receipt&quot;: 5,
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;invoice-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;epoch&quot;: 0,
+        &quot;revision&quot;: 1,
+        &quot;amount_minor&quot;: 200
+      },
+      {
+        &quot;receipt&quot;: 6,
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;object&quot;: &quot;invoice-0&quot;,
+        &quot;currency&quot;: &quot;JPY&quot;,
+        &quot;epoch&quot;: 0,
+        &quot;revision&quot;: 1,
+        &quot;amount_minor&quot;: 900
+      },
+      {
+        &quot;receipt&quot;: 7,
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;invoice-0&quot;,
+        &quot;currency&quot;: &quot;KWD&quot;,
+        &quot;epoch&quot;: 0,
+        &quot;revision&quot;: 1,
+        &quot;amount_minor&quot;: 1234
+      },
+      {
+        &quot;receipt&quot;: 9,
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;object&quot;: &quot;invoice-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;epoch&quot;: 0,
+        &quot;revision&quot;: 1,
+        &quot;amount_minor&quot;: 300
+      }
+    ],
+    &quot;positions&quot;: [
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;invoice-0&quot;,
+        &quot;currency&quot;: &quot;KWD&quot;,
+        &quot;amount_minor&quot;: 1234
+      },
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;invoice-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;amount_minor&quot;: 2050
+      },
+      {
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;object&quot;: &quot;invoice-0&quot;,
+        &quot;currency&quot;: &quot;JPY&quot;,
+        &quot;amount_minor&quot;: 900
+      },
+      {
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;object&quot;: &quot;invoice-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;amount_minor&quot;: 300
+      }
+    ],
+    &quot;report&quot;: [
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;currency&quot;: &quot;KWD&quot;,
+        &quot;net_minor&quot;: 1234
+      },
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;net_minor&quot;: 2050
+      },
+      {
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;currency&quot;: &quot;JPY&quot;,
+        &quot;net_minor&quot;: 900
+      },
+      {
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;net_minor&quot;: 300
+      }
+    ],
+    &quot;components&quot;: [
+      {
+        &quot;stage&quot;: &quot;aggregate&quot;,
+        &quot;active&quot;: &quot;SELECT merchant,currency,sum(amount_minor) AS net_minor FROM positions WHERE amount_minor&gt;0 GROUP BY merchant,currency&quot;,
+        &quot;staged&quot;: &quot;SELECT merchant,currency,sum(amount_minor) AS net_minor FROM positions WHERE amount_minor&gt;0 GROUP BY merchant,currency&quot;
+      },
+      {
+        &quot;stage&quot;: &quot;normalize&quot;,
+        &quot;active&quot;: &quot;SELECT receipt,json_extract(body,&#x27;$.account&#x27;) AS merchant,json_extract(body,&#x27;$.invoice_id&#x27;) AS object,json_extract(body,&#x27;$.currency&#x27;) AS currency,0 AS epoch,json_extract(body,&#x27;$.revision&#x27;) AS revision,minor(json_extract(body,&#x27;$.amount&#x27;),json_extract(body,&#x27;$.currency&#x27;),json_extract(body,&#x27;$.unit&#x27;)) AS amount_minor FROM receipts&quot;,
+        &quot;staged&quot;: &quot;SELECT receipt,json_extract(body,&#x27;$.account&#x27;) AS merchant,json_extract(body,&#x27;$.invoice_id&#x27;) AS object,json_extract(body,&#x27;$.currency&#x27;) AS currency,0 AS epoch,json_extract(body,&#x27;$.revision&#x27;) AS revision,minor(json_extract(body,&#x27;$.amount&#x27;),json_extract(body,&#x27;$.currency&#x27;),json_extract(body,&#x27;$.unit&#x27;)) AS amount_minor FROM receipts&quot;
+      },
+      {
+        &quot;stage&quot;: &quot;resolve&quot;,
+        &quot;active&quot;: &quot;SELECT merchant,object,currency,sum(amount_minor) AS amount_minor FROM normalized GROUP BY merchant,object,currency&quot;,
+        &quot;staged&quot;: &quot;SELECT merchant,object,currency,sum(amount_minor) AS amount_minor FROM normalized GROUP BY merchant,object,currency&quot;
+      }
+    ],
+    &quot;meta&quot;: [
+      {
+        &quot;key&quot;: &quot;materialized&quot;,
+        &quot;value&quot;: &quot;7ebe1b66e0b619b4b5dc28b7d7a2803ae0e9dbbb0b23c430739b82f793aee802&quot;
+      },
+      {
+        &quot;key&quot;: &quot;probes&quot;,
+        &quot;value&quot;: &quot;0&quot;
+      },
+      {
+        &quot;key&quot;: &quot;tick&quot;,
+        &quot;value&quot;: &quot;0&quot;
+      }
+    ]
+  },
+  &quot;provider&quot;: {
+    &quot;feed&quot;: [
+      {
+        &quot;receipt&quot;: 1,
+        &quot;due&quot;: -3,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;east\&quot;, \&quot;amount\&quot;: 700, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;entry_id\&quot;: \&quot;entry-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 1, \&quot;sent_at\&quot;: 99, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;minor\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 2,
+        &quot;due&quot;: -1,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;east\&quot;, \&quot;amount\&quot;: \&quot;6.50\&quot;, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;entry_id\&quot;: \&quot;entry-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 2, \&quot;sent_at\&quot;: 97, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;major\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 3,
+        &quot;due&quot;: 4,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;east\&quot;, \&quot;amount\&quot;: 700, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;entry_id\&quot;: \&quot;entry-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 1, \&quot;sent_at\&quot;: 92, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;minor\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 4,
+        &quot;due&quot;: -2,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;east\&quot;, \&quot;amount\&quot;: 500, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;entry_id\&quot;: \&quot;split-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 1, \&quot;sent_at\&quot;: 98, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;minor\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 5,
+        &quot;due&quot;: 0,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;east\&quot;, \&quot;amount\&quot;: \&quot;2.00\&quot;, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;entry_id\&quot;: \&quot;refund-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;revision\&quot;: 1, \&quot;sent_at\&quot;: 96, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;major\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 6,
+        &quot;due&quot;: -2,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;west\&quot;, \&quot;amount\&quot;: 900, \&quot;currency\&quot;: \&quot;JPY\&quot;, \&quot;entry_id\&quot;: \&quot;entry-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 1, \&quot;sent_at\&quot;: 98, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;minor\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 7,
+        &quot;due&quot;: -2,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;east\&quot;, \&quot;amount\&quot;: \&quot;1.234\&quot;, \&quot;currency\&quot;: \&quot;KWD\&quot;, \&quot;entry_id\&quot;: \&quot;dinar-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 1, \&quot;sent_at\&quot;: 98, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;major\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 8,
+        &quot;due&quot;: 1,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;east\&quot;, \&quot;amount\&quot;: \&quot;0.234\&quot;, \&quot;currency\&quot;: \&quot;KWD\&quot;, \&quot;entry_id\&quot;: \&quot;dinar-refund-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;revision\&quot;: 1, \&quot;sent_at\&quot;: 95, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;major\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 9,
+        &quot;due&quot;: -3,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;west\&quot;, \&quot;amount\&quot;: 300, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;entry_id\&quot;: \&quot;void-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 1, \&quot;sent_at\&quot;: 99, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;unit\&quot;: \&quot;minor\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 10,
+        &quot;due&quot;: 2,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;west\&quot;, \&quot;amount\&quot;: 300, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;entry_id\&quot;: \&quot;void-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 2, \&quot;sent_at\&quot;: 94, \&quot;status\&quot;: \&quot;void\&quot;, \&quot;unit\&quot;: \&quot;minor\&quot;}&quot;
+      },
+      {
+        &quot;receipt&quot;: 11,
+        &quot;due&quot;: 3,
+        &quot;body&quot;: &quot;{\&quot;account\&quot;: \&quot;east\&quot;, \&quot;amount\&quot;: \&quot;6.50\&quot;, \&quot;currency\&quot;: \&quot;USD\&quot;, \&quot;entry_id\&quot;: \&quot;entry-0\&quot;, \&quot;invoice_id\&quot;: \&quot;invoice-0\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;revision\&quot;: 2, \&quot;sent_at\&quot;: 97, \&quot;status\&quot;: \&quot;posted\&quot;, \&quot;unit\&quot;: \&quot;major\&quot;}&quot;
+      }
+    ],
+    &quot;truth&quot;: [
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;dinar-0&quot;,
+        &quot;currency&quot;: &quot;KWD&quot;,
+        &quot;amount_minor&quot;: 1234
+      },
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;dinar-refund-0&quot;,
+        &quot;currency&quot;: &quot;KWD&quot;,
+        &quot;amount_minor&quot;: -234
+      },
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;entry-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;amount_minor&quot;: 650
+      },
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;refund-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;amount_minor&quot;: -200
+      },
+      {
+        &quot;merchant&quot;: &quot;east&quot;,
+        &quot;object&quot;: &quot;split-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;amount_minor&quot;: 500
+      },
+      {
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;object&quot;: &quot;entry-0&quot;,
+        &quot;currency&quot;: &quot;JPY&quot;,
+        &quot;amount_minor&quot;: 900
+      },
+      {
+        &quot;merchant&quot;: &quot;west&quot;,
+        &quot;object&quot;: &quot;void-0&quot;,
+        &quot;currency&quot;: &quot;USD&quot;,
+        &quot;amount_minor&quot;: 0
+      }
+    ]
+  }
+}</pre></details></section><footer>冻结源码：ce6cab7bac22f91ee44cf0c132a7bc6bd2ab63bf。原始记录包含失败、请求审计和缺失用量标记。</footer></main></html>

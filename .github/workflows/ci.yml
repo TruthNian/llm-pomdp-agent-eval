@@ -32,6 +32,9 @@ jobs:
         run: python studies/external-settlement-v1/controls.py artifacts/external-controls.json
       - name: Reproduce cross-component reconciliation controls
         run: python studies/reconciliation-repair-v1/controls.py artifacts/reconciliation-controls.json
+      - name: Verify reconciliation controls, retained live failures and patch artifact
+        if: hashFiles('studies/reconciliation-repair-v1/execution.json') != ''
+        run: python studies/reconciliation-repair-v1/evidence.py verify
       - name: Regrade external settlement model and control evidence
         if: hashFiles('studies/external-settlement-v1/execution.json') != ''
         run: python studies/external-settlement-v1/verify.py

@@ -66,9 +66,19 @@ must not repair the entire candidate set. Do not add mere volume or cosmetic var
 [Reconciliation repair](RECONCILIATION_REPAIR.md) now implements two different
 financial feed contracts through editable normalize/resolve/aggregate SQL. Public
 queries, authoritative provider retrieval, intermediate test output and full recovery
-remain available. A fixed resolver patch cannot repair the portfolio. The next
-measurement is the frozen [strong-route ceiling screen](../studies/reconciliation-repair-v1/README.md).
-Do not call it high difficulty before that result. If readily solved, retain the
+remain available. A fixed resolver patch cannot repair the portfolio. The [strong-route ceiling screen](../studies/reconciliation-repair-v1/README.md)
+retains both attempts: one interrupted after a correct historical repair, one
+interrupted before any action. A separately labeled scripted artifact check
+qualifies the first model patch on new workload; neither original attempt counts
+as delivered. Transport failures leave complete model difficulty unmeasured. If readily solved, retain the
 implementation as a source-repair anchor and move to independently sourced causal
 faults and operationally consequential recovery, rather than adding more rows,
 SQL syntax obstacles or configuration options.
+
+Immediate measurement prerequisite: obtain stable transport and preregister a new,
+separate full-interaction collection; never overwrite the interrupted matrix.
+Next substantive candidate: couple component-rule repair to consequential recovery
+in the existing external-state environment, grounded in independently sourced
+incidents. Reuse the implemented SQL execution/evidence boundary rather than
+adding another disconnected toy family. Keep provider queries and intermediate
+tests available; do not manufacture difficulty through tool removal.

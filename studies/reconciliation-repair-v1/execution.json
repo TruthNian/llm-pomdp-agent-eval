@@ -1,0 +1,22 @@
+{
+  "source_commit": "ce6cab7bac22f91ee44cf0c132a7bc6bd2ab63bf",
+  "framework_version": "2.11.0",
+  "settings_unchanged": true,
+  "model_episodes": 2,
+  "control_episodes": 13,
+  "post_hoc_artifact_checks": 1,
+  "decision": "No full strong-model difficulty measurement: both live attempts failed at transport. Preserve all outcomes; script-completed artifact is not model success.",
+  "file_sha256": {
+    "check_patch.py": "1c3f44b78d5d4eaa4bff7cc63b58632ed4355e0ee1b7ed762b05e2f3e84ce52b",
+    "control-evidence.json": "16df6209449c96c0c934d68bec894070b0dd00e5c8aae9401cc5535f0a29b452",
+    "controls.html": "82b09d01f9752f54b347ffb26c3c0669f1efaf22e6878b398c46fc40c537567b",
+    "controls.py": "efec317445eecde962f67e4df652f330c1f2e2daae6ecf3c3f3768ed9fdf1f08",
+    "evidence.py": "4bb8a6880cc31fa4a3e5c476fcc3217cb9355b994616b5bd61ebda9f81ac614c",
+    "model-evidence.json": "4ad4e7c9b685744e0187b1dd380a84f9528041d549912400856357d2cdc48969",
+    "patch-check.json": "d176fc8aaaabf2d5c83b2f200803a13ec81fb9983fc80e8f31c23c186fd28253",
+    "plan.json": "b97a21f58f7a567b93ab18b9178904f56edd35d41f2102be0b02c8fdc088c83d",
+    "README.md": "0b3505ae3732d8061487e8795eedbe1e982ad6282dacb4c36d2606ef54bdba36",
+    "render.py": "d846fecde0f49cb0bf1634e564e962e2adb1bdade8b880e7fe41411cebfae636",
+    "trajectories.html": "5a3263c8ee06b17cf6ca418814f2f85fda831e994acc1232ea89e4865ed1c283"
+  }
+}
