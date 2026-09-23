@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.14.0
+
+- Add the separately versioned `responses_tools` adapter for incident takeover: native `exec` and `finish` calls with strict schemas and one call per turn. Commentary is not executable action text.
+- Preserve all text-channel traces and failures. Incomplete, undeclared, duplicate or conflicting calls never execute. No incident semantics, business grading or image changes.
+- Freeze a separate native Sol screen with a declared 16 MB streaming cap after observed text-format and 2 MB wire-limit failures. No difficulty result is inferred from those failures.
+
 ## 2.13.0
 
 - Add `incident-takeover/1`: sparse symptoms and a generic isolated shell over actual PostgreSQL timelines and an HTTP order service.

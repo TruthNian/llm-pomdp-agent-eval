@@ -145,3 +145,18 @@ class Agent:
 Register it explicitly in `agents.py` and configuration validation. Preserve the observation allowlist, sanitize errors, represent missing usage honestly, and add an end-to-end test. Python plugins are trusted evaluator code; an untrusted executable needs separate process/OS isolation. Do not hand it the manifest or suite. Never put hidden answers in filenames, system prompts, model-visible IDs or adapter seeds.
 
 The older Codex runner under `harness/` is retained for historical reproduction. Its system prompts and filesystem access differ from this HTTP harness. Comparing across the two requires labeling the harness change as an experimental factor.
+# Native terminal calls (2.14)
+
+For `incident-takeover/1`, `kind: "responses_tools"` declares only `exec(target: string)`
+and `finish()`. It sends strict function schemas, requires a tool call and disables parallel calls,
+following the [official function-calling protocol](https://developers.openai.com/api/docs/guides/function-calling).
+Completed commentary can accompany a call; it is never parsed as a terminal command. The adapter
+accepts one completed declared call and checks streamed item/terminal consistency before execution.
+Provider-side tools, undeclared names and ambiguous multiple calls are rejected. The tool still runs
+inside the existing isolated environment, not on the host.
+
+Each request includes the full public observation history. There is no hidden response chaining or
+private evaluator state. Existing `responses`/`chat` adapters keep their original text protocol.
+Native and text-channel studies have different adapter contracts and must not be pooled silently.
+Declare `max_response_bytes` in a frozen study: stream event overhead and reasoning can exhaust a
+small byte limit before a completed action. A size-limit failure is not evidence of incident difficulty.

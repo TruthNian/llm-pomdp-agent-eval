@@ -1,0 +1,63 @@
+{
+  "framework_version": "2.14.0",
+  "generator_version": "incident-takeover/1",
+  "suite_sha256": "7d69211bfd4bfbd86c72f245040f349ba98589429645003635ce5b030d1bee85",
+  "purpose": "One complete ceiling screen through native exec/finish function calls. Remove free-text action formatting as a measurement bottleneck; same incident and immutable image as 2.13. Retain earlier failed text-channel attempts separately.",
+  "expected_episodes": 1,
+  "conditions": [
+    "open"
+  ],
+  "replicates": 1,
+  "wall_seconds": 3600,
+  "agents": [
+    {
+      "name": "gpt-5.6-sol",
+      "kind": "responses_tools",
+      "model": "gpt-5.6-sol",
+      "endpoint_env": "DIRECT_ENDPOINT",
+      "api_key_env": "NATIVE_KEY",
+      "headers_env": "NATIVE_HEADERS",
+      "timeout_seconds": 600,
+      "options": {
+        "reasoning_effort": "max"
+      },
+      "max_response_bytes": 16000000
+    }
+  ],
+  "transport": {
+    "base_url": "http://127.0.0.1:4202/v1",
+    "headers": {
+      "x-codex-router-exact-route": "1"
+    }
+  },
+  "stopping_rule": "Exactly one native Sol max attempt: 150 actions, 600 seconds/request, 3600 seconds/episode and 16 MB wire response cap. One unscored finish-only transport preflight (120 seconds) may run first; if it fails do not claim an incident attempt ran. No retries or selection of successful attempts.",
+  "decision": "A clean delivery rejects this candidate as evidence of high difficulty. Task failure requires causal audit and fresh counterfactual execution using evidence accessible at the decision point. Infrastructure, observer and format failures do not establish cognitive difficulty. One failure is at most a candidate signal. Do not expand a family before this screen.",
+  "runtime": {
+    "image": "sha256:36dc7aa361b21f8e0506d478f33476c23ce02e604a6f3e0c7c6f8f3df1f6ea0d",
+    "base_image": "postgres@sha256:3725f4e2499eef5134592b3b4ab79a543ed7f8e533b05b5b637af926630f6650",
+    "assets_sha256": {
+      "Dockerfile": "62dbc7b4d3068e8ca0943aac0397a46b1ab6a729a415342525a4dd999d79470b",
+      "orders.py": "9d7d2d0292c8c8611af3bdd657a2e8dd1a3d558e99eae20146ddf339bb2dff9c",
+      "README.md": "e4f9124ee4fc377a90eaf6ed39abfbedbe7bb1692e25f00af204f7a11458a941",
+      "schema.sql": "8a48913802b6fe102c2dfb1894907a3841cb440875d1dff60f1008a82bce2d2d",
+      "start-services.sh": "42c7073692693c058ad9b3aaae64b64e47fbc243b42c3f0dc0fbcbf539a7eeeb",
+      "supervisor.conf": "3f634aeeecb5ded3bc217c0ecfa26dca640a8518cd09ec2aab869d486078c33a"
+    }
+  },
+  "preflight": {
+    "requests": 1,
+    "timeout_seconds": 120,
+    "goal": "Confirm one completed native finish call; no incident, shell execution or difficulty score."
+  },
+  "controls_reference": "../incident-takeover-v1/control-evidence.json",
+  "environment_source_sha256": {
+    "takeover.py": "df4436f1ac023b68f4346ced3176abea1690c33fe89db588666cb47b8c7b326a",
+    "takeover_data/Dockerfile": "62dbc7b4d3068e8ca0943aac0397a46b1ab6a729a415342525a4dd999d79470b",
+    "takeover_data/orders.py": "9d7d2d0292c8c8611af3bdd657a2e8dd1a3d558e99eae20146ddf339bb2dff9c",
+    "takeover_data/README.md": "e4f9124ee4fc377a90eaf6ed39abfbedbe7bb1692e25f00af204f7a11458a941",
+    "takeover_data/schema.sql": "8a48913802b6fe102c2dfb1894907a3841cb440875d1dff60f1008a82bce2d2d",
+    "takeover_data/start-services.sh": "42c7073692693c058ad9b3aaae64b64e47fbc243b42c3f0dc0fbcbf539a7eeeb",
+    "takeover_data/supervisor.conf": "3f634aeeecb5ded3bc217c0ecfa26dca640a8518cd09ec2aab869d486078c33a",
+    "takeover_runtime.py": "adf8ec7b0cd79f1541a4d86613b4d1e109f7704ea706ffb1b7d9692916fe0845"
+  }
+}
