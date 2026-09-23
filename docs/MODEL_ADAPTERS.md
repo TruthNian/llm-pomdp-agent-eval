@@ -160,3 +160,33 @@ private evaluator state. Existing `responses`/`chat` adapters keep their origina
 Native and text-channel studies have different adapter contracts and must not be pooled silently.
 Declare `max_response_bytes` in a frozen study: stream event overhead and reasoning can exhaust a
 small byte limit before a completed action. A size-limit failure is not evidence of incident difficulty.
+
+## Continuous native dialogue (2.16)
+
+`kind: "responses_session"` uses the same incident tools and environment. It sends
+the initial public delegation once, then retains the assistant's output items and
+appends each environment observation as `function_call_output` bound to the original
+call ID. It preserves assistant phase and requests encrypted reasoning content,
+following [OpenAI's reasoning continuity guidance](https://developers.openai.com/api/docs/guides/reasoning).
+The older `responses_tools` adapter remains a stateless public-history policy;
+native function schemas alone did not make its reasoning continuous.
+
+Only the initial contract/observation, prior model output and actual tool results
+enter the dialogue. A changed task, rewritten history, wrong action/result binding
+or reused call identity terminates the attempt. Returned reasoning items without
+encrypted continuation state are not silently discarded. No server-side storage,
+provider-hosted tools, automatic retry, added incident hint or history summary is used.
+
+Opaque reasoning stays in process memory and is never written into public evidence.
+The request audit retains sanitized assistant/function items and hashes for encrypted
+reasoning and summaries. `input_projection_sha256` commits to the complete request
+with those opaque fields replaced by hashes. A verifier reconstructs that projection
+from the initial public request, retained model-item projections and recorded tool
+observations. `request_sha256` still commits to the actual wire body; reconstructing
+that full body requires the ephemeral opaque state, so public regrading must not claim
+to reproduce it. These are local provenance checks, not provider attestation.
+
+Sessions are isolated per episode. Interrupted attempts remain sealed failures;
+they are not resumed by inventing missing reasoning state. Protocol-only diagnostics
+must stay separate from incident outcomes. The [continuous recovery screen](../studies/stream-recovery-continuous-v1/README.md)
+keeps the same task, image and budgets as the preceding stateless attempt.

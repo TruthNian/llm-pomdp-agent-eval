@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.16.0
+
+- Add `responses_session`: preserve native assistant/function items, tool-call identities, assistant phase and encrypted reasoning across an episode. Remove fresh-history reconstruction as the mainline agent interface.
+- Keep opaque reasoning in memory only. Publish replayable input projections and opaque-item hashes, never encrypted or plaintext reasoning. Reject discontinuous histories and missing required reasoning state instead of silently downgrading.
+- Retain the stateless 2.14/2.15 adapters and all results. Freeze a separate continuous Sol screen with the same incident, image, business acceptance and budgets; no change to environment semantics.
+
 ## 2.15.0
 
 - Add separately versioned `stream-recovery/1`: actual destructive PostgreSQL rewind, physical backup/WAL recovery, Debezium/Kafka delivery and an independently persisted carrier ledger.

@@ -1,4 +1,4 @@
-# Benchmark specification — frameworks 2.0–2.15
+# Benchmark specification — frameworks 2.0–2.16
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
 
@@ -11,6 +11,13 @@ Framework 2.15 adds the separately versioned `stream-recovery/1`
 actual CDC transport, independent dispatch history and acceptance across restart.
 It reuses sparse handover and recorded-behavior replay; old traces retain their original rules.
 The explicit action catalogues and verification gates below remain old-family rules.
+
+Framework 2.16 adds `responses_session` for continuous native tool dialogue. The
+environment contract is unchanged. Its [adapter contract](MODEL_ADAPTERS.md) preserves
+provider-generated continuation items in memory and publishes an independently
+reconstructable public projection plus hashes of opaque reasoning state. Old request
+hashes and stateless adapters retain their original semantics. Do not pool the two
+agent configurations or claim the old history policy measured a native-agent ceiling.
 
 2.11 adds `reconciliation-repair/1`, with actual bounded SQL component repair over
 delayed HTTP feeds. Its [contract](RECONCILIATION_REPAIR.md) defines two constructed

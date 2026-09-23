@@ -1,4 +1,4 @@
-"""One bounded HTTP action channel; no agent runtime, tools, or response chaining."""
+"""Bounded HTTP action channels with explicitly versioned conversation semantics."""
 from __future__ import annotations
 
 import copy
@@ -88,7 +88,7 @@ def request_body(config, request):
 def action_text(data, kind):
     if not isinstance(data, dict) or data.get("error"):
         raise AdapterError("Endpoint returned an error envelope", "protocol_error")
-    if kind == 'responses_tools':
+    if kind in ('responses_tools', 'responses_session'):
         return native_action(data)
     try:
         if kind == "chat":
@@ -165,7 +165,7 @@ def native_action(data):
 class ResponseStream:
     """Inspect events while streaming; commit only a completed response envelope."""
 
-    def __init__(self, functions=()):
+    def __init__(self, functions=(), *, preserve_reasoning=False):
         self.buffer = b""
         self.lines = []
         self.result = None
@@ -174,6 +174,7 @@ class ResponseStream:
         self.functions = tuple(functions)
         self.item_names = {}
         self.function_arguments = {}
+        self.preserve_reasoning = preserve_reasoning
 
     def check_item(self, item):
         if item.get('type') in ('message','reasoning'):
@@ -247,7 +248,7 @@ class ResponseStream:
                 if identity in self.function_arguments and self.function_arguments[identity] != item.get('arguments'):
                     raise AdapterError('Endpoint returned conflicting function arguments','protocol_error')
                 # Reasoning is never action content and need not be accumulated.
-                self.completed_items[identity] = item if item["type"] != "reasoning" else {"type": "reasoning"}
+                self.completed_items[identity] = item if item["type"] != "reasoning" or self.preserve_reasoning else {"type": "reasoning"}
         if kind in ('response.function_call_arguments.delta','response.function_call_arguments.done'):
             identity = (event.get('item_id'),event.get('output_index'))
             if self.item_types.get(identity) != 'function_call' or identity in self.completed_items:
@@ -286,11 +287,16 @@ class ResponseStream:
                 # Invalid action JSON must still reach usage accounting.
                 if messages(reported) != messages(closed):
                     raise AdapterError("Endpoint returned conflicting completed actions", "protocol_error")
+                if self.preserve_reasoning:
+                    reasoning = lambda items: [(x.get('id'),x.get('encrypted_content'),x.get('summary'))
+                                               for x in items if x.get('type')=='reasoning']
+                    if reasoning(reported) != reasoning(closed):
+                        raise AdapterError('Endpoint returned conflicting reasoning state', 'protocol_error')
             self.result = terminal
 
 
 def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=False,
-             max_response_bytes=MAX_RESPONSE_BYTES, functions=()):
+             max_response_bytes=MAX_RESPONSE_BYTES, functions=(), preserve_reasoning=False):
     """No redirects, implicit proxies or retries. Bound reads by one deadline."""
     parsed = urllib.parse.urlsplit(endpoint)
     connection_type = http.client.HTTPSConnection if parsed.scheme == "https" else http.client.HTTPConnection
@@ -334,7 +340,7 @@ def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=Fals
         media = response.getheader("Content-Type", "").split(";", 1)[0].strip().lower()
         # A missing media header uses the format we explicitly requested.
         # Never sniff arbitrary body text or treat a delta as an action.
-        stream = ResponseStream(functions) if media == "text/event-stream" or (not media and streaming) else None
+        stream = ResponseStream(functions, preserve_reasoning=preserve_reasoning) if media == "text/event-stream" or (not media and streaming) else None
         chunks, size = [], 0
         while not response.isclosed():
             sock.settimeout(remaining())
@@ -377,6 +383,10 @@ class HttpAgent:
         self.usage = {"requests": 0, "requests_with_usage": 0, "input_tokens": 0, "output_tokens": 0,
                       "reasoning_tokens": 0, "requests_with_reasoning_usage": 0}
         self.request_audit = []
+        self.session = None
+        if config['kind'] == 'responses_session':
+            from .native_session import NativeSession
+            self.session = NativeSession()
         self.endpoint = os.environ.get(config["endpoint_env"], "")
         try:
             parsed = urllib.parse.urlsplit(self.endpoint)
@@ -406,7 +416,7 @@ class HttpAgent:
                 raise AdapterError("headers_env must contain distinct allowed metadata headers with ASCII values", "configuration_error") from None
 
     def act(self, request, timeout):
-        payload = request_body(self.config, request)
+        payload = self.session.request(self.config, request) if self.session else request_body(self.config, request)
         body = json.dumps(payload, ensure_ascii=False, allow_nan=False).encode()
         limit = min(timeout, self.config.get("timeout_seconds", 30))
         if not math.isfinite(limit) or limit <= 0:
@@ -415,16 +425,23 @@ class HttpAgent:
                  "declared_tools": [t['name'] for t in payload['tools']], "tool_choice": payload['tool_choice'], "timeout_seconds": limit,
                  "max_response_bytes": self.max_response_bytes, "outcome": "in_flight"}
         self.request_audit.append(audit)
+        if self.session:
+            from .native_session import fingerprint, projected_payload
+            audit['input_projection_sha256'] = fingerprint(projected_payload(payload))
         self.usage["requests"] += 1
         try:
-            extra = {'functions':('exec','finish')} if self.config['kind'] == 'responses_tools' else {}
+            extra = {'functions':('exec','finish')} if self.config['kind'] in ('responses_tools','responses_session') else {}
+            if self.session:
+                extra['preserve_reasoning'] = True
             data = exchange(self.endpoint, self.key, body, limit, self.headers,
-                            streaming=self.config["kind"] in ('responses','responses_tools'),
+                            streaming=self.config["kind"] in ('responses','responses_tools','responses_session'),
                             max_response_bytes=self.max_response_bytes, **extra)
             self.add_usage(data)
             # Record label agreement even when completed action text is invalid.
             audit["reported_model_matches_request"] = data.get("model") == self.config["model"] if isinstance(data, dict) and data.get("model") else None
             action = action_text(data, self.config["kind"])
+            if self.session:
+                self.session.accept(data, action, audit)
             audit["outcome"] = "action"
             return action
         except InvalidActionError as exc:
