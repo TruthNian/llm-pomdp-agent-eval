@@ -1,0 +1,33 @@
+{
+  "source_commit": "9fa1f6a6bc43e7bd35ee8bd808eded32728a7bbd",
+  "model_episodes": 1,
+  "control_episodes": 4,
+  "runtime": {
+    "image": "sha256:36dc7aa361b21f8e0506d478f33476c23ce02e604a6f3e0c7c6f8f3df1f6ea0d",
+    "base_image": "postgres@sha256:3725f4e2499eef5134592b3b4ab79a543ed7f8e533b05b5b637af926630f6650",
+    "assets_sha256": {
+      "Dockerfile": "62dbc7b4d3068e8ca0943aac0397a46b1ab6a729a415342525a4dd999d79470b",
+      "orders.py": "9d7d2d0292c8c8611af3bdd657a2e8dd1a3d558e99eae20146ddf339bb2dff9c",
+      "README.md": "e4f9124ee4fc377a90eaf6ed39abfbedbe7bb1692e25f00af204f7a11458a941",
+      "schema.sql": "8a48913802b6fe102c2dfb1894907a3841cb440875d1dff60f1008a82bce2d2d",
+      "start-services.sh": "42c7073692693c058ad9b3aaae64b64e47fbc243b42c3f0dc0fbcbf539a7eeeb",
+      "supervisor.conf": "3f634aeeecb5ded3bc217c0ecfa26dca640a8518cd09ec2aab869d486078c33a"
+    }
+  },
+  "recheck_scope": "Recorded-behavior replay. Four fresh artifact controls. No byte-identical real-time model reexecution claim.",
+  "settings_unchanged": true,
+  "file_sha256": {
+    "plan.json": "3672d55cb7640cd8392691b49f74188e3f2d7fe6b8c045461c8c4f31c6428ec4",
+    "README.md": "3c5636fb92fd191802bb6c8d3d577b1cc389a65d2ef56d7f41292985457fdac6",
+    "model-evidence.json": "2a4eb9c98f943a5c7614d3018fa06eefc6e240f09fd9a43ec549fb96f36feaa7",
+    "control-evidence.json": "62521ca6c98948938e623e9acabc65f55a6c7517ec0cf1a2337ecd3c2d6df8d5",
+    "trajectories.html": "13ddd95ff2c708b244a77b526c98b19b1af7f173c52a1c1117499e7632c37aa5",
+    "controls.html": "3aa18325e2bd55cbb20028eceb258fd8f89764b115b83d7f1077b52945f0835d",
+    "verify.py": "b9f067680cc23c2a690e0321b2dfafd05f2fabace6e642f6d9a15de677d1b8e7",
+    "../../tools/service_study.py": "afa205a4572ecd7bf1c6cc02780888bfde9e8de8141c673bec29ab54cd46191a",
+    "../../tools/qualify_takeover.py": "628381830da7a20cc11b6fab670a448dcdaf275bbc93033f5a9d704141cae55c",
+    "protocol-diagnostic.json": "8c44e769a18cee574f42c732557e4b673fdcc8944c9fdbfc41e07a1011fdf4bd",
+    "glm-followup-plan.json": "a49ae4a6e947b592b2160c2d66828a50647bbfe42b76d12d09d60d0f8c5a1211",
+    "../../tools/collect_takeover_followup.py": "8eea35a2948754fb9a78db816352101e798d32c5b33ba2975e4dfc22f5cab1e2"
+  }
+}

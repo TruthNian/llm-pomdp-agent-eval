@@ -1,0 +1,44 @@
+{
+  "plan": {
+    "purpose": "One unscored protocol diagnostic of the failed public request. No environment or returned action execution. New response shape cannot establish the original unseen body. No automatic retry.",
+    "request_sha256": "41db69328bba7d2d700810a8c448474a4d1a00f7b522ef910f3c0aab5d2a98e1",
+    "max_requests": 1,
+    "timeout_seconds": 600,
+    "model": "gpt-5.6-sol"
+  },
+  "result": {
+    "status": "completed",
+    "model_matches": true,
+    "usage": {
+      "input_tokens": 8869,
+      "output_tokens": 667,
+      "output_tokens_details": {
+        "reasoning_tokens": 120
+      },
+      "total_tokens": 9536
+    },
+    "items": [
+      {
+        "type": "reasoning",
+        "role": null,
+        "status": null,
+        "phase": null
+      },
+      {
+        "type": "message",
+        "role": "assistant",
+        "status": "completed",
+        "phase": "final_answer",
+        "parts": [
+          {
+            "type": "output_text",
+            "text_length": 1776,
+            "text_sha256": "5615aa11d3bc563e940a195cf3602652e83277639f9e1af52b4306864a7ea0c3"
+          }
+        ]
+      }
+    ],
+    "parsed_action_command": "exec",
+    "elapsed_seconds": 23.78422249999994
+  }
+}

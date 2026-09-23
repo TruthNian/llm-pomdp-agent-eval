@@ -41,6 +41,9 @@ jobs:
       - name: Verify refund recovery ceiling screen and controls
         if: hashFiles('studies/refund-recovery-v1/execution.json') != ''
         run: python tools/service_study.py verify studies/refund-recovery-v1
+      - name: Regrade PostgreSQL takeover model and actual controls
+        if: hashFiles('studies/incident-takeover-v1/execution.json') != ''
+        run: python studies/incident-takeover-v1/verify.py
       - name: Regrade external settlement model and control evidence
         if: hashFiles('studies/external-settlement-v1/execution.json') != ''
         run: python studies/external-settlement-v1/verify.py
