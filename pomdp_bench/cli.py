@@ -15,6 +15,7 @@ from .storage import collection_lock, read_json, write_json
 from .studies import prepare_study, validate_plan
 from .coverage import SCALES, DEPTH_SCALES, suite as coverage_suite
 from .repair import suite as repair_suite
+from .reconciliation import suite as reconciliation_suite
 from .repair_portfolio import TASKS as REPAIR_TASKS
 from .incident import suite as incident_suite
 from .settlement import suite as settlement_suite
@@ -53,6 +54,8 @@ def main(argv=None) -> int:
     repair.add_argument("--image", required=True, help="Immutable local Docker image ID (sha256:...)")
     repair.add_argument("--tasks", nargs="+", choices=REPAIR_TASKS, help="Select the real portfolio; omit for the original packaging anchor")
     repair.add_argument("--out", type=Path, required=True)
+    reconciliation = commands.add_parser("prepare-reconciliation-suite", help="Prepare cross-component SQL reconciliation repair")
+    reconciliation.add_argument("--out", type=Path, required=True)
     external = commands.add_parser("prepare-settlement-suite", help="Prepare external settlement with separate provider state")
     external.add_argument("--out", type=Path, required=True)
     incident = commands.add_parser("prepare-incident-suite", help="Prepare the executable checkout/settlement incident")
@@ -78,7 +81,10 @@ def main(argv=None) -> int:
         item.add_argument("run_directory", type=Path)
     args = parser.parse_args(argv)
     try:
-        if args.command == "prepare-settlement-suite":
+        if args.command == "prepare-reconciliation-suite":
+            write_json(args.out, reconciliation_suite(), replace=False)
+            print("Prepared two reconciliation contracts; strong-model difficulty remains uncalibrated.")
+        elif args.command == "prepare-settlement-suite":
             write_json(args.out, settlement_suite(), replace=False)
             print("Prepared external settlement; provider state is separate from local books.")
         elif args.command == "prepare-incident-suite":

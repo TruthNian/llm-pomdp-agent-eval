@@ -14,6 +14,7 @@ from .agents import validate_agent_version, validate_config
 from .coverage import COVER_VERSIONS, POLICIES as COVER_POLICIES, ASSISTED_POLICIES
 from .incident import VERSION as INCIDENT_VERSION, POLICY as INCIDENT_POLICY
 from .settlement import VERSION as SETTLEMENT_VERSION, POLICY as SETTLEMENT_POLICY
+from .reconciliation import VERSION as RECONCILIATION_VERSION, POLICY as RECONCILIATION_POLICY
 from .worlds import INCIDENT_VERSIONS, Environment, REPAIR_VERSIONS, cluster_id, validate_case_version, CONDITIONS, validate_condition_version
 from .evaluation import episode_record, recover_interrupted, replay, replay_environment, run_episode, validate_suite
 from .generator import digest
@@ -39,7 +40,10 @@ def validate_definition(data, configs, conditions, replicates, wall_seconds):
     if (not isinstance(conditions, list) or not conditions or len(set(conditions)) != len(conditions)
             or set(conditions) - set(CONDITIONS)):
         raise ValueError("Unknown or duplicate conditions")
-    if data["generator_version"] == SETTLEMENT_VERSION:
+    if data["generator_version"] == RECONCILIATION_VERSION:
+        if conditions != ["open"] or any(c["kind"] not in ("chat", "responses", "actions", RECONCILIATION_POLICY) for c in configs):
+            raise ValueError("Reconciliation needs open and HTTP agents or declared SQL controls")
+    elif data["generator_version"] == SETTLEMENT_VERSION:
         if conditions != ["open"] or any(c["kind"] not in ("chat", "responses", "actions", SETTLEMENT_POLICY) for c in configs):
             raise ValueError("External settlement needs open and HTTP agents or declared settlement controls")
     elif data["generator_version"] == INCIDENT_VERSION:
@@ -56,6 +60,8 @@ def validate_definition(data, configs, conditions, replicates, wall_seconds):
             raise ValueError("Solver consumer policy requires only solver_assisted")
     elif "solver_assisted" in conditions or any(c["kind"] in (*COVER_POLICIES, *ASSISTED_POLICIES) for c in configs):
         raise ValueError("Coverage policies and solver assistance require a coverage suite")
+    if data["generator_version"] != RECONCILIATION_VERSION and any(c["kind"] == RECONCILIATION_POLICY for c in configs):
+        raise ValueError("Reconciliation operator needs a reconciliation suite")
     if data["generator_version"] != SETTLEMENT_VERSION and any(c["kind"] == SETTLEMENT_POLICY for c in configs):
         raise ValueError("Settlement operator needs an external settlement suite")
     if data["generator_version"] != INCIDENT_VERSION and any(c["kind"] == INCIDENT_POLICY for c in configs):

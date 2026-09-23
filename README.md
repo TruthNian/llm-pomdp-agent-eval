@@ -37,6 +37,8 @@ completed in 26 actions, including recovery from two malformed action responses.
 All 33 accepted orders reconciled. The original failed attempt remains published;
 the two adapter versions are not pooled into a model ranking.
 
+Framework 2.11 adds [cross-component reconciliation repair](docs/RECONCILIATION_REPAIR.md): actual SQL edits, intermediate execution, deployment and historical recovery across two financial feed contracts. [Qualification and strong-route screen](studies/reconciliation-repair-v1/README.md) keep feasibility distinct from high-difficulty claims.
+
 Framework 2.10 adds [external settlement](docs/EXTERNAL_SETTLEMENT.md): separate provider/local state, finite refund liquidity, cancellation deadlines and delayed notifications. Local bookkeeping cannot undo an external payment. [Complete evidence](studies/external-settlement-v1/README.md): Sol delivered in 26 actions; the GLM route timed out on request 10 after nine actions. Seven mechanism controls separated as specified. The configuration-invariance check failed and remains disclosed; this is integration evidence, not a controlled model comparison or proof of frontier difficulty.
 
 ## Architecture

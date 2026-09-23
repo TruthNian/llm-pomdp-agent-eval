@@ -1,6 +1,11 @@
-# Diagnostic benchmark specification — frameworks 2.0–2.10
+# Diagnostic benchmark specification — frameworks 2.0–2.11
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
+
+2.11 adds `reconciliation-repair/1`, with actual bounded SQL component repair over
+delayed HTTP feeds. Its [contract](RECONCILIATION_REPAIR.md) defines two constructed
+financial data semantics and separate per-object/report verification. Old families
+and recorded evidence are preserved; new collections require the new version/source.
 
 2.10 adds `external-settlement/1`, with separate provider state, asynchronous
 settlement/refunds, finite liquidity and delayed notifications. Its contract is

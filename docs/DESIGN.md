@@ -170,3 +170,13 @@ those already have an earlier anchor. Its decisions concern irreversible externa
 commitment, finite recovery resources and conflicting evidence. Both families reuse
 bounded HTTP/SQL plumbing and the same action-bound evidence collector. More service
 count, more documentation, or another parser failure would not establish difficulty.
+
+## Actual component rules rather than configuration presets
+
+Framework 2.11 implements [cross-component reconciliation repair](RECONCILIATION_REPAIR.md).
+The agent edits executable SQL, observes intermediate rows, deploys and recovers
+materialized state. Separate provider truth checks both individual object lineage
+and business totals. This reuses the incident interaction/evidence state machine;
+there is no second collector or localized one-shot submission flow. The two public
+contracts need different normalization semantics. Qualification and strong-route
+calibration remain separate: executable source repair alone is not hard-task evidence.

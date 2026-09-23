@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.11.0
+
+- Add two complete reconciliation repair contracts with actual bounded SQL component edits, delayed HTTP input and independent object/total acceptance.
+- Preserve test/deploy/backfill distinctions and shared action-bound evidence/recheck.
+- Add public-contract feasibility/partial-repair controls and a frozen Sol max ceiling screen; model difficulty is measured separately.
+
+
 ## 2.10.0 — 2026-09-23
 
 - Add separately versioned external settlement with independent provider/local

@@ -15,8 +15,11 @@ from .incident import POLICY as INCIDENT_POLICY, policy_action as incident_actio
 
 from .settlement import POLICY as SETTLEMENT_POLICY, policy_action as settlement_action
 
+from .reconciliation import POLICY as RECONCILIATION_POLICY
+from .reconciliation_control import policy_action as reconciliation_action
+
 BUILTINS = ("reference", "random", "overdiagnose", "proxy")
-POLICIES = (*BUILTINS, "reserve_probe", *COVER_POLICIES, *ASSISTED_POLICIES, INCIDENT_POLICY, SETTLEMENT_POLICY)
+POLICIES = (*BUILTINS, "reserve_probe", *COVER_POLICIES, *ASSISTED_POLICIES, INCIDENT_POLICY, SETTLEMENT_POLICY, RECONCILIATION_POLICY)
 
 
 def validate_config(config: dict) -> None:
@@ -63,6 +66,8 @@ def validate_config(config: dict) -> None:
 
 
 def validate_agent_version(config, version):
+    if config["kind"] == RECONCILIATION_POLICY and not version_at_least(version, "2.11.0"):
+        raise ValueError("Reconciliation operator requires framework 2.11")
     if config["kind"] == SETTLEMENT_POLICY and not version_at_least(version, "2.10.0"):
         raise ValueError("Settlement operator requires framework 2.10")
     if config["kind"] == INCIDENT_POLICY and not version_at_least(version, "2.9.0"):
@@ -86,6 +91,8 @@ class ScriptedAgent:
         self.usage = None  # No model tokens were consumed; never fabricate zero-token LLM measurements.
 
     def act(self, request: dict, timeout: float) -> dict:
+        if self.kind == RECONCILIATION_POLICY:
+            return reconciliation_action(request)
         if self.kind == SETTLEMENT_POLICY:
             return settlement_action(request)
         if self.kind == INCIDENT_POLICY:
