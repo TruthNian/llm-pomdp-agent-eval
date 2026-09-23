@@ -65,7 +65,8 @@ Incident goal + acceptance contract
 
 All families share one collector. Source, runtime, budgets and attempts bind to
 evidence. Models receive public tool results, not manifests, upstream fixes or
-grader source. Every edit expires verification. Failed attempts remain in the
+grader source. Historical explicit-verification families expire a pass after an edit;
+incident takeover instead grades business outcomes independently after handover. Failed attempts remain in the
 denominator; missing usage remains unknown.
 
 ## Other task families

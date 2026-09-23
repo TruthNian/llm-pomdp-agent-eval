@@ -1,6 +1,6 @@
 # Design from the task outward
 
-The accepted next mainline is [incident takeover](INCIDENT_TAKEOVER.md): sparse
+The accepted mainline is [incident takeover](INCIDENT_TAKEOVER.md): sparse
 handover, agent-discovered tools and evidence amid operational noise, actual
 consequences without evaluator coaching, and independent outcome grading. The first
 [PostgreSQL candidate](POSTGRES_TAKEOVER.md), implemented in 2.13, was solved in the
@@ -76,7 +76,7 @@ The remote model receives a JSON allowlist: contract, current observation, and p
 
 Built-in Python policies execute in the evaluator process and are trusted code. Passing them JSON is an interface discipline, not an OS security boundary. New untrusted local agents require a separate sandbox or remote service with no access to the evaluator's files, environment, or process memory.
 
-Existing families require explicit handover after a passing verification of the current revision. A failed verification is not acceptance. A later mutation invalidates a previous pass even when that mutation is subsequently undone. A green dashboard does not substitute for verification. The next incident-takeover family instead separates agent-chosen operational checks from evaluator-owned outcome grading; it will not expose a privileged PASS gate or grade on a prescribed command sequence. This requires new semantics, not a retrospective change to old families.
+Historical explicit-verification families require handover after a passing verification of the current revision. A failed verification is not acceptance. A later mutation invalidates a previous pass even when that mutation is subsequently undone. A green dashboard does not substitute for verification. The implemented incident-takeover family separates agent-chosen operational checks from evaluator-owned outcome grading; it exposes no privileged PASS gate and does not grade on a prescribed command sequence. Old families retain their recorded semantics.
 
 ## Separate measurements from interpretations
 
