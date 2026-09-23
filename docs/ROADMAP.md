@@ -52,3 +52,11 @@ Measure delivery, rework and reviewer cost on independent external tasks, then e
 Question requirements, delete work unrelated to decisions and delivery, simplify implementation,
 then optimize measured bottlenecks. Additional synthetic studies and unrelated infrastructure
 are not prerequisites for the next useful complete task.
+
+Framework 2.10's [completed development study](../studies/external-settlement-v1/README.md)
+retains seven mechanism controls and two max-route attempts. Sol delivered; the GLM
+route timed out. The configuration-invariance control failed, so model observations
+remain integration evidence rather than a controlled comparison. Keep this as an
+external-consequence anchor. The next gate is evidence-driven location and repair
+of cross-component transformation/identity faults; a single fixed settings patch
+must not repair the entire candidate set. Do not add mere volume or cosmetic variants.

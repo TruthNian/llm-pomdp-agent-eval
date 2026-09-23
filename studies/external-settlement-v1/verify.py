@@ -44,8 +44,17 @@ def main():
         report = "trajectories.html" if name.startswith("model") else "controls.html"
         if (root / report).read_text(encoding="utf-8") != render(data):
             raise ValueError("Readable report changed")
-        if name.startswith("model") and data["settings_check"] != {"settings_and_auth_bytes_unchanged": True}:
-            raise ValueError("Local settings changed")
+        if name.startswith("model"):
+            # Verifying that adverse evidence was preserved is not the same as
+            # passing the configuration-invariance control. Never rewrite false.
+            observed = data["settings_check"]
+            declared = execution["configuration_invariance"]
+            if observed != {"settings_and_auth_bytes_unchanged": declared["passed"]} or type(declared["passed"]) is not bool:
+                raise ValueError("Configuration-invariance result changed")
+            if not declared["passed"]:
+                if not declared.get("limitation"):
+                    raise ValueError("Failed invariance control needs an explicit limitation")
+                print("Configuration-invariance control FAILED; retained and disclosed. Not a controlled model comparison.")
         print(f"Regraded {expected_count} complete records in {name}; no services or model calls.")
 
 

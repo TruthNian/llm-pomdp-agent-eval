@@ -1,0 +1,25 @@
+{
+  "source_commit": "019a605c6d26667822117b18bda5e21f4f977939",
+  "framework_version": "2.10.0",
+  "planned_model_attempts": 2,
+  "retained_model_attempts": 2,
+  "retained_controls": 7,
+  "all_recorded_actions_matched_fresh_execution": true,
+  "configuration_invariance": {
+    "passed": false,
+    "limitation": "Combined config/auth byte comparison failed. Only a combined Boolean was recorded; changed fields and cause cannot be established. Retain as development integration evidence, not a controlled model comparison."
+  },
+  "file_sha256": {
+    "control-evidence.json": "053e830bce9f06bf44b983387afe2f7c496b9c6cdbe72ca0c281a776d6a77176",
+    "controls.html": "c518045f400c7852952e5149c3952c7737a09aac139e1f321e55e4c930f7f476",
+    "controls.py": "9af42ae97380b1298a628b66af1981c8e9d4b2d73e995d13cdb4b1b98171010f",
+    "export.py": "07e3591dd2fb7ddcef0198f6b5e36a75736484beda17f971ebc20c70766be0a7",
+    "launcher.py": "6d377168657b91b59b630acf091f0c7abb655f109f8bc461fd3e1efb6a101cfb",
+    "model-evidence.json": "89765cbe1f99fa7f67eb2378e65e79ec042f234d3537ee0636b4e50f1cfc3c1e",
+    "plan.json": "6b25767db4fe89fe2acca81445af4da5a4b4be6eaea9c01a9d029340acf8f7ae",
+    "README.md": "e4ce1520b4317e00166c6bb3d0babad5c3237e17a59fb5b0b2ac8ee8226bbfc6",
+    "render.py": "1ab80a45c55cc23d7d974636d47f9a92ce5ada48f9e3d5ef010e6c0672192b57",
+    "trajectories.html": "9e0f3937b8dfeab0518cfd87fe8a3168205311d8705bfb07341ca22457be3f33",
+    "verify.py": "3227fd4d3c3d3ed46b58a1f4c54626b3e8947d8b661ea022d7c5e96b9fc99db0"
+  }
+}

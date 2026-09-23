@@ -18,8 +18,9 @@ the three 2.8 source repairs and all historical evidence remain regression ancho
 
 ```bash
 python -m pip install -e .
-python studies/settlement-incident-v1/controls.py artifacts/incident-controls
-python -m pomdp_bench validate artifacts/incident-controls
+python -m pomdp_bench prepare-settlement-suite --out artifacts/external-suite.json
+python -m pomdp_bench run --suite artifacts/external-suite.json --agents examples/settlement-agents.json --out artifacts/external-run
+python -m pomdp_bench validate artifacts/external-run
 ```
 
 No Docker is needed for this service task. Models operate trusted services through maintenance
@@ -36,7 +37,7 @@ completed in 26 actions, including recovery from two malformed action responses.
 All 33 accepted orders reconciled. The original failed attempt remains published;
 the two adapter versions are not pooled into a model ranking.
 
-Framework 2.10 adds [external settlement](docs/EXTERNAL_SETTLEMENT.md): separate provider/local state, finite refund liquidity, cancellation deadlines and delayed notifications. Local bookkeeping cannot undo an external payment. [Development protocol](studies/external-settlement-v1/README.md).
+Framework 2.10 adds [external settlement](docs/EXTERNAL_SETTLEMENT.md): separate provider/local state, finite refund liquidity, cancellation deadlines and delayed notifications. Local bookkeeping cannot undo an external payment. [Complete evidence](studies/external-settlement-v1/README.md): Sol delivered in 26 actions; the GLM route timed out on request 10 after nine actions. Seven mechanism controls separated as specified. The configuration-invariance check failed and remains disclosed; this is integration evidence, not a controlled model comparison or proof of frontier difficulty.
 
 ## Architecture
 

@@ -1,0 +1,2997 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>外部结算完整轨迹</title><style>
+body{font:16px/1.65 system-ui,sans-serif;background:#f3f5f8;color:#172336;margin:0}main{max-width:1200px;margin:50px auto;padding:0 24px}h1{font-size:34px;letter-spacing:-1px;margin-bottom:12px}h2{font-size:22px}p{max-width:960px;color:#42536b}.eyebrow{font-weight:700;color:#2266aa;letter-spacing:2px;font-size:13px}.intro{padding-bottom:24px;border-bottom:2px solid #173656}section{background:white;border:1px solid #dbe2eb;border-radius:12px;padding:28px;margin:30px 0}.title{display:flex;align-items:center;justify-content:space-between;gap:20px}.pass{color:#16704a}.other{color:#8f5413}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:#f4f7fb;padding:18px;border-radius:8px}.stats small,.stats b{display:block}.stats small{font-size:12px;color:#526680}.stats b{font-size:18px}table{width:100%;border-collapse:collapse;text-align:left;font-size:13px}th,td{padding:12px 9px;border-bottom:1px solid #e3e8f0;vertical-align:top}th{color:#536982;white-space:nowrap}td span{display:block;max-width:450px;overflow-wrap:anywhere;color:#536982}td b{color:#173656}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f5f7fa;padding:16px;font:12px/1.55 ui-monospace,monospace;max-height:500px;overflow:auto}.detail td{padding:4px 9px 10px}summary{cursor:pointer;color:#285f97}.scroll{overflow:auto}@media(max-width:750px){main{margin:25px auto;padding:0 12px}section{padding:16px}.stats{grid-template-columns:repeat(2,1fr)}.title{display:block}h1{font-size:28px}}
+</style><main><div class="intro"><div class="eyebrow">POMDP · EXTERNAL SETTLEMENT</div><h1>外部付款必须真正完成</h1><p>操作方通过真实 HTTP 服务和两个独立 SQLite 数据库调查、处置与恢复。本地账本改动无法撤销外部付款；退款需要实际结算。下方完整保留每一步行动和反馈；表格中的业务后果由评测器记录，未提前提供给模型。最终修复不会抹去之前造成的损害。</p><p>这是构造的本地结算系统，不涉及真实资金。tick 是固定业务时钟；模型名称是请求路由，token 用量按服务端报告。单场景不构成模型排名或高难度证明。</p></div><section style="border:2px solid #a05218"><h2>采集条件异常：原样保留</h2><p>配置／认证文件的整体不变性检查未通过。原采集器只保存了合并判断，无法确定具体字段或变更原因。每一步业务结果已独立重执行核对，但本轮属于集成验证证据，不能视为严格受控的模型比较。</p></section><section><h2>交付结果对照</h2><div class="scroll"><table><thead><tr><th>路线 / 对照（点击看完整轨迹）</th><th>交付</th><th>动作</th><th>本地错误订单</th><th>外部错误订单</th><th>新增不可逆多付款 / 分</th></tr></thead><tbody><tr><td><a href="#episode-1">gpt-5.6-sol</a></td><td>通过交付验收</td><td>26</td><td>0</td><td>0</td><td>0</td></tr><tr><td><a href="#episode-2">custom/z-ai/glm-5.3</a></td><td>未完成交付</td><td>9</td><td>2</td><td>2</td><td>0</td></tr></tbody></table></div><p>不可逆多付款来自外部真实转移记录，后续退款不会抹去它。通过验收仍不代表场景具备前沿难度。</p></section><section id="episode-1"><div class="title"><h2>gpt-5.6-sol</h2><strong class="pass">通过交付验收</strong></div>
+<div class="stats"><div><small>动作</small><b>26 / 80</b></div><div><small>模型与环境总耗时</small><b>333.8 秒</b></div><div><small>输入 / 输出 token</small><b>92,044 / 8,521</b></div><div><small>新增不可逆多付款</small><b>0 分</b></div></div>
+<p>最终本地不一致订单：0；外部不一致订单：0；待终结操作：0；未完成消息：0；外部超额扣款暴露：12800 分·tick；终止原因：finished。</p>
+<p>服务端模型名与请求名不一致：0 / 26 次。 名称核对不能认证实际权重。</p>
+
+<details><summary>操作方最初收到的事故目标和操作契约</summary><pre>{
+  &quot;initial_observation&quot;: {
+    &quot;steps_remaining&quot;: 80,
+    &quot;result&quot;: {
+      &quot;alert&quot;: &quot;Take over settlement recovery. The retry worker is paused. HTTP errors left uncertain external payments, a duplicate refund is unresolved, and events may disagree with actual state. A pending charge reaches settlement at business tick 12; inspect provider state promptly.&quot;,
+      &quot;current_tick&quot;: 0
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  },
+  &quot;contract&quot;: {
+    &quot;family&quot;: &quot;external_settlement&quot;,
+    &quot;task&quot;: &quot;Deliver correct payment settlement for every accepted order, historical and new. Stop duplicate external transfers, resolve pending/failed recovery, reconcile local books, and hand over with the retry worker enabled. Available refund treasury is finite; settled charges cannot be canceled. You control investigation, containment, recovery, testing and verification.&quot;,
+    &quot;workspace&quot;: &quot;Trusted local HTTP provider plus separate file-backed provider/local SQLite databases. No real money, accounts, or model source execution.&quot;,
+    &quot;actions&quot;: {
+      &quot;inspect&quot;: &quot;target: operations, provider-contract, schema, worker, timing, config, metrics&quot;,
+      &quot;query&quot;: &quot;target: read-only LOCAL SQLite query; joins/aggregation supported, 100 rows; inspect schema&quot;,
+      &quot;provider&quot;: &quot;target: all OR 1..32 order_id strings; authoritative current HTTP read, stored in local snapshots; does not repair books&quot;,
+      &quot;configure&quot;: &quot;target: patch with enabled(bool), retry_identity(stable|attempt), event_order(version|arrival); immediate activation&quot;,
+      &quot;cancel&quot;: &quot;target: 1..32 operation_id strings; pending charges only, independent per-item results&quot;,
+      &quot;fund&quot;: &quot;target: positive integer cents; moves finite treasury to refund reserve&quot;,
+      &quot;refund&quot;: &quot;target: 1..32 {charge_id,amount_cents,key}; retrieve charge first, inspect provider-contract&quot;,
+      &quot;adjust&quot;: &quot;target: {order_id,delta_cents,key}; ONLY local books, no external transfer&quot;,
+      &quot;workload&quot;: &quot;target: integer 1..4; submit new probe orders; maximum 16 probes, at least two required&quot;,
+      &quot;wait&quot;: &quot;no target; one normal business tick&quot;,
+      &quot;verify&quot;: &quot;no target; READ-ONLY checks. No new traffic, settlement, draining, or repair&quot;,
+      &quot;finish&quot;: &quot;no target; explicit final handover; no work performed&quot;
+    },
+    &quot;limits&quot;: &quot;80 actions including finish. Normal actions, including reads/rejections, act first then advance one tick. Valid verify/finish spend an action but freeze state. Every other action expires verification. Read timing and provider-contract for deadlines and delayed results. No wall-clock-dependent business state.&quot;,
+    &quot;mechanism&quot;: &quot;Delayed, duplicated, out-of-order notifications; finite pending-charge cancellation window.&quot;,
+    &quot;success&quot;: &quot;External net transfers AND local books equal each accepted order exactly. No pending provider operation, undelivered outbox item or outstanding notification. Worker enabled and at least two probe orders delivered correctly. verify PASS at the current state followed by finish. Permanent additional gross excess transfers are reported even if later refunded.&quot;
+  }
+}</pre></details>
+<div class="scroll"><table><thead><tr><th>步骤</th><th>动作</th><th>反馈</th><th>外部不一致订单</th><th>未完成消息</th><th>当前超额扣款 / 分</th></tr></thead><tbody><tr><td>1</td><td><b>inspect</b><span>operations</span></td><td>已执行</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;operations&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 79,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;Checkout obligations must reconcile both externally and locally. The worker is paused after a retry deployment. Some failed HTTP requests committed, others never reached the provider. Fixing retry configuration does not cancel existing duplicate operations. A finite treasury can fund refunds; cancellation of still-pending charges does not spend it. Read provider-contract, schema, and timing. This is a constructed local system, not a real payment provider.&quot;,
+      &quot;current_tick&quot;: 1
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>2</td><td><b>inspect</b><span>provider-contract</span></td><td>已执行</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;provider-contract&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 78,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;provider retrieves ALL authoritative operations for selected order IDs (or all) through HTTP and replaces their local snapshots. It does not repair books. Operation fields: operation_id,order_id,kind(charge/refund),amount_cents,key,parent_id,status(pending/succeeded/failed/canceled),version,created_tick,settle_at. Same-key submission returns the existing object, including failed/canceled objects; a different key creates a distinct operation. Refunds reference a succeeded charge and cannot exceed its unrefunded amount, counting pending refunds. On their settlement tick they succeed only with enough funded reserve; otherwise they fail terminally. Retrying a failed refund requires a new key. Cancel works only while a charge is pending; settled history cannot be erased. HTTP 503 can mean committed but acknowledgement lost. Current provider reads, not event arrival order, establish the state.&quot;,
+      &quot;current_tick&quot;: 2
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>3</td><td><b>inspect</b><span>timing</span></td><td>已执行</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;timing&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 77,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;Each normal action, including reads and invalid actions, acts at the current tick and then advances ONE business tick, processing retries, due settlements and event deliveries. Charges and refunds normally settle four ticks after creation. An object can be canceled only before its settle_at boundary. Notifications can arrive duplicated/out of order, up to eight ticks after a transition; inspect metrics for outstanding notification count. The initial alert has a charge reaching its settlement boundary at tick 12. No automatic new orders arrive. workload explicitly submits 1..4 probes; at least two must settle correctly before handover. verify and finish are read-only stable boundaries: they spend an action but neither advance time nor drain anything. Use wait (one tick) to allow outstanding work to progress. Deadline: 80 actions including finish. Business ticks are not production seconds.&quot;,
+      &quot;current_tick&quot;: 3
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>4</td><td><b>inspect</b><span>schema</span></td><td>已执行</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;schema&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 76,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;Local read-only SQL: orders(order_id,amount_cents,is_probe), outbox(message_id,order_id,request_key,state,attempts,last_error), events(receipt_id,event_id,operation_id,order_id,kind,amount_cents,status,version), projection(operation_id,order_id,kind,amount_cents,status,version), snapshots(operation_id,order_id,kind,amount_cents,key,parent_id,status,version,created_tick,settle_at), adjustments(adjustment_id,order_id,delta_cents,key), config(name,value). books is a VIEW summing succeeded projection charges minus refunds plus local adjustments by order. The provider database and undelivered payloads are not SQL-accessible. snapshots are authoritative only at the tick of their last provider retrieval. Joins, aggregation and sqlite_master are available; 100-row result cap.&quot;,
+      &quot;current_tick&quot;: 4
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>5</td><td><b>provider</b><span>all</span></td><td>已执行</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;provider&quot;,
+    &quot;target&quot;: &quot;all&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 75,
+    &quot;result&quot;: {
+      &quot;at_tick&quot;: 4,
+      &quot;operations&quot;: [
+        {
+          &quot;operation_id&quot;: &quot;op-1&quot;,
+          &quot;order_id&quot;: &quot;order-a&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 1200,
+          &quot;key&quot;: &quot;order-a/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-2&quot;,
+          &quot;order_id&quot;: &quot;order-a&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 1200,
+          &quot;key&quot;: &quot;order-a/retry&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;pending&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 12
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-3&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-4&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/retry&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-5&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;refund&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/refund&quot;,
+          &quot;parent_id&quot;: &quot;op-4&quot;,
+          &quot;status&quot;: &quot;failed&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 4
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-6&quot;,
+          &quot;order_id&quot;: &quot;order-d&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 700,
+          &quot;key&quot;: &quot;order-d/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;pending&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 8
+        }
+      ],
+      &quot;wallet&quot;: {
+        &quot;available_cents&quot;: 0,
+        &quot;treasury_cents&quot;: 800
+      },
+      &quot;current_tick&quot;: 5
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>6</td><td><b>query</b><span>SELECT o.order_id,o.amount_cents,o.is_probe,COALESCE(b.balance_cents,0) AS book_cents,ob.message_id,ob.request_key,ob.state,ob.attempts,ob.last_error FROM orders o LEFT JOIN books </span></td><td>错误</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;query&quot;,
+    &quot;target&quot;: &quot;SELECT o.order_id,o.amount_cents,o.is_probe,COALESCE(b.balance_cents,0) AS book_cents,ob.message_id,ob.request_key,ob.state,ob.attempts,ob.last_error FROM orders o LEFT JOIN books b ON b.order_id=o.order_id LEFT JOIN outbox ob ON ob.order_id=o.order_id ORDER BY o.order_id,ob.message_id&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 74,
+    &quot;result&quot;: {
+      &quot;error&quot;: &quot;no such column: b.balance_cents&quot;,
+      &quot;current_tick&quot;: 6
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>7</td><td><b>cancel</b><span>[&quot;op-2&quot;]</span></td><td>已执行</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;cancel&quot;,
+    &quot;target&quot;: [
+      &quot;op-2&quot;
+    ]
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 73,
+    &quot;result&quot;: {
+      &quot;results&quot;: [
+        {
+          &quot;operation_id&quot;: &quot;op-2&quot;,
+          &quot;status&quot;: 200,
+          &quot;result&quot;: {
+            &quot;operation_id&quot;: &quot;op-2&quot;,
+            &quot;order_id&quot;: &quot;order-a&quot;,
+            &quot;kind&quot;: &quot;charge&quot;,
+            &quot;amount_cents&quot;: 1200,
+            &quot;key&quot;: &quot;order-a/retry&quot;,
+            &quot;parent_id&quot;: null,
+            &quot;status&quot;: &quot;canceled&quot;,
+            &quot;version&quot;: 2,
+            &quot;created_tick&quot;: 0,
+            &quot;settle_at&quot;: 12
+          }
+        }
+      ],
+      &quot;current_tick&quot;: 7
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>8</td><td><b>inspect</b><span>worker</span></td><td>已执行</td><td>2</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;worker&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 72,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;configure patches active settings immediately: enabled(bool), retry_identity(stable/attempt), event_order(version/arrival). Stable retries reuse outbox.request_key; attempt retries append an attempt number, even if the original request committed. An HTTP success marks the outbox delivered, not financially settled. Each normal tick processes every ready outbox item once when enabled. Rejected/503 deliveries remain ready. Every probe loses its first charge acknowledgement after commit. Events always arrive even when the worker is paused. version ignores an event older than the stored object; arrival overwrites with every arrival. Existing projections are not automatically rebuilt after config changes. Local adjust changes books only; it never refunds a customer.&quot;,
+      &quot;current_tick&quot;: 8
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>9</td><td><b>query</b><span>SELECT * FROM books ORDER BY order_id</span></td><td>已执行</td><td>2</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;query&quot;,
+    &quot;target&quot;: &quot;SELECT * FROM books ORDER BY order_id&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 71,
+    &quot;result&quot;: {
+      &quot;columns&quot;: [
+        &quot;order_id&quot;,
+        &quot;amount_cents&quot;,
+        &quot;book_cents&quot;
+      ],
+      &quot;rows&quot;: [
+        [
+          &quot;order-a&quot;,
+          1200,
+          1200
+        ],
+        [
+          &quot;order-b&quot;,
+          800,
+          1600
+        ],
+        [
+          &quot;order-c&quot;,
+          600,
+          0
+        ],
+        [
+          &quot;order-d&quot;,
+          700,
+          0
+        ]
+      ],
+      &quot;truncated&quot;: false,
+      &quot;current_tick&quot;: 9
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>10</td><td><b>configure</b><span>{&quot;enabled&quot;: true, &quot;retry_identity&quot;: &quot;stable&quot;, &quot;event_order&quot;: &quot;version&quot;}</span></td><td>已执行</td><td>2</td><td>0</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;configure&quot;,
+    &quot;target&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;retry_identity&quot;: &quot;stable&quot;,
+      &quot;event_order&quot;: &quot;version&quot;
+    }
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 70,
+    &quot;result&quot;: {
+      &quot;active&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;retry_identity&quot;: &quot;stable&quot;,
+        &quot;event_order&quot;: &quot;version&quot;
+      },
+      &quot;current_tick&quot;: 10
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>11</td><td><b>inspect</b><span>metrics</span></td><td>已执行</td><td>2</td><td>0</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;metrics&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 69,
+    &quot;result&quot;: {
+      &quot;tick&quot;: 10,
+      &quot;outbox&quot;: [
+        {
+          &quot;state&quot;: &quot;done&quot;,
+          &quot;count&quot;: 4
+        }
+      ],
+      &quot;undelivered_events&quot;: 2,
+      &quot;settings&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;retry_identity&quot;: &quot;stable&quot;,
+        &quot;event_order&quot;: &quot;version&quot;
+      },
+      &quot;current_tick&quot;: 11
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>12</td><td><b>provider</b><span>all</span></td><td>已执行</td><td>2</td><td>0</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;provider&quot;,
+    &quot;target&quot;: &quot;all&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 68,
+    &quot;result&quot;: {
+      &quot;at_tick&quot;: 11,
+      &quot;operations&quot;: [
+        {
+          &quot;operation_id&quot;: &quot;op-1&quot;,
+          &quot;order_id&quot;: &quot;order-a&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 1200,
+          &quot;key&quot;: &quot;order-a/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-2&quot;,
+          &quot;order_id&quot;: &quot;order-a&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 1200,
+          &quot;key&quot;: &quot;order-a/retry&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;canceled&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 12
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-3&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-4&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/retry&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-5&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;refund&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/refund&quot;,
+          &quot;parent_id&quot;: &quot;op-4&quot;,
+          &quot;status&quot;: &quot;failed&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 4
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-6&quot;,
+          &quot;order_id&quot;: &quot;order-d&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 700,
+          &quot;key&quot;: &quot;order-d/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 8
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-7&quot;,
+          &quot;order_id&quot;: &quot;order-c&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 600,
+          &quot;key&quot;: &quot;order-c/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;pending&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 10,
+          &quot;settle_at&quot;: 14
+        }
+      ],
+      &quot;wallet&quot;: {
+        &quot;available_cents&quot;: 0,
+        &quot;treasury_cents&quot;: 800
+      },
+      &quot;current_tick&quot;: 12
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>13</td><td><b>fund</b><span>800</span></td><td>已执行</td><td>2</td><td>0</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;fund&quot;,
+    &quot;target&quot;: 800
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 67,
+    &quot;result&quot;: {
+      &quot;http_status&quot;: 200,
+      &quot;funded_cents&quot;: 800,
+      &quot;current_tick&quot;: 13
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>14</td><td><b>refund</b><span>[{&quot;charge_id&quot;: &quot;op-4&quot;, &quot;amount_cents&quot;: 800, &quot;key&quot;: &quot;order-b/refund-recovery-v2&quot;}]</span></td><td>已执行</td><td>1</td><td>0</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;refund&quot;,
+    &quot;target&quot;: [
+      {
+        &quot;charge_id&quot;: &quot;op-4&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/refund-recovery-v2&quot;
+      }
+    ]
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 66,
+    &quot;result&quot;: {
+      &quot;results&quot;: [
+        {
+          &quot;http_status&quot;: 202,
+          &quot;operation_id&quot;: &quot;op-8&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;refund&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/refund-recovery-v2&quot;,
+          &quot;parent_id&quot;: &quot;op-4&quot;,
+          &quot;status&quot;: &quot;pending&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 13,
+          &quot;settle_at&quot;: 17
+        }
+      ],
+      &quot;current_tick&quot;: 14
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>15</td><td><b>workload</b><span>2</span></td><td>已执行</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;workload&quot;,
+    &quot;target&quot;: 2
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 65,
+    &quot;result&quot;: {
+      &quot;accepted&quot;: [
+        &quot;probe-1&quot;,
+        &quot;probe-2&quot;
+      ],
+      &quot;current_tick&quot;: 15
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>16</td><td><b>inspect</b><span>metrics</span></td><td>已执行</td><td>3</td><td>0</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;metrics&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 64,
+    &quot;result&quot;: {
+      &quot;tick&quot;: 15,
+      &quot;outbox&quot;: [
+        {
+          &quot;state&quot;: &quot;done&quot;,
+          &quot;count&quot;: 4
+        },
+        {
+          &quot;state&quot;: &quot;ready&quot;,
+          &quot;count&quot;: 2
+        }
+      ],
+      &quot;undelivered_events&quot;: 9,
+      &quot;settings&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;retry_identity&quot;: &quot;stable&quot;,
+        &quot;event_order&quot;: &quot;version&quot;
+      },
+      &quot;current_tick&quot;: 16
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>17</td><td><b>query</b><span>SELECT o.order_id,o.amount_cents,o.is_probe,b.book_cents,ob.message_id,ob.request_key,ob.state,ob.attempts,ob.last_error FROM orders o LEFT JOIN books b ON b.order_id=o.order_id LE</span></td><td>已执行</td><td>2</td><td>0</td><td>0</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;query&quot;,
+    &quot;target&quot;: &quot;SELECT o.order_id,o.amount_cents,o.is_probe,b.book_cents,ob.message_id,ob.request_key,ob.state,ob.attempts,ob.last_error FROM orders o LEFT JOIN books b ON b.order_id=o.order_id LEFT JOIN outbox ob ON ob.order_id=o.order_id ORDER BY o.order_id,ob.message_id&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 63,
+    &quot;result&quot;: {
+      &quot;columns&quot;: [
+        &quot;order_id&quot;,
+        &quot;amount_cents&quot;,
+        &quot;is_probe&quot;,
+        &quot;book_cents&quot;,
+        &quot;message_id&quot;,
+        &quot;request_key&quot;,
+        &quot;state&quot;,
+        &quot;attempts&quot;,
+        &quot;last_error&quot;
+      ],
+      &quot;rows&quot;: [
+        [
+          &quot;order-a&quot;,
+          1200,
+          0,
+          1200,
+          &quot;msg-order-a&quot;,
+          &quot;order-a/request&quot;,
+          &quot;done&quot;,
+          0,
+          null
+        ],
+        [
+          &quot;order-b&quot;,
+          800,
+          0,
+          1600,
+          &quot;msg-order-b&quot;,
+          &quot;order-b/request&quot;,
+          &quot;done&quot;,
+          0,
+          null
+        ],
+        [
+          &quot;order-c&quot;,
+          600,
+          0,
+          600,
+          &quot;msg-order-c&quot;,
+          &quot;order-c/request&quot;,
+          &quot;done&quot;,
+          2,
+          null
+        ],
+        [
+          &quot;order-d&quot;,
+          700,
+          0,
+          700,
+          &quot;msg-order-d&quot;,
+          &quot;order-d/request&quot;,
+          &quot;done&quot;,
+          2,
+          null
+        ],
+        [
+          &quot;probe-1&quot;,
+          317,
+          1,
+          0,
+          &quot;msg-probe-1&quot;,
+          &quot;probe-1/request&quot;,
+          &quot;done&quot;,
+          2,
+          null
+        ],
+        [
+          &quot;probe-2&quot;,
+          334,
+          1,
+          0,
+          &quot;msg-probe-2&quot;,
+          &quot;probe-2/request&quot;,
+          &quot;done&quot;,
+          2,
+          null
+        ]
+      ],
+      &quot;truncated&quot;: false,
+      &quot;current_tick&quot;: 17
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>18</td><td><b>provider</b><span>all</span></td><td>已执行</td><td>2</td><td>0</td><td>0</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;provider&quot;,
+    &quot;target&quot;: &quot;all&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 62,
+    &quot;result&quot;: {
+      &quot;at_tick&quot;: 17,
+      &quot;operations&quot;: [
+        {
+          &quot;operation_id&quot;: &quot;op-1&quot;,
+          &quot;order_id&quot;: &quot;order-a&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 1200,
+          &quot;key&quot;: &quot;order-a/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-10&quot;,
+          &quot;order_id&quot;: &quot;probe-2&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 334,
+          &quot;key&quot;: &quot;probe-2/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;pending&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 15,
+          &quot;settle_at&quot;: 19
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-2&quot;,
+          &quot;order_id&quot;: &quot;order-a&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 1200,
+          &quot;key&quot;: &quot;order-a/retry&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;canceled&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 12
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-3&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-4&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/retry&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-5&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;refund&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/refund&quot;,
+          &quot;parent_id&quot;: &quot;op-4&quot;,
+          &quot;status&quot;: &quot;failed&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 4
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-6&quot;,
+          &quot;order_id&quot;: &quot;order-d&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 700,
+          &quot;key&quot;: &quot;order-d/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 8
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-7&quot;,
+          &quot;order_id&quot;: &quot;order-c&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 600,
+          &quot;key&quot;: &quot;order-c/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 10,
+          &quot;settle_at&quot;: 14
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-8&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;refund&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/refund-recovery-v2&quot;,
+          &quot;parent_id&quot;: &quot;op-4&quot;,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 13,
+          &quot;settle_at&quot;: 17
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-9&quot;,
+          &quot;order_id&quot;: &quot;probe-1&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 317,
+          &quot;key&quot;: &quot;probe-1/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;pending&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 15,
+          &quot;settle_at&quot;: 19
+        }
+      ],
+      &quot;wallet&quot;: {
+        &quot;available_cents&quot;: 0,
+        &quot;treasury_cents&quot;: 0
+      },
+      &quot;current_tick&quot;: 18
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>19</td><td><b>wait</b><span></span></td><td>已执行</td><td>0</td><td>0</td><td>0</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;wait&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 61,
+    &quot;result&quot;: {
+      &quot;waiting_one_tick&quot;: true,
+      &quot;current_tick&quot;: 19
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>20</td><td><b>inspect</b><span>metrics</span></td><td>已执行</td><td>0</td><td>0</td><td>0</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;metrics&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 60,
+    &quot;result&quot;: {
+      &quot;tick&quot;: 19,
+      &quot;outbox&quot;: [
+        {
+          &quot;state&quot;: &quot;done&quot;,
+          &quot;count&quot;: 6
+        }
+      ],
+      &quot;undelivered_events&quot;: 10,
+      &quot;settings&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;retry_identity&quot;: &quot;stable&quot;,
+        &quot;event_order&quot;: &quot;version&quot;
+      },
+      &quot;current_tick&quot;: 20
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>21</td><td><b>query</b><span>SELECT o.order_id,o.amount_cents,o.is_probe,b.book_cents,(b.book_cents-o.amount_cents) AS delta_cents FROM orders o JOIN books b ON b.order_id=o.order_id ORDER BY o.order_id</span></td><td>已执行</td><td>0</td><td>0</td><td>0</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;query&quot;,
+    &quot;target&quot;: &quot;SELECT o.order_id,o.amount_cents,o.is_probe,b.book_cents,(b.book_cents-o.amount_cents) AS delta_cents FROM orders o JOIN books b ON b.order_id=o.order_id ORDER BY o.order_id&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 59,
+    &quot;result&quot;: {
+      &quot;columns&quot;: [
+        &quot;order_id&quot;,
+        &quot;amount_cents&quot;,
+        &quot;is_probe&quot;,
+        &quot;book_cents&quot;,
+        &quot;delta_cents&quot;
+      ],
+      &quot;rows&quot;: [
+        [
+          &quot;order-a&quot;,
+          1200,
+          0,
+          1200,
+          0
+        ],
+        [
+          &quot;order-b&quot;,
+          800,
+          0,
+          800,
+          0
+        ],
+        [
+          &quot;order-c&quot;,
+          600,
+          0,
+          600,
+          0
+        ],
+        [
+          &quot;order-d&quot;,
+          700,
+          0,
+          700,
+          0
+        ],
+        [
+          &quot;probe-1&quot;,
+          317,
+          1,
+          317,
+          0
+        ],
+        [
+          &quot;probe-2&quot;,
+          334,
+          1,
+          334,
+          0
+        ]
+      ],
+      &quot;truncated&quot;: false,
+      &quot;current_tick&quot;: 21
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>22</td><td><b>inspect</b><span>metrics</span></td><td>已执行</td><td>0</td><td>0</td><td>0</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;metrics&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 58,
+    &quot;result&quot;: {
+      &quot;tick&quot;: 21,
+      &quot;outbox&quot;: [
+        {
+          &quot;state&quot;: &quot;done&quot;,
+          &quot;count&quot;: 6
+        }
+      ],
+      &quot;undelivered_events&quot;: 4,
+      &quot;settings&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;retry_identity&quot;: &quot;stable&quot;,
+        &quot;event_order&quot;: &quot;version&quot;
+      },
+      &quot;current_tick&quot;: 22
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>23</td><td><b>provider</b><span>all</span></td><td>已执行</td><td>0</td><td>0</td><td>0</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;provider&quot;,
+    &quot;target&quot;: &quot;all&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 57,
+    &quot;result&quot;: {
+      &quot;at_tick&quot;: 22,
+      &quot;operations&quot;: [
+        {
+          &quot;operation_id&quot;: &quot;op-1&quot;,
+          &quot;order_id&quot;: &quot;order-a&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 1200,
+          &quot;key&quot;: &quot;order-a/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-10&quot;,
+          &quot;order_id&quot;: &quot;probe-2&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 334,
+          &quot;key&quot;: &quot;probe-2/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 15,
+          &quot;settle_at&quot;: 19
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-2&quot;,
+          &quot;order_id&quot;: &quot;order-a&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 1200,
+          &quot;key&quot;: &quot;order-a/retry&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;canceled&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 12
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-3&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-4&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/retry&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-5&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;refund&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/refund&quot;,
+          &quot;parent_id&quot;: &quot;op-4&quot;,
+          &quot;status&quot;: &quot;failed&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 4
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-6&quot;,
+          &quot;order_id&quot;: &quot;order-d&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 700,
+          &quot;key&quot;: &quot;order-d/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 8
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-7&quot;,
+          &quot;order_id&quot;: &quot;order-c&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 600,
+          &quot;key&quot;: &quot;order-c/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 10,
+          &quot;settle_at&quot;: 14
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-8&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;refund&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/refund-recovery-v2&quot;,
+          &quot;parent_id&quot;: &quot;op-4&quot;,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 13,
+          &quot;settle_at&quot;: 17
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-9&quot;,
+          &quot;order_id&quot;: &quot;probe-1&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 317,
+          &quot;key&quot;: &quot;probe-1/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 15,
+          &quot;settle_at&quot;: 19
+        }
+      ],
+      &quot;wallet&quot;: {
+        &quot;available_cents&quot;: 0,
+        &quot;treasury_cents&quot;: 0
+      },
+      &quot;current_tick&quot;: 23
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>24</td><td><b>inspect</b><span>metrics</span></td><td>已执行</td><td>0</td><td>0</td><td>0</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;metrics&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 56,
+    &quot;result&quot;: {
+      &quot;tick&quot;: 23,
+      &quot;outbox&quot;: [
+        {
+          &quot;state&quot;: &quot;done&quot;,
+          &quot;count&quot;: 6
+        }
+      ],
+      &quot;undelivered_events&quot;: 0,
+      &quot;settings&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;retry_identity&quot;: &quot;stable&quot;,
+        &quot;event_order&quot;: &quot;version&quot;
+      },
+      &quot;current_tick&quot;: 24
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>25</td><td><b>verify</b><span></span></td><td>PASS</td><td>0</td><td>0</td><td>0</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;verify&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 55,
+    &quot;result&quot;: {
+      &quot;passed&quot;: true,
+      &quot;book_mismatches&quot;: [],
+      &quot;external_mismatches&quot;: [],
+      &quot;pending_operations&quot;: 0,
+      &quot;unsettled_messages&quot;: 0,
+      &quot;undelivered_events&quot;: 0,
+      &quot;additional_excess_settled_cents&quot;: 0,
+      &quot;worker_enabled&quot;: true,
+      &quot;probe_orders&quot;: 2,
+      &quot;order_count&quot;: 6,
+      &quot;current_tick&quot;: 24
+    },
+    &quot;verification_current&quot;: true,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>26</td><td><b>finish</b><span></span></td><td>已执行</td><td>0</td><td>0</td><td>0</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;finish&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 54,
+    &quot;result&quot;: {
+      &quot;handover&quot;: true,
+      &quot;current_tick&quot;: 24
+    },
+    &quot;verification_current&quot;: true,
+    &quot;done&quot;: true
+  }
+}</pre></details></td></tr></tbody></table></div><details><summary>查看独立重执行的最终数据库（摘要与原始轨迹一致）</summary><pre>{
+  &quot;local&quot;: {
+    &quot;orders&quot;: [
+      {
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;is_probe&quot;: 0
+      },
+      {
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;is_probe&quot;: 0
+      },
+      {
+        &quot;order_id&quot;: &quot;order-c&quot;,
+        &quot;amount_cents&quot;: 600,
+        &quot;is_probe&quot;: 0
+      },
+      {
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;is_probe&quot;: 0
+      },
+      {
+        &quot;order_id&quot;: &quot;probe-1&quot;,
+        &quot;amount_cents&quot;: 317,
+        &quot;is_probe&quot;: 1
+      },
+      {
+        &quot;order_id&quot;: &quot;probe-2&quot;,
+        &quot;amount_cents&quot;: 334,
+        &quot;is_probe&quot;: 1
+      }
+    ],
+    &quot;outbox&quot;: [
+      {
+        &quot;message_id&quot;: &quot;msg-order-a&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;request_key&quot;: &quot;order-a/request&quot;,
+        &quot;state&quot;: &quot;done&quot;,
+        &quot;attempts&quot;: 0,
+        &quot;last_error&quot;: null
+      },
+      {
+        &quot;message_id&quot;: &quot;msg-order-b&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;request_key&quot;: &quot;order-b/request&quot;,
+        &quot;state&quot;: &quot;done&quot;,
+        &quot;attempts&quot;: 0,
+        &quot;last_error&quot;: null
+      },
+      {
+        &quot;message_id&quot;: &quot;msg-order-c&quot;,
+        &quot;order_id&quot;: &quot;order-c&quot;,
+        &quot;request_key&quot;: &quot;order-c/request&quot;,
+        &quot;state&quot;: &quot;done&quot;,
+        &quot;attempts&quot;: 2,
+        &quot;last_error&quot;: null
+      },
+      {
+        &quot;message_id&quot;: &quot;msg-order-d&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;request_key&quot;: &quot;order-d/request&quot;,
+        &quot;state&quot;: &quot;done&quot;,
+        &quot;attempts&quot;: 2,
+        &quot;last_error&quot;: null
+      },
+      {
+        &quot;message_id&quot;: &quot;msg-probe-1&quot;,
+        &quot;order_id&quot;: &quot;probe-1&quot;,
+        &quot;request_key&quot;: &quot;probe-1/request&quot;,
+        &quot;state&quot;: &quot;done&quot;,
+        &quot;attempts&quot;: 2,
+        &quot;last_error&quot;: null
+      },
+      {
+        &quot;message_id&quot;: &quot;msg-probe-2&quot;,
+        &quot;order_id&quot;: &quot;probe-2&quot;,
+        &quot;request_key&quot;: &quot;probe-2/request&quot;,
+        &quot;state&quot;: &quot;done&quot;,
+        &quot;attempts&quot;: 2,
+        &quot;last_error&quot;: null
+      }
+    ],
+    &quot;events&quot;: [
+      {
+        &quot;receipt_id&quot;: 1,
+        &quot;event_id&quot;: &quot;op-1/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-1&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 2,
+        &quot;event_id&quot;: &quot;op-3/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-3&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 3,
+        &quot;event_id&quot;: &quot;op-4/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-4&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 4,
+        &quot;event_id&quot;: &quot;op-1/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-1&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 5,
+        &quot;event_id&quot;: &quot;op-3/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-3&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 6,
+        &quot;event_id&quot;: &quot;op-4/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-4&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 7,
+        &quot;event_id&quot;: &quot;op-5/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-5&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;failed&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 8,
+        &quot;event_id&quot;: &quot;op-5/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-5&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;failed&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 9,
+        &quot;event_id&quot;: &quot;op-2/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-2&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 10,
+        &quot;event_id&quot;: &quot;op-5/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-5&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 11,
+        &quot;event_id&quot;: &quot;op-6/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 12,
+        &quot;event_id&quot;: &quot;op-2/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-2&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;status&quot;: &quot;canceled&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 13,
+        &quot;event_id&quot;: &quot;op-2/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-2&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 14,
+        &quot;event_id&quot;: &quot;op-5/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-5&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 15,
+        &quot;event_id&quot;: &quot;op-6/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 16,
+        &quot;event_id&quot;: &quot;op-2/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-2&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;status&quot;: &quot;canceled&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 17,
+        &quot;event_id&quot;: &quot;op-6/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 18,
+        &quot;event_id&quot;: &quot;op-6/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 19,
+        &quot;event_id&quot;: &quot;op-7/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-7&quot;,
+        &quot;order_id&quot;: &quot;order-c&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 600,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 20,
+        &quot;event_id&quot;: &quot;op-7/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-7&quot;,
+        &quot;order_id&quot;: &quot;order-c&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 600,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 21,
+        &quot;event_id&quot;: &quot;op-7/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-7&quot;,
+        &quot;order_id&quot;: &quot;order-c&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 600,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 22,
+        &quot;event_id&quot;: &quot;op-7/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-7&quot;,
+        &quot;order_id&quot;: &quot;order-c&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 600,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 23,
+        &quot;event_id&quot;: &quot;op-8/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-8&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 24,
+        &quot;event_id&quot;: &quot;op-8/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-8&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 25,
+        &quot;event_id&quot;: &quot;op-8/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-8&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 26,
+        &quot;event_id&quot;: &quot;op-10/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-10&quot;,
+        &quot;order_id&quot;: &quot;probe-2&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 334,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 27,
+        &quot;event_id&quot;: &quot;op-9/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-9&quot;,
+        &quot;order_id&quot;: &quot;probe-1&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 317,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 28,
+        &quot;event_id&quot;: &quot;op-8/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-8&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 29,
+        &quot;event_id&quot;: &quot;op-10/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-10&quot;,
+        &quot;order_id&quot;: &quot;probe-2&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 334,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 30,
+        &quot;event_id&quot;: &quot;op-9/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-9&quot;,
+        &quot;order_id&quot;: &quot;probe-1&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 317,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 31,
+        &quot;event_id&quot;: &quot;op-9/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-9&quot;,
+        &quot;order_id&quot;: &quot;probe-1&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 317,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 32,
+        &quot;event_id&quot;: &quot;op-10/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-10&quot;,
+        &quot;order_id&quot;: &quot;probe-2&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 334,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 33,
+        &quot;event_id&quot;: &quot;op-9/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-9&quot;,
+        &quot;order_id&quot;: &quot;probe-1&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 317,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 34,
+        &quot;event_id&quot;: &quot;op-10/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-10&quot;,
+        &quot;order_id&quot;: &quot;probe-2&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 334,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      }
+    ],
+    &quot;projection&quot;: [
+      {
+        &quot;operation_id&quot;: &quot;op-1&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-10&quot;,
+        &quot;order_id&quot;: &quot;probe-2&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 334,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-2&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;status&quot;: &quot;canceled&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-3&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-4&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-5&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-7&quot;,
+        &quot;order_id&quot;: &quot;order-c&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 600,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-8&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-9&quot;,
+        &quot;order_id&quot;: &quot;probe-1&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 317,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      }
+    ],
+    &quot;snapshots&quot;: [
+      {
+        &quot;operation_id&quot;: &quot;op-1&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;key&quot;: &quot;order-a/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: null
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-10&quot;,
+        &quot;order_id&quot;: &quot;probe-2&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 334,
+        &quot;key&quot;: &quot;probe-2/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 15,
+        &quot;settle_at&quot;: 19
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-2&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;key&quot;: &quot;order-a/retry&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;canceled&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: 12
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-3&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: null
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-4&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/retry&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: null
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-5&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/refund&quot;,
+        &quot;parent_id&quot;: &quot;op-4&quot;,
+        &quot;status&quot;: &quot;failed&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: 4
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;key&quot;: &quot;order-d/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: 8
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-7&quot;,
+        &quot;order_id&quot;: &quot;order-c&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 600,
+        &quot;key&quot;: &quot;order-c/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 10,
+        &quot;settle_at&quot;: 14
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-8&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/refund-recovery-v2&quot;,
+        &quot;parent_id&quot;: &quot;op-4&quot;,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 13,
+        &quot;settle_at&quot;: 17
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-9&quot;,
+        &quot;order_id&quot;: &quot;probe-1&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 317,
+        &quot;key&quot;: &quot;probe-1/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 15,
+        &quot;settle_at&quot;: 19
+      }
+    ],
+    &quot;adjustments&quot;: [],
+    &quot;config&quot;: [
+      {
+        &quot;name&quot;: &quot;enabled&quot;,
+        &quot;value&quot;: &quot;true&quot;
+      },
+      {
+        &quot;name&quot;: &quot;event_order&quot;,
+        &quot;value&quot;: &quot;\&quot;version\&quot;&quot;
+      },
+      {
+        &quot;name&quot;: &quot;retry_identity&quot;,
+        &quot;value&quot;: &quot;\&quot;stable\&quot;&quot;
+      }
+    ]
+  },
+  &quot;provider&quot;: {
+    &quot;operations&quot;: [
+      {
+        &quot;operation_id&quot;: &quot;op-1&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;key&quot;: &quot;order-a/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: null
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-10&quot;,
+        &quot;order_id&quot;: &quot;probe-2&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 334,
+        &quot;key&quot;: &quot;probe-2/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 15,
+        &quot;settle_at&quot;: 19
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-2&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;key&quot;: &quot;order-a/retry&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;canceled&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: 12
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-3&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: null
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-4&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/retry&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: null
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-5&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/refund&quot;,
+        &quot;parent_id&quot;: &quot;op-4&quot;,
+        &quot;status&quot;: &quot;failed&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: 4
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;key&quot;: &quot;order-d/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: 8
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-7&quot;,
+        &quot;order_id&quot;: &quot;order-c&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 600,
+        &quot;key&quot;: &quot;order-c/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 10,
+        &quot;settle_at&quot;: 14
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-8&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/refund-recovery-v2&quot;,
+        &quot;parent_id&quot;: &quot;op-4&quot;,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 13,
+        &quot;settle_at&quot;: 17
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-9&quot;,
+        &quot;order_id&quot;: &quot;probe-1&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 317,
+        &quot;key&quot;: &quot;probe-1/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 15,
+        &quot;settle_at&quot;: 19
+      }
+    ],
+    &quot;notifications&quot;: [
+      {
+        &quot;sequence&quot;: 1,
+        &quot;event_id&quot;: &quot;op-1/v1&quot;,
+        &quot;deliver_at&quot;: 1,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 1200, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-a/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-1\&quot;, \&quot;order_id\&quot;: \&quot;order-a\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: null, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 2,
+        &quot;event_id&quot;: &quot;op-1/v1&quot;,
+        &quot;deliver_at&quot;: 2,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 1200, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-a/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-1\&quot;, \&quot;order_id\&quot;: \&quot;order-a\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: null, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 3,
+        &quot;event_id&quot;: &quot;op-2/v1&quot;,
+        &quot;deliver_at&quot;: 7,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 1200, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-a/retry\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-2\&quot;, \&quot;order_id\&quot;: \&quot;order-a\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 12, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 4,
+        &quot;event_id&quot;: &quot;op-2/v1&quot;,
+        &quot;deliver_at&quot;: 8,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 1200, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-a/retry\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-2\&quot;, \&quot;order_id\&quot;: \&quot;order-a\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 12, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 5,
+        &quot;event_id&quot;: &quot;op-3/v1&quot;,
+        &quot;deliver_at&quot;: 1,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-3\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: null, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 6,
+        &quot;event_id&quot;: &quot;op-3/v1&quot;,
+        &quot;deliver_at&quot;: 2,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-3\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: null, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 7,
+        &quot;event_id&quot;: &quot;op-4/v1&quot;,
+        &quot;deliver_at&quot;: 1,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/retry\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-4\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: null, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 8,
+        &quot;event_id&quot;: &quot;op-4/v1&quot;,
+        &quot;deliver_at&quot;: 2,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/retry\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-4\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: null, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 9,
+        &quot;event_id&quot;: &quot;op-5/v1&quot;,
+        &quot;deliver_at&quot;: 7,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/refund\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;operation_id\&quot;: \&quot;op-5\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: \&quot;op-4\&quot;, \&quot;settle_at\&quot;: 4, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 10,
+        &quot;event_id&quot;: &quot;op-5/v1&quot;,
+        &quot;deliver_at&quot;: 8,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/refund\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;operation_id\&quot;: \&quot;op-5\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: \&quot;op-4\&quot;, \&quot;settle_at\&quot;: 4, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 11,
+        &quot;event_id&quot;: &quot;op-6/v1&quot;,
+        &quot;deliver_at&quot;: 7,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 700, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-d/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-6\&quot;, \&quot;order_id\&quot;: \&quot;order-d\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 8, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 12,
+        &quot;event_id&quot;: &quot;op-6/v1&quot;,
+        &quot;deliver_at&quot;: 8,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 700, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-d/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-6\&quot;, \&quot;order_id\&quot;: \&quot;order-d\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 8, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 13,
+        &quot;event_id&quot;: &quot;op-5/v2&quot;,
+        &quot;deliver_at&quot;: 5,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/refund\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;operation_id\&quot;: \&quot;op-5\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: \&quot;op-4\&quot;, \&quot;settle_at\&quot;: 4, \&quot;status\&quot;: \&quot;failed\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 14,
+        &quot;event_id&quot;: &quot;op-5/v2&quot;,
+        &quot;deliver_at&quot;: 6,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/refund\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;operation_id\&quot;: \&quot;op-5\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: \&quot;op-4\&quot;, \&quot;settle_at\&quot;: 4, \&quot;status\&quot;: \&quot;failed\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 15,
+        &quot;event_id&quot;: &quot;op-2/v2&quot;,
+        &quot;deliver_at&quot;: 7,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 1200, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-a/retry\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-2\&quot;, \&quot;order_id\&quot;: \&quot;order-a\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 12, \&quot;status\&quot;: \&quot;canceled\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 16,
+        &quot;event_id&quot;: &quot;op-2/v2&quot;,
+        &quot;deliver_at&quot;: 8,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 1200, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-a/retry\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-2\&quot;, \&quot;order_id\&quot;: \&quot;order-a\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 12, \&quot;status\&quot;: \&quot;canceled\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 17,
+        &quot;event_id&quot;: &quot;op-6/v2&quot;,
+        &quot;deliver_at&quot;: 9,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 700, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-d/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-6\&quot;, \&quot;order_id\&quot;: \&quot;order-d\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 8, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 18,
+        &quot;event_id&quot;: &quot;op-6/v2&quot;,
+        &quot;deliver_at&quot;: 10,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 700, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-d/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-6\&quot;, \&quot;order_id\&quot;: \&quot;order-d\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 8, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 19,
+        &quot;event_id&quot;: &quot;op-7/v1&quot;,
+        &quot;deliver_at&quot;: 17,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 600, \&quot;created_tick\&quot;: 10, \&quot;key\&quot;: \&quot;order-c/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-7\&quot;, \&quot;order_id\&quot;: \&quot;order-c\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 14, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 20,
+        &quot;event_id&quot;: &quot;op-7/v1&quot;,
+        &quot;deliver_at&quot;: 18,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 600, \&quot;created_tick\&quot;: 10, \&quot;key\&quot;: \&quot;order-c/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-7\&quot;, \&quot;order_id\&quot;: \&quot;order-c\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 14, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 21,
+        &quot;event_id&quot;: &quot;op-8/v1&quot;,
+        &quot;deliver_at&quot;: 20,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 13, \&quot;key\&quot;: \&quot;order-b/refund-recovery-v2\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;operation_id\&quot;: \&quot;op-8\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: \&quot;op-4\&quot;, \&quot;settle_at\&quot;: 17, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 22,
+        &quot;event_id&quot;: &quot;op-8/v1&quot;,
+        &quot;deliver_at&quot;: 21,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 13, \&quot;key\&quot;: \&quot;order-b/refund-recovery-v2\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;operation_id\&quot;: \&quot;op-8\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: \&quot;op-4\&quot;, \&quot;settle_at\&quot;: 17, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 23,
+        &quot;event_id&quot;: &quot;op-7/v2&quot;,
+        &quot;deliver_at&quot;: 15,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 600, \&quot;created_tick\&quot;: 10, \&quot;key\&quot;: \&quot;order-c/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-7\&quot;, \&quot;order_id\&quot;: \&quot;order-c\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 14, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 24,
+        &quot;event_id&quot;: &quot;op-7/v2&quot;,
+        &quot;deliver_at&quot;: 16,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 600, \&quot;created_tick\&quot;: 10, \&quot;key\&quot;: \&quot;order-c/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-7\&quot;, \&quot;order_id\&quot;: \&quot;order-c\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 14, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 25,
+        &quot;event_id&quot;: &quot;op-9/v1&quot;,
+        &quot;deliver_at&quot;: 22,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 317, \&quot;created_tick\&quot;: 15, \&quot;key\&quot;: \&quot;probe-1/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-9\&quot;, \&quot;order_id\&quot;: \&quot;probe-1\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 19, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 26,
+        &quot;event_id&quot;: &quot;op-9/v1&quot;,
+        &quot;deliver_at&quot;: 23,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 317, \&quot;created_tick\&quot;: 15, \&quot;key\&quot;: \&quot;probe-1/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-9\&quot;, \&quot;order_id\&quot;: \&quot;probe-1\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 19, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 27,
+        &quot;event_id&quot;: &quot;op-10/v1&quot;,
+        &quot;deliver_at&quot;: 22,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 334, \&quot;created_tick\&quot;: 15, \&quot;key\&quot;: \&quot;probe-2/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-10\&quot;, \&quot;order_id\&quot;: \&quot;probe-2\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 19, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 28,
+        &quot;event_id&quot;: &quot;op-10/v1&quot;,
+        &quot;deliver_at&quot;: 23,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 334, \&quot;created_tick\&quot;: 15, \&quot;key\&quot;: \&quot;probe-2/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-10\&quot;, \&quot;order_id\&quot;: \&quot;probe-2\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 19, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 29,
+        &quot;event_id&quot;: &quot;op-8/v2&quot;,
+        &quot;deliver_at&quot;: 18,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 13, \&quot;key\&quot;: \&quot;order-b/refund-recovery-v2\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;operation_id\&quot;: \&quot;op-8\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: \&quot;op-4\&quot;, \&quot;settle_at\&quot;: 17, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 30,
+        &quot;event_id&quot;: &quot;op-8/v2&quot;,
+        &quot;deliver_at&quot;: 19,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 13, \&quot;key\&quot;: \&quot;order-b/refund-recovery-v2\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;operation_id\&quot;: \&quot;op-8\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: \&quot;op-4\&quot;, \&quot;settle_at\&quot;: 17, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 31,
+        &quot;event_id&quot;: &quot;op-10/v2&quot;,
+        &quot;deliver_at&quot;: 20,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 334, \&quot;created_tick\&quot;: 15, \&quot;key\&quot;: \&quot;probe-2/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-10\&quot;, \&quot;order_id\&quot;: \&quot;probe-2\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 19, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 32,
+        &quot;event_id&quot;: &quot;op-10/v2&quot;,
+        &quot;deliver_at&quot;: 21,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 334, \&quot;created_tick\&quot;: 15, \&quot;key\&quot;: \&quot;probe-2/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-10\&quot;, \&quot;order_id\&quot;: \&quot;probe-2\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 19, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 33,
+        &quot;event_id&quot;: &quot;op-9/v2&quot;,
+        &quot;deliver_at&quot;: 20,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 317, \&quot;created_tick\&quot;: 15, \&quot;key\&quot;: \&quot;probe-1/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-9\&quot;, \&quot;order_id\&quot;: \&quot;probe-1\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 19, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 34,
+        &quot;event_id&quot;: &quot;op-9/v2&quot;,
+        &quot;deliver_at&quot;: 21,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 317, \&quot;created_tick\&quot;: 15, \&quot;key\&quot;: \&quot;probe-1/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-9\&quot;, \&quot;order_id\&quot;: \&quot;probe-1\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 19, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      }
+    ],
+    &quot;transfers&quot;: [
+      {
+        &quot;sequence&quot;: 1,
+        &quot;operation_id&quot;: &quot;op-1&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;delta_cents&quot;: 1200,
+        &quot;tick&quot;: 0
+      },
+      {
+        &quot;sequence&quot;: 2,
+        &quot;operation_id&quot;: &quot;op-3&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;delta_cents&quot;: 800,
+        &quot;tick&quot;: 0
+      },
+      {
+        &quot;sequence&quot;: 3,
+        &quot;operation_id&quot;: &quot;op-4&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;delta_cents&quot;: 800,
+        &quot;tick&quot;: 0
+      },
+      {
+        &quot;sequence&quot;: 4,
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;delta_cents&quot;: 700,
+        &quot;tick&quot;: 8
+      },
+      {
+        &quot;sequence&quot;: 5,
+        &quot;operation_id&quot;: &quot;op-7&quot;,
+        &quot;order_id&quot;: &quot;order-c&quot;,
+        &quot;delta_cents&quot;: 600,
+        &quot;tick&quot;: 14
+      },
+      {
+        &quot;sequence&quot;: 6,
+        &quot;operation_id&quot;: &quot;op-8&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;delta_cents&quot;: -800,
+        &quot;tick&quot;: 17
+      },
+      {
+        &quot;sequence&quot;: 7,
+        &quot;operation_id&quot;: &quot;op-10&quot;,
+        &quot;order_id&quot;: &quot;probe-2&quot;,
+        &quot;delta_cents&quot;: 334,
+        &quot;tick&quot;: 19
+      },
+      {
+        &quot;sequence&quot;: 8,
+        &quot;operation_id&quot;: &quot;op-9&quot;,
+        &quot;order_id&quot;: &quot;probe-1&quot;,
+        &quot;delta_cents&quot;: 317,
+        &quot;tick&quot;: 19
+      }
+    ],
+    &quot;wallet&quot;: [
+      {
+        &quot;id&quot;: 1,
+        &quot;available_cents&quot;: 0,
+        &quot;treasury_cents&quot;: 0
+      }
+    ]
+  }
+}</pre></details></section><section id="episode-2"><div class="title"><h2>custom/z-ai/glm-5.3</h2><strong class="other">未完成交付</strong></div>
+<div class="stats"><div><small>动作</small><b>9 / 80</b></div><div><small>模型与环境总耗时</small><b>901.9 秒</b></div><div><small>输入 / 输出 token</small><b>不完整或未知</b></div><div><small>新增不可逆多付款</small><b>0 分</b></div></div>
+<p>最终本地不一致订单：2；外部不一致订单：2；待终结操作：1；未完成消息：2；外部超额扣款暴露：7200 分·tick；终止原因：adapter_error。</p>
+<p>服务端模型名与请求名不一致：9 / 10 次。 名称核对不能认证实际权重。</p>
+<p><b>终止错误：</b>Endpoint request deadline exceeded。该接入错误不能作为任务认知难度的证据。</p>
+<details><summary>操作方最初收到的事故目标和操作契约</summary><pre>{
+  &quot;initial_observation&quot;: {
+    &quot;steps_remaining&quot;: 80,
+    &quot;result&quot;: {
+      &quot;alert&quot;: &quot;Take over settlement recovery. The retry worker is paused. HTTP errors left uncertain external payments, a duplicate refund is unresolved, and events may disagree with actual state. A pending charge reaches settlement at business tick 12; inspect provider state promptly.&quot;,
+      &quot;current_tick&quot;: 0
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  },
+  &quot;contract&quot;: {
+    &quot;family&quot;: &quot;external_settlement&quot;,
+    &quot;task&quot;: &quot;Deliver correct payment settlement for every accepted order, historical and new. Stop duplicate external transfers, resolve pending/failed recovery, reconcile local books, and hand over with the retry worker enabled. Available refund treasury is finite; settled charges cannot be canceled. You control investigation, containment, recovery, testing and verification.&quot;,
+    &quot;workspace&quot;: &quot;Trusted local HTTP provider plus separate file-backed provider/local SQLite databases. No real money, accounts, or model source execution.&quot;,
+    &quot;actions&quot;: {
+      &quot;inspect&quot;: &quot;target: operations, provider-contract, schema, worker, timing, config, metrics&quot;,
+      &quot;query&quot;: &quot;target: read-only LOCAL SQLite query; joins/aggregation supported, 100 rows; inspect schema&quot;,
+      &quot;provider&quot;: &quot;target: all OR 1..32 order_id strings; authoritative current HTTP read, stored in local snapshots; does not repair books&quot;,
+      &quot;configure&quot;: &quot;target: patch with enabled(bool), retry_identity(stable|attempt), event_order(version|arrival); immediate activation&quot;,
+      &quot;cancel&quot;: &quot;target: 1..32 operation_id strings; pending charges only, independent per-item results&quot;,
+      &quot;fund&quot;: &quot;target: positive integer cents; moves finite treasury to refund reserve&quot;,
+      &quot;refund&quot;: &quot;target: 1..32 {charge_id,amount_cents,key}; retrieve charge first, inspect provider-contract&quot;,
+      &quot;adjust&quot;: &quot;target: {order_id,delta_cents,key}; ONLY local books, no external transfer&quot;,
+      &quot;workload&quot;: &quot;target: integer 1..4; submit new probe orders; maximum 16 probes, at least two required&quot;,
+      &quot;wait&quot;: &quot;no target; one normal business tick&quot;,
+      &quot;verify&quot;: &quot;no target; READ-ONLY checks. No new traffic, settlement, draining, or repair&quot;,
+      &quot;finish&quot;: &quot;no target; explicit final handover; no work performed&quot;
+    },
+    &quot;limits&quot;: &quot;80 actions including finish. Normal actions, including reads/rejections, act first then advance one tick. Valid verify/finish spend an action but freeze state. Every other action expires verification. Read timing and provider-contract for deadlines and delayed results. No wall-clock-dependent business state.&quot;,
+    &quot;mechanism&quot;: &quot;Delayed, duplicated, out-of-order notifications; finite pending-charge cancellation window.&quot;,
+    &quot;success&quot;: &quot;External net transfers AND local books equal each accepted order exactly. No pending provider operation, undelivered outbox item or outstanding notification. Worker enabled and at least two probe orders delivered correctly. verify PASS at the current state followed by finish. Permanent additional gross excess transfers are reported even if later refunded.&quot;
+  }
+}</pre></details>
+<div class="scroll"><table><thead><tr><th>步骤</th><th>动作</th><th>反馈</th><th>外部不一致订单</th><th>未完成消息</th><th>当前超额扣款 / 分</th></tr></thead><tbody><tr><td>1</td><td><b>无效命令</b><span>operations</span></td><td>错误</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;action&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;operations&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 79,
+    &quot;result&quot;: {
+      &quot;error&quot;: &quot;Use command and optional target&quot;,
+      &quot;current_tick&quot;: 1
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>2</td><td><b>无效命令</b><span>operations</span></td><td>错误</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;action&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;operations&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 78,
+    &quot;result&quot;: {
+      &quot;error&quot;: &quot;Use command and optional target&quot;,
+      &quot;current_tick&quot;: 2
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>3</td><td><b>inspect</b><span>operations</span></td><td>已执行</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;operations&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 77,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;Checkout obligations must reconcile both externally and locally. The worker is paused after a retry deployment. Some failed HTTP requests committed, others never reached the provider. Fixing retry configuration does not cancel existing duplicate operations. A finite treasury can fund refunds; cancellation of still-pending charges does not spend it. Read provider-contract, schema, and timing. This is a constructed local system, not a real payment provider.&quot;,
+      &quot;current_tick&quot;: 3
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>4</td><td><b>inspect</b><span>provider-contract</span></td><td>已执行</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;provider-contract&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 76,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;provider retrieves ALL authoritative operations for selected order IDs (or all) through HTTP and replaces their local snapshots. It does not repair books. Operation fields: operation_id,order_id,kind(charge/refund),amount_cents,key,parent_id,status(pending/succeeded/failed/canceled),version,created_tick,settle_at. Same-key submission returns the existing object, including failed/canceled objects; a different key creates a distinct operation. Refunds reference a succeeded charge and cannot exceed its unrefunded amount, counting pending refunds. On their settlement tick they succeed only with enough funded reserve; otherwise they fail terminally. Retrying a failed refund requires a new key. Cancel works only while a charge is pending; settled history cannot be erased. HTTP 503 can mean committed but acknowledgement lost. Current provider reads, not event arrival order, establish the state.&quot;,
+      &quot;current_tick&quot;: 4
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>5</td><td><b>inspect</b><span>schema</span></td><td>已执行</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;schema&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 75,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;Local read-only SQL: orders(order_id,amount_cents,is_probe), outbox(message_id,order_id,request_key,state,attempts,last_error), events(receipt_id,event_id,operation_id,order_id,kind,amount_cents,status,version), projection(operation_id,order_id,kind,amount_cents,status,version), snapshots(operation_id,order_id,kind,amount_cents,key,parent_id,status,version,created_tick,settle_at), adjustments(adjustment_id,order_id,delta_cents,key), config(name,value). books is a VIEW summing succeeded projection charges minus refunds plus local adjustments by order. The provider database and undelivered payloads are not SQL-accessible. snapshots are authoritative only at the tick of their last provider retrieval. Joins, aggregation and sqlite_master are available; 100-row result cap.&quot;,
+      &quot;current_tick&quot;: 5
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>6</td><td><b>inspect</b><span>timing</span></td><td>已执行</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;timing&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 74,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;Each normal action, including reads and invalid actions, acts at the current tick and then advances ONE business tick, processing retries, due settlements and event deliveries. Charges and refunds normally settle four ticks after creation. An object can be canceled only before its settle_at boundary. Notifications can arrive duplicated/out of order, up to eight ticks after a transition; inspect metrics for outstanding notification count. The initial alert has a charge reaching its settlement boundary at tick 12. No automatic new orders arrive. workload explicitly submits 1..4 probes; at least two must settle correctly before handover. verify and finish are read-only stable boundaries: they spend an action but neither advance time nor drain anything. Use wait (one tick) to allow outstanding work to progress. Deadline: 80 actions including finish. Business ticks are not production seconds.&quot;,
+      &quot;current_tick&quot;: 6
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>7</td><td><b>invalid_model_output</b><span>Return exactly one JSON object with command and optional target, without commentary or markdown.</span></td><td>错误</td><td>3</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;invalid_model_output&quot;,
+    &quot;target&quot;: &quot;Return exactly one JSON object with command and optional target, without commentary or markdown.&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 73,
+    &quot;result&quot;: {
+      &quot;error&quot;: &quot;Unknown action or target; consult the public action contract&quot;,
+      &quot;current_tick&quot;: 7
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>8</td><td><b>inspect</b><span>worker</span></td><td>已执行</td><td>2</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;inspect&quot;,
+    &quot;target&quot;: &quot;worker&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 72,
+    &quot;result&quot;: {
+      &quot;text&quot;: &quot;configure patches active settings immediately: enabled(bool), retry_identity(stable/attempt), event_order(version/arrival). Stable retries reuse outbox.request_key; attempt retries append an attempt number, even if the original request committed. An HTTP success marks the outbox delivered, not financially settled. Each normal tick processes every ready outbox item once when enabled. Rejected/503 deliveries remain ready. Every probe loses its first charge acknowledgement after commit. Events always arrive even when the worker is paused. version ignores an event older than the stored object; arrival overwrites with every arrival. Existing projections are not automatically rebuilt after config changes. Local adjust changes books only; it never refunds a customer.&quot;,
+      &quot;current_tick&quot;: 8
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr><tr><td>9</td><td><b>provider</b><span>all</span></td><td>已执行</td><td>2</td><td>2</td><td>800</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{
+  &quot;action&quot;: {
+    &quot;command&quot;: &quot;provider&quot;,
+    &quot;target&quot;: &quot;all&quot;
+  },
+  &quot;observation&quot;: {
+    &quot;steps_remaining&quot;: 71,
+    &quot;result&quot;: {
+      &quot;at_tick&quot;: 8,
+      &quot;operations&quot;: [
+        {
+          &quot;operation_id&quot;: &quot;op-1&quot;,
+          &quot;order_id&quot;: &quot;order-a&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 1200,
+          &quot;key&quot;: &quot;order-a/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-2&quot;,
+          &quot;order_id&quot;: &quot;order-a&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 1200,
+          &quot;key&quot;: &quot;order-a/retry&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;pending&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 12
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-3&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-4&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/retry&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 1,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: null
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-5&quot;,
+          &quot;order_id&quot;: &quot;order-b&quot;,
+          &quot;kind&quot;: &quot;refund&quot;,
+          &quot;amount_cents&quot;: 800,
+          &quot;key&quot;: &quot;order-b/refund&quot;,
+          &quot;parent_id&quot;: &quot;op-4&quot;,
+          &quot;status&quot;: &quot;failed&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 4
+        },
+        {
+          &quot;operation_id&quot;: &quot;op-6&quot;,
+          &quot;order_id&quot;: &quot;order-d&quot;,
+          &quot;kind&quot;: &quot;charge&quot;,
+          &quot;amount_cents&quot;: 700,
+          &quot;key&quot;: &quot;order-d/request&quot;,
+          &quot;parent_id&quot;: null,
+          &quot;status&quot;: &quot;succeeded&quot;,
+          &quot;version&quot;: 2,
+          &quot;created_tick&quot;: 0,
+          &quot;settle_at&quot;: 8
+        }
+      ],
+      &quot;wallet&quot;: {
+        &quot;available_cents&quot;: 0,
+        &quot;treasury_cents&quot;: 800
+      },
+      &quot;current_tick&quot;: 9
+    },
+    &quot;verification_current&quot;: false,
+    &quot;done&quot;: false
+  }
+}</pre></details></td></tr></tbody></table></div><details><summary>查看独立重执行的最终数据库（摘要与原始轨迹一致）</summary><pre>{
+  &quot;local&quot;: {
+    &quot;orders&quot;: [
+      {
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;is_probe&quot;: 0
+      },
+      {
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;is_probe&quot;: 0
+      },
+      {
+        &quot;order_id&quot;: &quot;order-c&quot;,
+        &quot;amount_cents&quot;: 600,
+        &quot;is_probe&quot;: 0
+      },
+      {
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;is_probe&quot;: 0
+      }
+    ],
+    &quot;outbox&quot;: [
+      {
+        &quot;message_id&quot;: &quot;msg-order-a&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;request_key&quot;: &quot;order-a/request&quot;,
+        &quot;state&quot;: &quot;done&quot;,
+        &quot;attempts&quot;: 0,
+        &quot;last_error&quot;: null
+      },
+      {
+        &quot;message_id&quot;: &quot;msg-order-b&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;request_key&quot;: &quot;order-b/request&quot;,
+        &quot;state&quot;: &quot;done&quot;,
+        &quot;attempts&quot;: 0,
+        &quot;last_error&quot;: null
+      },
+      {
+        &quot;message_id&quot;: &quot;msg-order-c&quot;,
+        &quot;order_id&quot;: &quot;order-c&quot;,
+        &quot;request_key&quot;: &quot;order-c/request&quot;,
+        &quot;state&quot;: &quot;ready&quot;,
+        &quot;attempts&quot;: 1,
+        &quot;last_error&quot;: &quot;503: outcome unknown&quot;
+      },
+      {
+        &quot;message_id&quot;: &quot;msg-order-d&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;request_key&quot;: &quot;order-d/request&quot;,
+        &quot;state&quot;: &quot;ready&quot;,
+        &quot;attempts&quot;: 1,
+        &quot;last_error&quot;: &quot;503: outcome unknown&quot;
+      }
+    ],
+    &quot;events&quot;: [
+      {
+        &quot;receipt_id&quot;: 1,
+        &quot;event_id&quot;: &quot;op-1/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-1&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 2,
+        &quot;event_id&quot;: &quot;op-3/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-3&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 3,
+        &quot;event_id&quot;: &quot;op-4/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-4&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 4,
+        &quot;event_id&quot;: &quot;op-1/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-1&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 5,
+        &quot;event_id&quot;: &quot;op-3/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-3&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 6,
+        &quot;event_id&quot;: &quot;op-4/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-4&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 7,
+        &quot;event_id&quot;: &quot;op-5/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-5&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;failed&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 8,
+        &quot;event_id&quot;: &quot;op-5/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-5&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;failed&quot;,
+        &quot;version&quot;: 2
+      },
+      {
+        &quot;receipt_id&quot;: 9,
+        &quot;event_id&quot;: &quot;op-2/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-2&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 10,
+        &quot;event_id&quot;: &quot;op-5/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-5&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 11,
+        &quot;event_id&quot;: &quot;op-6/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 12,
+        &quot;event_id&quot;: &quot;op-2/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-2&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 13,
+        &quot;event_id&quot;: &quot;op-5/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-5&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 14,
+        &quot;event_id&quot;: &quot;op-6/v1&quot;,
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;receipt_id&quot;: 15,
+        &quot;event_id&quot;: &quot;op-6/v2&quot;,
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      }
+    ],
+    &quot;projection&quot;: [
+      {
+        &quot;operation_id&quot;: &quot;op-1&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-2&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-3&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-4&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-5&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2
+      }
+    ],
+    &quot;snapshots&quot;: [
+      {
+        &quot;operation_id&quot;: &quot;op-1&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;key&quot;: &quot;order-a/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: null
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-2&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;key&quot;: &quot;order-a/retry&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: 12
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-3&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: null
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-4&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/retry&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: null
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-5&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/refund&quot;,
+        &quot;parent_id&quot;: &quot;op-4&quot;,
+        &quot;status&quot;: &quot;failed&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: 4
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;key&quot;: &quot;order-d/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: 8
+      }
+    ],
+    &quot;adjustments&quot;: [],
+    &quot;config&quot;: [
+      {
+        &quot;name&quot;: &quot;enabled&quot;,
+        &quot;value&quot;: &quot;false&quot;
+      },
+      {
+        &quot;name&quot;: &quot;event_order&quot;,
+        &quot;value&quot;: &quot;\&quot;arrival\&quot;&quot;
+      },
+      {
+        &quot;name&quot;: &quot;retry_identity&quot;,
+        &quot;value&quot;: &quot;\&quot;attempt\&quot;&quot;
+      }
+    ]
+  },
+  &quot;provider&quot;: {
+    &quot;operations&quot;: [
+      {
+        &quot;operation_id&quot;: &quot;op-1&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;key&quot;: &quot;order-a/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: null
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-2&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 1200,
+        &quot;key&quot;: &quot;order-a/retry&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;pending&quot;,
+        &quot;version&quot;: 1,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: 12
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-3&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: null
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-4&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/retry&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 1,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: null
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-5&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;kind&quot;: &quot;refund&quot;,
+        &quot;amount_cents&quot;: 800,
+        &quot;key&quot;: &quot;order-b/refund&quot;,
+        &quot;parent_id&quot;: &quot;op-4&quot;,
+        &quot;status&quot;: &quot;failed&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: 4
+      },
+      {
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;kind&quot;: &quot;charge&quot;,
+        &quot;amount_cents&quot;: 700,
+        &quot;key&quot;: &quot;order-d/request&quot;,
+        &quot;parent_id&quot;: null,
+        &quot;status&quot;: &quot;succeeded&quot;,
+        &quot;version&quot;: 2,
+        &quot;created_tick&quot;: 0,
+        &quot;settle_at&quot;: 8
+      }
+    ],
+    &quot;notifications&quot;: [
+      {
+        &quot;sequence&quot;: 1,
+        &quot;event_id&quot;: &quot;op-1/v1&quot;,
+        &quot;deliver_at&quot;: 1,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 1200, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-a/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-1\&quot;, \&quot;order_id\&quot;: \&quot;order-a\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: null, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 2,
+        &quot;event_id&quot;: &quot;op-1/v1&quot;,
+        &quot;deliver_at&quot;: 2,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 1200, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-a/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-1\&quot;, \&quot;order_id\&quot;: \&quot;order-a\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: null, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 3,
+        &quot;event_id&quot;: &quot;op-2/v1&quot;,
+        &quot;deliver_at&quot;: 7,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 1200, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-a/retry\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-2\&quot;, \&quot;order_id\&quot;: \&quot;order-a\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 12, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 4,
+        &quot;event_id&quot;: &quot;op-2/v1&quot;,
+        &quot;deliver_at&quot;: 8,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 1200, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-a/retry\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-2\&quot;, \&quot;order_id\&quot;: \&quot;order-a\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 12, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 5,
+        &quot;event_id&quot;: &quot;op-3/v1&quot;,
+        &quot;deliver_at&quot;: 1,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-3\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: null, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 6,
+        &quot;event_id&quot;: &quot;op-3/v1&quot;,
+        &quot;deliver_at&quot;: 2,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-3\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: null, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 7,
+        &quot;event_id&quot;: &quot;op-4/v1&quot;,
+        &quot;deliver_at&quot;: 1,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/retry\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-4\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: null, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 8,
+        &quot;event_id&quot;: &quot;op-4/v1&quot;,
+        &quot;deliver_at&quot;: 2,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/retry\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-4\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: null, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 9,
+        &quot;event_id&quot;: &quot;op-5/v1&quot;,
+        &quot;deliver_at&quot;: 7,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/refund\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;operation_id\&quot;: \&quot;op-5\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: \&quot;op-4\&quot;, \&quot;settle_at\&quot;: 4, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 10,
+        &quot;event_id&quot;: &quot;op-5/v1&quot;,
+        &quot;deliver_at&quot;: 8,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/refund\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;operation_id\&quot;: \&quot;op-5\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: \&quot;op-4\&quot;, \&quot;settle_at\&quot;: 4, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 11,
+        &quot;event_id&quot;: &quot;op-6/v1&quot;,
+        &quot;deliver_at&quot;: 7,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 700, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-d/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-6\&quot;, \&quot;order_id\&quot;: \&quot;order-d\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 8, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 12,
+        &quot;event_id&quot;: &quot;op-6/v1&quot;,
+        &quot;deliver_at&quot;: 8,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 700, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-d/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-6\&quot;, \&quot;order_id\&quot;: \&quot;order-d\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 8, \&quot;status\&quot;: \&quot;pending\&quot;, \&quot;version\&quot;: 1}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 13,
+        &quot;event_id&quot;: &quot;op-5/v2&quot;,
+        &quot;deliver_at&quot;: 5,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/refund\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;operation_id\&quot;: \&quot;op-5\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: \&quot;op-4\&quot;, \&quot;settle_at\&quot;: 4, \&quot;status\&quot;: \&quot;failed\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 14,
+        &quot;event_id&quot;: &quot;op-5/v2&quot;,
+        &quot;deliver_at&quot;: 6,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 800, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-b/refund\&quot;, \&quot;kind\&quot;: \&quot;refund\&quot;, \&quot;operation_id\&quot;: \&quot;op-5\&quot;, \&quot;order_id\&quot;: \&quot;order-b\&quot;, \&quot;parent_id\&quot;: \&quot;op-4\&quot;, \&quot;settle_at\&quot;: 4, \&quot;status\&quot;: \&quot;failed\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 15,
+        &quot;event_id&quot;: &quot;op-6/v2&quot;,
+        &quot;deliver_at&quot;: 9,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 700, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-d/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-6\&quot;, \&quot;order_id\&quot;: \&quot;order-d\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 8, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 1
+      },
+      {
+        &quot;sequence&quot;: 16,
+        &quot;event_id&quot;: &quot;op-6/v2&quot;,
+        &quot;deliver_at&quot;: 10,
+        &quot;body&quot;: &quot;{\&quot;amount_cents\&quot;: 700, \&quot;created_tick\&quot;: 0, \&quot;key\&quot;: \&quot;order-d/request\&quot;, \&quot;kind\&quot;: \&quot;charge\&quot;, \&quot;operation_id\&quot;: \&quot;op-6\&quot;, \&quot;order_id\&quot;: \&quot;order-d\&quot;, \&quot;parent_id\&quot;: null, \&quot;settle_at\&quot;: 8, \&quot;status\&quot;: \&quot;succeeded\&quot;, \&quot;version\&quot;: 2}&quot;,
+        &quot;delivered&quot;: 0
+      }
+    ],
+    &quot;transfers&quot;: [
+      {
+        &quot;sequence&quot;: 1,
+        &quot;operation_id&quot;: &quot;op-1&quot;,
+        &quot;order_id&quot;: &quot;order-a&quot;,
+        &quot;delta_cents&quot;: 1200,
+        &quot;tick&quot;: 0
+      },
+      {
+        &quot;sequence&quot;: 2,
+        &quot;operation_id&quot;: &quot;op-3&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;delta_cents&quot;: 800,
+        &quot;tick&quot;: 0
+      },
+      {
+        &quot;sequence&quot;: 3,
+        &quot;operation_id&quot;: &quot;op-4&quot;,
+        &quot;order_id&quot;: &quot;order-b&quot;,
+        &quot;delta_cents&quot;: 800,
+        &quot;tick&quot;: 0
+      },
+      {
+        &quot;sequence&quot;: 4,
+        &quot;operation_id&quot;: &quot;op-6&quot;,
+        &quot;order_id&quot;: &quot;order-d&quot;,
+        &quot;delta_cents&quot;: 700,
+        &quot;tick&quot;: 8
+      }
+    ],
+    &quot;wallet&quot;: [
+      {
+        &quot;id&quot;: 1,
+        &quot;available_cents&quot;: 0,
+        &quot;treasury_cents&quot;: 800
+      }
+    ]
+  }
+}</pre></details></section><footer>来源提交：019a605c6d26667822117b18bda5e21f4f977939 · 完整证据（包括失败）在同目录 JSON；该表可能包含脚本对照，身份以每段请求信息为准。</footer></main></html>

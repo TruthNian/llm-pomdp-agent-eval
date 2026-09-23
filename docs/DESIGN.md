@@ -139,3 +139,34 @@ The [R0–R3 route](ROADMAP.md) removes additional synthetic studies and history
 compression as prerequisites. Prospective prediction and measured supervision
 burden remain research targets; actual accepted patches provide immediate
 application evidence within their declared task scope.
+
+## External effects are not local bookkeeping
+
+Framework 2.10 adds [external settlement](EXTERNAL_SETTLEMENT.md). The provider's
+append-only transfer history is independent of the local book projection. A local
+adjustment has no edge to that history. The operator must cancel a pending duplicate
+or complete a separately funded refund; observing a stale event cannot make either
+operation happen. Verification reads both outcomes and never drains work.
+
+```mermaid
+flowchart LR
+    A[Public observation and history] --> O[Operator decision]
+    O -->|HTTP: retrieve, cancel, refund, fund| P[Provider operations and wallet]
+    P -->|due settlement| T[Immutable external transfers]
+    P --> Q[Delayed and duplicated notification queue]
+    Q --> L[Local event projection and books]
+    O -->|bounded SQL / local adjustment| L
+    O -->|retry configuration and probes| W[Durable outbox worker]
+    W -->|HTTP with idempotency key| P
+    T --> V[Read-only business verification]
+    L --> V
+    V --> A
+    P -->|retrieved current objects only| A
+    L -->|public local queries| A
+```
+
+The new family removes staged restarts and mixed payload parsing from its task:
+those already have an earlier anchor. Its decisions concern irreversible external
+commitment, finite recovery resources and conflicting evidence. Both families reuse
+bounded HTTP/SQL plumbing and the same action-bound evidence collector. More service
+count, more documentation, or another parser failure would not establish difficulty.

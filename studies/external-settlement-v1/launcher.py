@@ -58,7 +58,13 @@ def main():
     try:
         report = resume_suite(output)
     finally:
-        write_json(output / "private/settings-check.json", {"settings_and_auth_bytes_unchanged": before == [p.read_bytes() if p.exists() else None for p in protected]})
+        after = [p.read_bytes() if p.exists() else None for p in protected]
+        write_json(output / "private/settings-check.json", {"settings_and_auth_bytes_unchanged": before == after})
+        # Added after the first collection exposed an unattributable combined
+        # mismatch. Keep per-file equality only; never persist credential bytes.
+        write_json(output / "private/settings-detail.json", {
+            "files": [{"name": p.name, "bytes_unchanged": old == new}
+                      for p, old, new in zip(protected, before, after)]})
     print(json.dumps({"episodes": report["episodes"], "complete": report["complete"]}))
 
 

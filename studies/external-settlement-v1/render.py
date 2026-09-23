@@ -10,10 +10,11 @@ def esc(value):
 
 
 def render(data):
-    sections = []
-    for record in data["records"]:
+    sections, overview = [], []
+    for index, record in enumerate(data["records"], 1):
         grade = record["grade"]
         status = "处理中" if grade["termination"] is None else ("通过交付验收" if grade["success"] else "未完成交付")
+        overview.append(f'<tr><td><a href="#episode-{index}">{esc(record["agent"]["name"])}</a></td><td>{status}</td><td>{grade["steps"]}</td><td>{grade["book_mismatches"]}</td><td>{grade["external_mismatches"]}</td><td>{grade["additional_excess_settled_cents"]}</td></tr>')
         rows = []
         for i, event in enumerate(record["events"]):
             call = record["service_evidence"]["calls"][i]
@@ -26,10 +27,13 @@ def render(data):
             short = target if isinstance(target, str) else json.dumps(target, ensure_ascii=False)
             result = event["observation"]["result"]
             outcome = "PASS" if result.get("passed") is True else "FAIL" if result.get("passed") is False else "错误" if "error" in result else "已执行"
-            rows.append(f'<tr><td>{i+1}</td><td><b>{esc(command)}</b><span>{esc(short[:180])}</span></td><td>{outcome}</td><td>{len(audit["external_mismatches"])}</td><td>{audit["unsettled_messages"]}</td><td>{excess:,}</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与模型实际收到的反馈</summary><pre>{detail}</pre></details></td></tr>')
+            rows.append(f'<tr><td>{i+1}</td><td><b>{esc(command)}</b><span>{esc(short[:180])}</span></td><td>{outcome}</td><td>{len(audit["external_mismatches"])}</td><td>{audit["unsettled_messages"]}</td><td>{excess:,}</td></tr><tr class="detail"><td colspan="6"><details><summary>查看本步完整动作与实际收到的反馈</summary><pre>{detail}</pre></details></td></tr>')
         usage = record.get("usage")
         tokens = (f'{usage["input_tokens"]:,} / {usage["output_tokens"]:,}' if usage and usage["requests"] == usage["requests_with_usage"] else "不完整或未知")
-        seconds = f'{record.get("elapsed_seconds", 0):.1f}'
+        model_run = record["agent"]["kind"] in ("chat", "responses")
+        seconds = f'{record.get("elapsed_seconds", 0):.1f} 秒' if model_run else "未测量（脚本）"
+        if not model_run:
+            tokens = "不适用（脚本）"
         public_start = esc(json.dumps({"initial_observation": record["initial_observation"], "contract": record["contract"]}, ensure_ascii=False, indent=2))
         audit = record.get("request_audit", [])
         aliases = sum(a.get("reported_model_matches_request") is False for a in audit)
@@ -37,16 +41,19 @@ def render(data):
         error_view = ('<p><b>终止错误：</b>' + esc(record["error"]) + '。该接入错误不能作为任务认知难度的证据。</p>') if record.get("error") else ''
         final = next((s for s in data.get("fresh_final_states", []) if s["agent"] == record["agent"]["name"]), None)
         final_view = ('<details><summary>查看独立重执行的最终数据库（摘要与原始轨迹一致）</summary><pre>' + esc(json.dumps(final["tables"], ensure_ascii=False, indent=2)) + '</pre></details>') if final else ''
-        sections.append(f'''<section><div class="title"><h2>{esc(record['agent']['name'])}</h2><strong class="{'pass' if grade['success'] else 'other'}">{status}</strong></div>
-<div class="stats"><div><small>动作</small><b>{grade['steps']} / {grade['budget']}</b></div><div><small>模型与环境总耗时</small><b>{seconds} 秒</b></div><div><small>输入 / 输出 token</small><b>{tokens}</b></div><div><small>新增不可逆多付款</small><b>{grade['additional_excess_settled_cents']:,} 分</b></div></div>
+        sections.append(f'''<section id="episode-{index}"><div class="title"><h2>{esc(record['agent']['name'])}</h2><strong class="{'pass' if grade['success'] else 'other'}">{status}</strong></div>
+<div class="stats"><div><small>动作</small><b>{grade['steps']} / {grade['budget']}</b></div><div><small>模型与环境总耗时</small><b>{seconds}</b></div><div><small>输入 / 输出 token</small><b>{tokens}</b></div><div><small>新增不可逆多付款</small><b>{grade['additional_excess_settled_cents']:,} 分</b></div></div>
 <p>最终本地不一致订单：{grade['book_mismatches']}；外部不一致订单：{grade['external_mismatches']}；待终结操作：{grade['pending_operations']}；未完成消息：{grade['unsettled_messages']}；外部超额扣款暴露：{grade['external_excess_cent_ticks']} 分·tick；终止原因：{esc(grade['termination'])}。</p>
 <p>{identity} 名称核对不能认证实际权重。</p>
 {error_view}
-<details><summary>模型最初收到的事故目标和操作契约</summary><pre>{public_start}</pre></details>
-<div class="scroll"><table><thead><tr><th>步骤</th><th>模型动作</th><th>反馈</th><th>外部不一致订单</th><th>未完成消息</th><th>当前超额扣款 / 分</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>{final_view}</section>''')
+<details><summary>操作方最初收到的事故目标和操作契约</summary><pre>{public_start}</pre></details>
+<div class="scroll"><table><thead><tr><th>步骤</th><th>动作</th><th>反馈</th><th>外部不一致订单</th><th>未完成消息</th><th>当前超额扣款 / 分</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>{final_view}</section>''')
+    anomaly = ('<section style="border:2px solid #a05218"><h2>采集条件异常：原样保留</h2><p>配置／认证文件的整体不变性检查未通过。原采集器只保存了合并判断，无法确定具体字段或变更原因。每一步业务结果已独立重执行核对，但本轮属于集成验证证据，不能视为严格受控的模型比较。</p></section>'
+               if data.get("settings_check") == {"settings_and_auth_bytes_unchanged": False} else '')
+    summary = '<section><h2>交付结果对照</h2><div class="scroll"><table><thead><tr><th>路线 / 对照（点击看完整轨迹）</th><th>交付</th><th>动作</th><th>本地错误订单</th><th>外部错误订单</th><th>新增不可逆多付款 / 分</th></tr></thead><tbody>' + ''.join(overview) + '</tbody></table></div><p>不可逆多付款来自外部真实转移记录，后续退款不会抹去它。通过验收仍不代表场景具备前沿难度。</p></section>'
     return '''<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>外部结算完整轨迹</title><style>
 body{font:16px/1.65 system-ui,sans-serif;background:#f3f5f8;color:#172336;margin:0}main{max-width:1200px;margin:50px auto;padding:0 24px}h1{font-size:34px;letter-spacing:-1px;margin-bottom:12px}h2{font-size:22px}p{max-width:960px;color:#42536b}.eyebrow{font-weight:700;color:#2266aa;letter-spacing:2px;font-size:13px}.intro{padding-bottom:24px;border-bottom:2px solid #173656}section{background:white;border:1px solid #dbe2eb;border-radius:12px;padding:28px;margin:30px 0}.title{display:flex;align-items:center;justify-content:space-between;gap:20px}.pass{color:#16704a}.other{color:#8f5413}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:#f4f7fb;padding:18px;border-radius:8px}.stats small,.stats b{display:block}.stats small{font-size:12px;color:#526680}.stats b{font-size:18px}table{width:100%;border-collapse:collapse;text-align:left;font-size:13px}th,td{padding:12px 9px;border-bottom:1px solid #e3e8f0;vertical-align:top}th{color:#536982;white-space:nowrap}td span{display:block;max-width:450px;overflow-wrap:anywhere;color:#536982}td b{color:#173656}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f5f7fa;padding:16px;font:12px/1.55 ui-monospace,monospace;max-height:500px;overflow:auto}.detail td{padding:4px 9px 10px}summary{cursor:pointer;color:#285f97}.scroll{overflow:auto}@media(max-width:750px){main{margin:25px auto;padding:0 12px}section{padding:16px}.stats{grid-template-columns:repeat(2,1fr)}.title{display:block}h1{font-size:28px}}
-</style><main><div class="intro"><div class="eyebrow">POMDP · EXTERNAL SETTLEMENT</div><h1>外部付款必须真正完成</h1><p>操作方通过真实 HTTP 服务和两个独立 SQLite 数据库调查、处置与恢复。本地账本改动无法撤销外部付款；退款需要实际结算。下方完整保留每一步行动和反馈；表格中的业务后果由评测器记录，未提前提供给模型。最终修复不会抹去之前造成的损害。</p><p>这是构造的本地结算系统，不涉及真实资金。tick 是固定业务时钟；模型名称是请求路由，token 用量按服务端报告。单场景不构成模型排名或高难度证明。</p></div>''' + ''.join(sections) + '<footer>来源提交：' + esc(data["git_revision"]) + ' · 完整证据（包括失败）在同目录 JSON；该表可能包含脚本对照，身份以每段请求信息为准。</footer></main></html>'
+</style><main><div class="intro"><div class="eyebrow">POMDP · EXTERNAL SETTLEMENT</div><h1>外部付款必须真正完成</h1><p>操作方通过真实 HTTP 服务和两个独立 SQLite 数据库调查、处置与恢复。本地账本改动无法撤销外部付款；退款需要实际结算。下方完整保留每一步行动和反馈；表格中的业务后果由评测器记录，未提前提供给模型。最终修复不会抹去之前造成的损害。</p><p>这是构造的本地结算系统，不涉及真实资金。tick 是固定业务时钟；模型名称是请求路由，token 用量按服务端报告。单场景不构成模型排名或高难度证明。</p></div>''' + anomaly + summary + ''.join(sections) + '<footer>来源提交：' + esc(data["git_revision"]) + ' · 完整证据（包括失败）在同目录 JSON；该表可能包含脚本对照，身份以每段请求信息为准。</footer></main></html>'
 
 
 def main():

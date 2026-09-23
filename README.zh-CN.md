@@ -15,8 +15,9 @@
 
 ```powershell
 python -m pip install -e .
-python studies/settlement-incident-v1/controls.py artifacts/incident-controls
-python -m pomdp_bench validate artifacts/incident-controls
+python -m pomdp_bench prepare-settlement-suite --out artifacts/external-suite.json
+python -m pomdp_bench run --suite artifacts/external-suite.json --agents examples/settlement-agents.json --out artifacts/external-run
+python -m pomdp_bench validate artifacts/external-run
 ```
 
 无需 Docker。模型只通过运维接口操作可信服务，不在本机执行模型生成的代码。
@@ -31,7 +32,7 @@ GLM 的原始尝试在 13 步后被旧解析器终止，这不能视为认知难
 期间从两次非法动作响应中继续恢复，最终 33 笔已接收订单全部核平。
 原失败仍然保留；两个接入层版本的结果不混成模型排名。
 
-2.10 新增[外部结算场景](docs/EXTERNAL_SETTLEMENT.md)：外部状态与本地账本分离，退款资金有限，取消有截止时间，通知会延迟和乱序。本地冲账无法撤销外部付款。见[开发实测协议](studies/external-settlement-v1/README.md)。
+2.10 新增[外部结算场景](docs/EXTERNAL_SETTLEMENT.md)：外部状态与本地账本分离，退款资金有限，取消有截止时间，通知会延迟和乱序。本地冲账无法撤销外部付款。[完整实测证据](studies/external-settlement-v1/README.md)：Sol 26 步交付；GLM 路由在九步后第十次请求超时。七项机制对照符合预期。配置不变性检查未通过，异常原样披露；本轮只作集成证据，不作严格模型对比，也不证明前沿难度。
 
 ## 实现路径与架构
 
