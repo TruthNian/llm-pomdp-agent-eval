@@ -17,6 +17,14 @@ SYSTEM = ("You are an agent in an interactive environment. Follow the task contr
           "Return exactly one JSON action with command and optional target, without commentary or markdown. "
           "The user JSON includes the complete public observation history. No external tools are available.")
 
+NATIVE_TOOLS = [
+    {'type':'function','name':'exec','description':'Run a Bash script in the authorized operations environment.',
+     'strict':True,'parameters':{'type':'object','properties':{'target':{'type':'string'}},
+                                'required':['target'],'additionalProperties':False}},
+    {'type':'function','name':'finish','description':'Hand over the service and end interaction.',
+     'strict':True,'parameters':{'type':'object','properties':{},'required':[],'additionalProperties':False}},
+]
+
 
 class AdapterError(RuntimeError):
     """Only fixed local descriptions and numeric HTTP status, never remote bodies."""
@@ -66,6 +74,12 @@ def request_body(config, request):
                     {"role": "system", "content": SYSTEM}, {"role": "user", "content": public}]}
     if "reasoning_effort" in options:
         options["reasoning"] = {"effort": options.pop("reasoning_effort")}
+    if config['kind'] == 'responses_tools':
+        return {'model':config['model'],**options,
+                'instructions':'Follow the task contract. Use the provided tools to act. '
+                               'The user JSON contains the complete public observation history.',
+                'input':[{'role':'user','content':public}],'tools':copy.deepcopy(NATIVE_TOOLS),
+                'tool_choice':'required','parallel_tool_calls':False,'store':False,'stream':True}
     return {"model": config["model"], **options, "instructions": SYSTEM,
             "input": [{"role": "user", "content": public}],
             "tools": [], "tool_choice": "none", "store": False, "stream": True}
@@ -74,6 +88,8 @@ def request_body(config, request):
 def action_text(data, kind):
     if not isinstance(data, dict) or data.get("error"):
         raise AdapterError("Endpoint returned an error envelope", "protocol_error")
+    if kind == 'responses_tools':
+        return native_action(data)
     try:
         if kind == "chat":
             choices = data["choices"]
@@ -119,15 +135,52 @@ def action_text(data, kind):
         raise InvalidActionError(text) from None
 
 
+def native_action(data):
+    """Only one declared completed call can act; commentary never becomes code."""
+    if data.get('status') != 'completed' or data.get('incomplete_details'):
+        raise AdapterError('Endpoint did not complete the response','incomplete_response')
+    calls = []
+    try:
+        for item in data['output']:
+            if item['type'] in ('message','reasoning'):
+                continue
+            if item['type'] != 'function_call' or item.get('name') not in ('exec','finish'):
+                raise AdapterError('Endpoint returned an undeclared output item','unexpected_tool')
+            calls.append(item)
+        if len(calls) != 1 or calls[0].get('status') not in (None,'completed'):
+            raise ValueError()
+        call = calls[0]
+        arguments = strict_json(call['arguments'])
+        if not isinstance(arguments,dict):
+            raise ValueError()
+        if call['name'] == 'finish' and not arguments:
+            return {'command':'finish'}
+        if call['name'] == 'exec' and set(arguments) == {'target'} and isinstance(arguments['target'],str):
+            return {'command':'exec','target':arguments['target']}
+        raise ValueError()
+    except (KeyError,TypeError,ValueError,AttributeError):
+        raise AdapterError('Endpoint did not return one valid declared function call','protocol_error') from None
+
+
 class ResponseStream:
     """Inspect events while streaming; commit only a completed response envelope."""
 
-    def __init__(self):
+    def __init__(self, functions=()):
         self.buffer = b""
         self.lines = []
         self.result = None
         self.item_types = {}
         self.completed_items = {}
+        self.functions = tuple(functions)
+        self.item_names = {}
+        self.function_arguments = {}
+
+    def check_item(self, item):
+        if item.get('type') in ('message','reasoning'):
+            return
+        if item.get('type') == 'function_call' and item.get('name') in self.functions:
+            return
+        raise AdapterError('Endpoint streamed an undeclared output item','unexpected_tool')
 
     def feed(self, chunk, final=False):
         self.buffer += chunk
@@ -166,14 +219,15 @@ class ResponseStream:
                    "response.reasoning_summary_part.added", "response.reasoning_summary_part.done",
                    "response.reasoning_summary_text.delta", "response.reasoning_summary_text.done",
                    "response.reasoning_text.delta", "response.reasoning_text.done"}
+        if self.functions:
+            allowed.update(('response.function_call_arguments.delta','response.function_call_arguments.done'))
         if kind not in allowed:
             raise AdapterError("Endpoint streamed an undeclared event type", "unexpected_tool")
         if self.result is not None:
             raise AdapterError("Endpoint streamed events after completion", "protocol_error")
         if kind in ("response.output_item.added", "response.output_item.done"):
             item = event.get("item", {})
-            if item.get("type") not in ("message", "reasoning"):
-                raise AdapterError("Endpoint streamed an undeclared output item", "unexpected_tool")
+            self.check_item(item)
             identity = (item.get("id"), event.get("output_index"))
             if not isinstance(identity[0], str) or not identity[0] or type(identity[1]) is not int or identity[1] < 0:
                 raise AdapterError("Endpoint streamed an invalid item identity", "protocol_error")
@@ -184,9 +238,24 @@ class ResponseStream:
                     or any(k != identity and (k[0] == identity[0] or k[1] == identity[1]) for k in self.item_types)):
                 raise AdapterError("Endpoint reused a stream item identity", "protocol_error")
             self.item_types[identity] = item["type"]
+            if item['type'] == 'function_call':
+                signature = (item.get('name'),item.get('call_id'))
+                if identity in self.item_names and self.item_names[identity] != signature:
+                    raise AdapterError('Endpoint changed a function identity','protocol_error')
+                self.item_names[identity] = signature
             if kind.endswith(".done"):
+                if identity in self.function_arguments and self.function_arguments[identity] != item.get('arguments'):
+                    raise AdapterError('Endpoint returned conflicting function arguments','protocol_error')
                 # Reasoning is never action content and need not be accumulated.
-                self.completed_items[identity] = item if item["type"] == "message" else {"type": "reasoning"}
+                self.completed_items[identity] = item if item["type"] != "reasoning" else {"type": "reasoning"}
+        if kind in ('response.function_call_arguments.delta','response.function_call_arguments.done'):
+            identity = (event.get('item_id'),event.get('output_index'))
+            if self.item_types.get(identity) != 'function_call' or identity in self.completed_items:
+                raise AdapterError('Endpoint streamed arguments outside their declared call','protocol_error')
+            if kind.endswith('.done'):
+                if identity in self.function_arguments or not isinstance(event.get('arguments'),str):
+                    raise AdapterError('Endpoint returned invalid completed function arguments','protocol_error')
+                self.function_arguments[identity] = event['arguments']
         if kind in ("response.content_part.added", "response.content_part.done"):
             part = event.get("part", {})
             expected = {"output_text": "message", "reasoning_text": "reasoning"}.get(part.get("type"))
@@ -194,8 +263,7 @@ class ResponseStream:
             if expected is None or self.item_types.get(identity) != expected:
                 raise AdapterError("Endpoint streamed content outside its declared item", "protocol_error")
         for item in event.get("response", {}).get("output", []):
-            if item.get("type") not in ("message", "reasoning"):
-                raise AdapterError("Endpoint streamed an undeclared output item", "unexpected_tool")
+            self.check_item(item)
         if kind == "response.completed":
             terminal = event["response"]
             if self.item_types.keys() != self.completed_items.keys():
@@ -211,7 +279,9 @@ class ResponseStream:
             elif reported and closed:
                 def messages(items):
                     return [(item.get("role"), item.get("status"), item.get("content"))
-                            for item in items if item.get("type") == "message"]
+                            if item.get('type') == 'message' else
+                            (item.get('name'),item.get('call_id'),item.get('arguments'),item.get('status'))
+                            for item in items if item.get("type") != "reasoning"]
                 # Compare completed message content before parsing its action.
                 # Invalid action JSON must still reach usage accounting.
                 if messages(reported) != messages(closed):
@@ -220,7 +290,7 @@ class ResponseStream:
 
 
 def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=False,
-             max_response_bytes=MAX_RESPONSE_BYTES):
+             max_response_bytes=MAX_RESPONSE_BYTES, functions=()):
     """No redirects, implicit proxies or retries. Bound reads by one deadline."""
     parsed = urllib.parse.urlsplit(endpoint)
     connection_type = http.client.HTTPSConnection if parsed.scheme == "https" else http.client.HTTPConnection
@@ -264,7 +334,7 @@ def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=Fals
         media = response.getheader("Content-Type", "").split(";", 1)[0].strip().lower()
         # A missing media header uses the format we explicitly requested.
         # Never sniff arbitrary body text or treat a delta as an action.
-        stream = ResponseStream() if media == "text/event-stream" or (not media and streaming) else None
+        stream = ResponseStream(functions) if media == "text/event-stream" or (not media and streaming) else None
         chunks, size = [], 0
         while not response.isclosed():
             sock.settimeout(remaining())
@@ -336,19 +406,21 @@ class HttpAgent:
                 raise AdapterError("headers_env must contain distinct allowed metadata headers with ASCII values", "configuration_error") from None
 
     def act(self, request, timeout):
-        body = json.dumps(request_body(self.config, request), ensure_ascii=False, allow_nan=False).encode()
+        payload = request_body(self.config, request)
+        body = json.dumps(payload, ensure_ascii=False, allow_nan=False).encode()
         limit = min(timeout, self.config.get("timeout_seconds", 30))
         if not math.isfinite(limit) or limit <= 0:
             raise AdapterError("Endpoint request deadline exceeded", "timeout")
         audit = {"protocol": self.config["kind"], "request_sha256": hashlib.sha256(body).hexdigest(),
-                 "declared_tools": [], "tool_choice": "none", "timeout_seconds": limit,
+                 "declared_tools": [t['name'] for t in payload['tools']], "tool_choice": payload['tool_choice'], "timeout_seconds": limit,
                  "max_response_bytes": self.max_response_bytes, "outcome": "in_flight"}
         self.request_audit.append(audit)
         self.usage["requests"] += 1
         try:
+            extra = {'functions':('exec','finish')} if self.config['kind'] == 'responses_tools' else {}
             data = exchange(self.endpoint, self.key, body, limit, self.headers,
-                            streaming=self.config["kind"] == "responses",
-                            max_response_bytes=self.max_response_bytes)
+                            streaming=self.config["kind"] in ('responses','responses_tools'),
+                            max_response_bytes=self.max_response_bytes, **extra)
             self.add_usage(data)
             # Record label agreement even when completed action text is invalid.
             audit["reported_model_matches_request"] = data.get("model") == self.config["model"] if isinstance(data, dict) and data.get("model") else None

@@ -44,7 +44,7 @@ def validate_definition(data, configs, conditions, replicates, wall_seconds):
             or set(conditions) - set(CONDITIONS)):
         raise ValueError("Unknown or duplicate conditions")
     if data['generator_version'] == TAKEOVER_VERSION:
-        if conditions != ['open'] or any(c['kind'] not in ('chat','responses','actions') for c in configs):
+        if conditions != ['open'] or any(c['kind'] not in ('chat','responses','responses_tools','actions') for c in configs):
             raise ValueError('Takeover requires open and HTTP agents or declared artifact controls')
     elif data["generator_version"] == REFUND_VERSION:
         if conditions != ["open"] or any(c["kind"] not in ("chat", "responses", "actions", REFUND_POLICY) for c in configs):
@@ -69,6 +69,8 @@ def validate_definition(data, configs, conditions, replicates, wall_seconds):
             raise ValueError("Solver consumer policy requires only solver_assisted")
     elif "solver_assisted" in conditions or any(c["kind"] in (*COVER_POLICIES, *ASSISTED_POLICIES) for c in configs):
         raise ValueError("Coverage policies and solver assistance require a coverage suite")
+    if data["generator_version"] != TAKEOVER_VERSION and any(c["kind"] == "responses_tools" for c in configs):
+        raise ValueError("Native shell tools require an incident takeover suite")
     if data["generator_version"] != REFUND_VERSION and any(c["kind"] == REFUND_POLICY for c in configs):
         raise ValueError("Refund operator needs a refund recovery suite")
     if data["generator_version"] != RECONCILIATION_VERSION and any(c["kind"] == RECONCILIATION_POLICY for c in configs):

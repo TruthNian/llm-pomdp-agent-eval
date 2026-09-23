@@ -32,7 +32,7 @@ def validate_config(config: dict) -> None:
         raise ValueError("Unknown agent configuration fields")
     if not isinstance(config.get("name"), str) or not config["name"].strip():
         raise ValueError("Every agent needs a nonempty name")
-    if config.get("kind") not in (*POLICIES, "chat", "responses", "actions"):
+    if config.get("kind") not in (*POLICIES, "chat", "responses", "responses_tools", "actions"):
         raise ValueError("Unknown agent kind")
     if config["kind"] == "actions":
         if (set(config) != {"name", "kind", "actions"} or not isinstance(config["actions"], list)
@@ -41,10 +41,10 @@ def validate_config(config: dict) -> None:
     elif "actions" in config:
         raise ValueError("Only fixed-action controls accept an action sequence")
     if "max_response_bytes" in config:
-        if config["kind"] not in ("chat", "responses"):
+        if config["kind"] not in ("chat", "responses", "responses_tools"):
             raise ValueError("max_response_bytes applies only to HTTP agents")
         response_byte_limit(config)
-    if config["kind"] in ("chat", "responses"):
+    if config["kind"] in ("chat", "responses", "responses_tools"):
         for field in ("model", "endpoint_env", "api_key_env"):
             if not isinstance(config.get(field), str) or not config[field]:
                 raise ValueError(f"HTTP adapter requires {field}")
@@ -52,7 +52,7 @@ def validate_config(config: dict) -> None:
             raise ValueError("headers_env must name an environment variable")
         options = config.get("options", {})
         allowed_options = ({"temperature", "top_p", "reasoning_effort", "max_output_tokens"}
-                           if config["kind"] == "responses" else
+                           if config["kind"] in ("responses", "responses_tools") else
                            {"temperature", "top_p", "max_tokens", "max_completion_tokens", "reasoning_effort", "seed"})
         if not isinstance(options, dict) or set(options) - allowed_options:
             raise ValueError("Unsupported request option; model, messages, tools, and credentials are adapter-owned")
@@ -69,6 +69,8 @@ def validate_config(config: dict) -> None:
 
 
 def validate_agent_version(config, version):
+    if config["kind"] == "responses_tools" and not version_at_least(version, "2.14.0"):
+        raise ValueError("Native takeover tools require framework 2.14")
     if config["kind"] == REFUND_POLICY and not version_at_least(version, "2.12.0"):
         raise ValueError("Refund operator requires framework 2.12")
     if config["kind"] == RECONCILIATION_POLICY and not version_at_least(version, "2.11.0"):
@@ -155,7 +157,7 @@ def make_agent(config: dict, seed: int):
     validate_config(config)
     if config["kind"] == "actions":
         return ActionSequence(config["actions"])
-    return ChatAgent(config) if config["kind"] in ("chat", "responses") else ScriptedAgent(config["kind"], seed)
+    return ChatAgent(config) if config["kind"] in ("chat", "responses", "responses_tools") else ScriptedAgent(config["kind"], seed)
 
 
 class ActionSequence:
