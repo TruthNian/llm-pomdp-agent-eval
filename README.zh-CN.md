@@ -3,6 +3,9 @@
 [![CI](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/workflows/ci.yml)
 [English](README.md) · [路线](docs/ROADMAP.zh-CN.md) · [设计](docs/DESIGN.md) · [接入模型](docs/MODEL_ADAPTERS.md)
 
+**阶段验收入口：[2026-09-23 成果与证据](docs/ACCEPTANCE_2026-09-23.md)。**
+后续开发已暂停，等待用户验收。执行与测量闭环已跑通；高难度目标仍未达到。
+
 评估智能体能否在信息不完整、资源有限的情况下，交付**通过验收、有实际价值的成果**。
 完整轨迹是评测单位；失败尝试、执行故障和交付成本都保留。
 
@@ -14,9 +17,13 @@ Sol 9/150 步交付，110 笔已接受订单全部保留且通过重启检查。
 单独记录；**高难度目标仍未达到**。
 
 [2.15 破坏性恢复实测](studies/stream-recovery-v1/README.md)已保留四组真实机制对照，以及 Sol max 的完整尝试：
-29 步交接后仍有 12 个订单未恢复、9 笔发货遗漏，无协议或观察器错误。当前适配器逐步重传公开历史，
-没有保留原生推理连续性，因此还不能把这个结果当作连续智能体的能力上限。下一步复核缺失数据的因果作用，
-并以原生连续会话重测同一事故。
+29 步交接后仍有 12 个订单未恢复、9 笔发货遗漏，无协议或观察器错误。该次适配器逐步重传公开历史，
+没有保留原生推理连续性，因此还不能把这个结果当作连续智能体的能力上限。
+[匹配的实物对照](studies/stream-recovery-counterfactual-v1/README.md)已确认：保持模型修好的流水线不变，
+仅补回缺失历史就能消除两项缺口。另行冻结的
+[原生连续会话筛选](studies/stream-recovery-continuous-v1/README.md)已完成：Sol max 用 31/200 步交付，
+重启后 111 个已接受订单与 93 笔应发货记录全部正确。维护期间 128 次客户写请求失败，照实保留。
+此候选退出高难度主线，保留为回归参照；两次非配对模型尝试不能证明适配器的因果效应。
 
 此前的[结算事故环境](docs/SERVICE_INCIDENT.md)
 运行真实 HTTP 请求、持久化订单、消息队列和账本。模型接手模糊故障，自主调查、
@@ -27,11 +34,11 @@ Sol 9/150 步交付，110 笔已接受订单全部保留且通过重启检查。
 
 ```powershell
 python -m pip install -e .
-python studies/incident-takeover-native-v1/verify.py
+python studies/stream-recovery-continuous-v1/verify.py
 ```
 
 该命令直接复核已发布的完整轨迹，无需 Docker，也不调用模型。可阅读
-[全部动作与反馈](studies/incident-takeover-native-v1/trajectories.html)，或按
+[全部动作与反馈](studies/stream-recovery-continuous-v1/trajectories.html)，或按
 [Docker 配置与原生模型运行说明](docs/POSTGRES_TAKEOVER.md#run-locally)执行新事故。
 模型生成的 shell／Python 在隔离的 Linux 容器中运行。旧 HTTP/SQLite 任务继续作为回归参照。
 [逐步路线](docs/ROADMAP.zh-CN.md)。

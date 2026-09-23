@@ -2,8 +2,11 @@
 
 Framework 2.15 development candidate; generator `stream-recovery/1`, runtime
 `postgres-debezium-kafka/1`. This evaluator document is outside the operated environment.
-The high-difficulty objective remains unproved until complete strong-model attempts
-and causal checks provide the relevant evidence.
+The completed [continuous Sol max screen](../studies/stream-recovery-continuous-v1/README.md)
+delivered in 31/200 actions, with 111 accepted orders and 93 required dispatches correct after
+restart. Retain 128 refused customer writes. This candidate is rejected as high-difficulty
+evidence and retained as a regression anchor. Further development is paused for
+[stage review](ACCEPTANCE_2026-09-23.md).
 
 ## What changed from the rejected merge task
 
@@ -88,9 +91,11 @@ policies. The complete control recovers from ordinary backup/WAL, reconciles by
 customer reference/revision and event UUID, consults existing carrier bookings,
 then starts a fresh CDC stream. It reads no evaluator receipts or private seed.
 
-Freeze the image/source and execute these controls, then immediately screen a full
-Sol max attempt through native tools. A clean delivery rejects the high-difficulty
-claim for this candidate. A task failure requires attribution to an actual decision
-and fresh public-information counterfactual execution. Provider, startup, observer,
-context-capacity and protocol failures do not prove cognitive difficulty. Retain
-every attempted episode; do not change the scenario or budget during a collection.
+The [frozen controls and stateless Sol attempt](../studies/stream-recovery-v1/README.md)
+completed. The model left twelve orders and nine dispatches missing. The
+[matched data-only recovery experiment](../studies/stream-recovery-counterfactual-v1/README.md)
+removed both deficits without replacing its repaired pipeline. The separately frozen continuous
+attempt then delivered completely, triggering the declared rejection rule. These are different
+policies and unpaired real-time workloads; their results do not isolate an adapter effect.
+Provider, startup, observer, context-capacity and protocol failures do not prove cognitive
+difficulty. Every attempted episode remains retained with its original scenario and budget.

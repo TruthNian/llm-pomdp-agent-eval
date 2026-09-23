@@ -3,6 +3,10 @@
 [![CI](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/workflows/ci.yml)
 [中文](README.zh-CN.md) · [Roadmap](docs/ROADMAP.md) · [Design](docs/DESIGN.md) · [Connect a model](docs/MODEL_ADAPTERS.md)
 
+**Stage review:** [2026-09-23 acceptance record (中文)](docs/ACCEPTANCE_2026-09-23.md).
+Further development is paused for user review. The execution and measurement loop works;
+the high-difficulty objective remains unmet.
+
 Evaluate whether an agent can turn incomplete information into an **accepted,
 useful outcome** under resource constraints. The unit is a complete interaction
 trajectory, including unsuccessful actions, execution failures and delivery costs.
@@ -20,7 +24,12 @@ The [2.15 destructive recovery study](studies/stream-recovery-v1/README.md) now 
 real mechanism controls and a complete Sol max attempt: 29 actions, twelve unrecovered orders
 and nine missing dispatches, without protocol or observer errors. Its stateless history adapter
 does not preserve native reasoning continuity, so this is not yet a continuous-agent ceiling result.
-The next checks isolate missing-data recovery and retest the same incident with native dialogue.
+The [matched artifact experiment](studies/stream-recovery-counterfactual-v1/README.md) now confirms
+that recovering missing history removes both deficits without replacing the model's repaired pipeline.
+The separately frozen [continuous native-session screen](studies/stream-recovery-continuous-v1/README.md)
+delivered in 31/200 actions: all 111 accepted orders and 93 required dispatches passed after restart.
+Maintenance refused 128 customer writes. Reject this candidate as high-difficulty evidence and retain
+it as a regression anchor. These unpaired attempts do not isolate the adapter's causal effect.
 
 The earlier [settlement incident](docs/SERVICE_INCIDENT.md)
 executes actual HTTP requests and persists orders, an outbox and a ledger. An agent takes over an
@@ -33,11 +42,11 @@ the three 2.8 source repairs and all historical evidence remain regression ancho
 
 ```bash
 python -m pip install -e .
-python studies/incident-takeover-native-v1/verify.py
+python studies/stream-recovery-continuous-v1/verify.py
 ```
 
 This regrades the published complete run without Docker or model calls. Read its
-[full action trace](studies/incident-takeover-native-v1/trajectories.html), or follow the
+[full action trace](studies/stream-recovery-continuous-v1/trajectories.html), or follow the
 [Docker setup and native-model run instructions](docs/POSTGRES_TAKEOVER.md#run-locally)
 for a fresh incident. Candidate shell/Python runs inside the isolated Linux container.
 The older HTTP/SQLite service tasks remain available as regression anchors.

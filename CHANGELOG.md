@@ -2,6 +2,7 @@
 
 ## 2.16.0
 
+- Publish the complete continuous Sol max screen: delivery in 31/200 actions, all 111 accepted orders and 93 required dispatches correct after restart; retain 128 refused customer writes. Reject the candidate as high-difficulty evidence. Preserve all earlier failures and pause further development for stage review.
 - Add `responses_session`: preserve native assistant/function items, tool-call identities, assistant phase and encrypted reasoning across an episode. Remove fresh-history reconstruction as the mainline agent interface.
 - Keep opaque reasoning in memory only. Publish replayable input projections and opaque-item hashes, never encrypted or plaintext reasoning. Reject discontinuous histories and missing required reasoning state instead of silently downgrading.
 - Retain the stateless 2.14/2.15 adapters and all results. Freeze a separate continuous Sol screen with the same incident, image, business acceptance and budgets; no change to environment semantics.

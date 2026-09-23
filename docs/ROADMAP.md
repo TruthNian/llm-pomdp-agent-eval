@@ -3,6 +3,11 @@
 Evaluate autonomous investigation, action, observation, recovery and useful delivery under partial observability.
 Calibrate difficulty with useful tools available and complete strong-model interactions.
 
+**Paused for user review.** See the [2026-09-23 acceptance record](ACCEPTANCE_2026-09-23.md).
+The continuous Sol screen delivered in 31/200 actions. Retain this candidate as a regression
+anchor; high difficulty remains unmet. The implementation path below records the work completed
+so far, not authorization to start another candidate during review.
+
 ## Active next step: incident takeover
 
 The user-approved [design constraints](INCIDENT_TAKEOVER.md) start with an incident's
@@ -47,11 +52,18 @@ are absent from this prototype. Any next implementation is still an adaptation, 
 Initial symptoms must admit competing causal explanations, with accessible evidence that changes the
 appropriate intervention. Keep those explanations on the evaluator side. Framework 2.15 now implements
 the [destructive recovery and downstream dispatch candidate](STREAM_RECOVERY.md). A complete development
-recovery passed both business phases, including restart. Frozen controls and the full model screen are
-the next gates. The [completed 2.15 study](../studies/stream-recovery-v1/README.md) now records a
+recovery passed both business phases, including restart. The frozen controls and complete model screens
+have finished. The [completed 2.15 study](../studies/stream-recovery-v1/README.md) records a
 29-action Sol business failure: twelve orders and nine dispatches remain missing. Its stateless
-history adapter limits ceiling attribution. Execute the [data-only counterfactual](../studies/stream-recovery-counterfactual-v1/README.md)
-and a separately frozen continuous native-session screen before expanding tasks or making a model comparison.
+history adapter limits ceiling attribution. The [data-only counterfactual](../studies/stream-recovery-counterfactual-v1/README.md)
+has completed: the copied model commands retained both deficits, and ordinary backup/WAL restoration
+removed them without replacing the repaired pipeline. The separately frozen
+[continuous native-session screen](../studies/stream-recovery-continuous-v1/README.md) delivered in
+31/200 actions: 111 accepted orders and 93 required dispatches passed after restart, with 128 refused
+customer writes retained. Apply the rejection rule. Stop expanding this miniature order-service
+candidate as the frontier mainline; preserve the environment, adapter and full evidence for regression.
+The unpaired attempts do not establish an adapter effect or a model ranking. A new design remains
+pending user review; no next candidate has been selected or implemented.
 Component counts, waiting time and code volume are not acceptance criteria;
 demonstrate useful discrimination before expanding a family. The [Chinese roadmap](ROADMAP.zh-CN.md)
 records the same implementation gates.
