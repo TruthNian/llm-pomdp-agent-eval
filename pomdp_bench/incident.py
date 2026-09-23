@@ -29,8 +29,14 @@ def healthy(audit):
 
 
 class IncidentEnvironment:
+    validate_case = staticmethod(validate_case)
+    healthy = staticmethod(healthy)
+
+    def make_runtime(self):
+        return Runtime(self.case)
+
     def __init__(self, case, condition="open", *, recorded_calls=None):
-        validate_case(case)
+        self.validate_case(case)
         if condition != "open":
             raise ValueError("The executable incident currently supports open only")
         self.case, self.condition = case, condition
@@ -77,7 +83,7 @@ class IncidentEnvironment:
         if self.done:
             raise RuntimeError("Episode already ended")
         action = copy.deepcopy(action)
-        request_hash = digest([VERSION, self.case, len(self.calls), action])
+        request_hash = digest([self.case["generator_version"], self.case, len(self.calls), action])
         if self.recorded_calls is not None:
             if len(self.calls) >= len(self.recorded_calls):
                 raise ValueError("Missing recorded service response")
@@ -87,7 +93,7 @@ class IncidentEnvironment:
             response = call["response"]
         else:
             if self.runtime is None:
-                self.runtime = Runtime(self.case)
+                self.runtime = self.make_runtime()
             if not isinstance(action, dict):
                 action_for_runtime = {"command": "invalid", "target": action}
             else:
@@ -104,7 +110,7 @@ class IncidentEnvironment:
             self.done, self.reason = True, "finished"
         else:
             self.verified_state = (response["state_sha256"] if command == "verify"
-                                   and self.last_result.get("passed") and healthy(response["audit"]) else None)
+                                   and self.last_result.get("passed") and self.healthy(response["audit"]) else None)
         if len(self.history) + 1 >= self.case["max_steps"] and not self.done:
             self.done, self.reason = True, "step_limit"
         self.history.append({"action": action, "observation": None})
@@ -115,7 +121,7 @@ class IncidentEnvironment:
         current = self.last_response
         audit = current["audit"] if current else None
         verified = bool(current and self.verified_state == current["state_sha256"])
-        return {"success": bool(self.done and self.reason == "finished" and audit and healthy(audit) and verified),
+        return {"success": bool(self.done and self.reason == "finished" and audit and self.healthy(audit) and verified),
                 "termination": self.reason, "cost": len(self.history), "steps": len(self.history), "budget": self.case["max_steps"],
                 "verified_current_state": verified, "invalid_actions": self.invalid_actions,
                 "accounting_mismatches": len(audit["mismatches"]) if audit else None,

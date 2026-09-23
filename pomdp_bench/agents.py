@@ -13,8 +13,10 @@ from . import version_at_least
 from .coverage import POLICIES as COVER_POLICIES, ASSISTED_POLICIES, policy_action as cover_action
 from .incident import POLICY as INCIDENT_POLICY, policy_action as incident_action
 
+from .settlement import POLICY as SETTLEMENT_POLICY, policy_action as settlement_action
+
 BUILTINS = ("reference", "random", "overdiagnose", "proxy")
-POLICIES = (*BUILTINS, "reserve_probe", *COVER_POLICIES, *ASSISTED_POLICIES, INCIDENT_POLICY)
+POLICIES = (*BUILTINS, "reserve_probe", *COVER_POLICIES, *ASSISTED_POLICIES, INCIDENT_POLICY, SETTLEMENT_POLICY)
 
 
 def validate_config(config: dict) -> None:
@@ -61,6 +63,8 @@ def validate_config(config: dict) -> None:
 
 
 def validate_agent_version(config, version):
+    if config["kind"] == SETTLEMENT_POLICY and not version_at_least(version, "2.10.0"):
+        raise ValueError("Settlement operator requires framework 2.10")
     if config["kind"] == INCIDENT_POLICY and not version_at_least(version, "2.9.0"):
         raise ValueError("Incident operator requires framework 2.9")
     if config["kind"] == "actions" and not version_at_least(version, "2.7.0"):
@@ -82,6 +86,8 @@ class ScriptedAgent:
         self.usage = None  # No model tokens were consumed; never fabricate zero-token LLM measurements.
 
     def act(self, request: dict, timeout: float) -> dict:
+        if self.kind == SETTLEMENT_POLICY:
+            return settlement_action(request)
         if self.kind == INCIDENT_POLICY:
             return incident_action(request)
         if request["task"].get("family") == "dependency_cover":

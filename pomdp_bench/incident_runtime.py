@@ -3,9 +3,7 @@
 No model code or arbitrary shell commands run here. Business time advances by
 explicit work units so slow model inference does not alter the workload.
 """
-from contextlib import closing
 from decimal import Decimal
-import http.client
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
@@ -14,6 +12,7 @@ import tempfile
 import threading
 
 from .generator import digest
+from .service_io import ServiceIO
 
 DOCS = {
     "operations": "Checkout accepts orders into a durable outbox; settlement drains it into the ledger. HTTP 202 is acceptance, not settlement. Health checks only test process availability. Read schema/config/deployment/ledger-contract for details. Acknowledge the incident only after historical and new payments reconcile. Pausing the worker contains damage but leaves pending work. No external money or systems are connected.",
@@ -26,7 +25,7 @@ DOCS = {
 }
 
 
-class Runtime:
+class Runtime(ServiceIO):
     def __init__(self, case):
         self.case = case
         self.temp = tempfile.TemporaryDirectory(prefix="pomdp-incident-")
@@ -89,26 +88,12 @@ class Runtime:
             self.close()
             raise
 
-    def rows(self, sql, values=()):
-        return [dict(r) for r in self.connection.execute(sql, values)]
-
     def log(self, component, event, detail):
         self.connection.execute("INSERT INTO logs(component,event,detail) VALUES (?,?,?)", (component, event, detail))
 
     def get_config(self, service, *, staged=False):
         table = "config" if staged else "applied_config"
         return json.loads(self.connection.execute(f"SELECT body FROM {table} WHERE service=?", (service,)).fetchone()[0])
-
-    def http(self, path, body):
-        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port, timeout=5)
-        try:
-            connection.request("POST", path, json.dumps(body), {"Content-Type": "application/json"})
-            response = connection.getresponse()
-            result = json.loads(response.read())
-            self.http_requests += 1
-            return response.status, result
-        finally:
-            connection.close()
 
     def endpoint(self, path, body):
         if path == "/orders":
@@ -186,26 +171,6 @@ class Runtime:
                 "orders": self.connection.execute("SELECT count(*) FROM orders").fetchone()[0],
                 "ledger_entries": self.connection.execute("SELECT count(*) FROM ledger").fetchone()[0],
                 "monitor": self.get_config("monitor"), "worker_enabled": self.get_config("worker")["enabled"]}
-
-    def query(self, sql):
-        if not isinstance(sql, str) or not 1 <= len(sql) <= 6000:
-            raise ValueError("query requires 1-6000 characters")
-        with closing(sqlite3.connect(self.db.resolve().as_uri() + "?mode=ro", uri=True)) as con:
-            con.row_factory = sqlite3.Row
-            con.setlimit(sqlite3.SQLITE_LIMIT_LENGTH, 262144)
-            con.execute("PRAGMA query_only=ON")
-            allowed = {sqlite3.SQLITE_SELECT, sqlite3.SQLITE_READ, sqlite3.SQLITE_FUNCTION, sqlite3.SQLITE_RECURSIVE}
-            con.set_authorizer(lambda action, *_: sqlite3.SQLITE_OK if action in allowed else sqlite3.SQLITE_DENY)
-            progress = [0]
-            def interrupt():
-                progress[0] += 1
-                return progress[0] > 1000
-            con.set_progress_handler(interrupt, 1000)
-            cursor = con.execute(sql)
-            rows = cursor.fetchmany(101)
-            return {"columns": [c[0] for c in cursor.description],
-                    "rows": [[{"hex": v.hex()} if isinstance(v, bytes) else v for v in r] for r in rows[:100]],
-                    "truncated": len(rows) > 100}
 
     def audit(self):
         mismatches = self.rows("""SELECT o.order_id,o.amount_cents,coalesce(sum(l.amount_cents),0) AS ledger_cents
@@ -339,13 +304,3 @@ class Runtime:
                   ("orders", "outbox", "ledger", "logs", "config", "applied_config")}
         return {"result": result, "audit": audit, "state_sha256": digest(tables),
                 "http_requests": self.http_requests, "tick": self.tick}
-
-    def close(self):
-        if self.closed:
-            return
-        self.closed = True
-        self.server.shutdown()
-        self.server.server_close()
-        self.thread.join(timeout=3)
-        self.connection.close()
-        self.temp.cleanup()

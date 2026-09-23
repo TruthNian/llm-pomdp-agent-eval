@@ -1,0 +1,45 @@
+{
+  "framework_version": "2.10.0",
+  "generator_version": "external-settlement/1",
+  "purpose": "Test authoritative reconciliation, finite refund liquidity, cancel-before-settlement decisions and delayed external results in a complete open episode. One constructed development scenario, not a ranking.",
+  "expected_episodes": 2,
+  "conditions": [
+    "open"
+  ],
+  "replicates": 1,
+  "wall_seconds": 3600,
+  "agents": [
+    {
+      "name": "gpt-5.6-sol",
+      "kind": "responses",
+      "model": "gpt-5.6-sol",
+      "endpoint_env": "DIRECT_ENDPOINT",
+      "api_key_env": "NATIVE_KEY",
+      "headers_env": "NATIVE_HEADERS",
+      "timeout_seconds": 600,
+      "options": {
+        "reasoning_effort": "max"
+      }
+    },
+    {
+      "name": "custom/z-ai/glm-5.3",
+      "kind": "responses",
+      "model": "custom/z-ai/glm-5.3",
+      "endpoint_env": "DIRECT_ENDPOINT",
+      "api_key_env": "ROUTER_KEY",
+      "headers_env": "ROUTER_HEADERS",
+      "timeout_seconds": 600,
+      "options": {
+        "reasoning_effort": "max"
+      }
+    }
+  ],
+  "transport": {
+    "base_url": "http://127.0.0.1:4202/v1",
+    "headers": {
+      "x-codex-router-exact-route": "1"
+    }
+  },
+  "stopping_rule": "Exactly one full episode per requested route, max reasoning, 80 actions and 3600 seconds. Freeze implementation, scenario, tools and budgets before any model request. Retain every error, interruption and failure without replacement.",
+  "decision": "Report external and local delivery separately, permanent additional excess settled transfers, pending obligations, complete actions and actual feedback. Strong-model success does not demonstrate frontier headroom. Transport/format failures are not evidence of cognitive difficulty."
+}

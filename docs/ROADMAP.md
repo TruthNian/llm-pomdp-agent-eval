@@ -30,7 +30,7 @@ interaction is now demonstrated on both requested routes; frontier difficulty is
 
 ## Difficulty iteration
 
-Retain the current scenario as a workflow anchor. The next environment change is
+Retain the current scenario as a workflow anchor. Framework 2.10 implements
 delayed, irreversible external settlement: balancing the local ledger must not
 magically complete the customer's refund. Give the agent reconciliation tools and
 an explicit public contract, then measure whether it obtains authoritative evidence
@@ -39,7 +39,7 @@ consequence must execute in the world, not come from a hidden policy rule.
 Do not substitute hidden requirements, format traps, missing tools, short timeouts
 or irrelevant files for difficulty.
 
-The [next-scenario contract](EXTERNAL_SETTLEMENT.md) links the provider documentation
+The [external-settlement contract](EXTERNAL_SETTLEMENT.md) links the provider documentation
 behind these constraints and defines the minimum executable consequences and controls.
 
 Freeze each new scenario and budget before model collection. Keep old versions and all failures.

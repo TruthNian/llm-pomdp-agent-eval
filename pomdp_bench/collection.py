@@ -13,7 +13,8 @@ from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
 from .agents import validate_agent_version, validate_config
 from .coverage import COVER_VERSIONS, POLICIES as COVER_POLICIES, ASSISTED_POLICIES
 from .incident import VERSION as INCIDENT_VERSION, POLICY as INCIDENT_POLICY
-from .worlds import Environment, REPAIR_VERSIONS, cluster_id, validate_case_version, CONDITIONS, validate_condition_version
+from .settlement import VERSION as SETTLEMENT_VERSION, POLICY as SETTLEMENT_POLICY
+from .worlds import INCIDENT_VERSIONS, Environment, REPAIR_VERSIONS, cluster_id, validate_case_version, CONDITIONS, validate_condition_version
 from .evaluation import episode_record, recover_interrupted, replay, replay_environment, run_episode, validate_suite
 from .generator import digest
 from .storage import collection_lock, read_json, write_json
@@ -38,7 +39,10 @@ def validate_definition(data, configs, conditions, replicates, wall_seconds):
     if (not isinstance(conditions, list) or not conditions or len(set(conditions)) != len(conditions)
             or set(conditions) - set(CONDITIONS)):
         raise ValueError("Unknown or duplicate conditions")
-    if data["generator_version"] == INCIDENT_VERSION:
+    if data["generator_version"] == SETTLEMENT_VERSION:
+        if conditions != ["open"] or any(c["kind"] not in ("chat", "responses", "actions", SETTLEMENT_POLICY) for c in configs):
+            raise ValueError("External settlement needs open and HTTP agents or declared settlement controls")
+    elif data["generator_version"] == INCIDENT_VERSION:
         if conditions != ["open"] or any(c["kind"] not in ("chat", "responses", "actions", INCIDENT_POLICY) for c in configs):
             raise ValueError("Incident needs open and HTTP agents or declared operator controls")
     elif data["generator_version"] in REPAIR_VERSIONS:
@@ -52,6 +56,8 @@ def validate_definition(data, configs, conditions, replicates, wall_seconds):
             raise ValueError("Solver consumer policy requires only solver_assisted")
     elif "solver_assisted" in conditions or any(c["kind"] in (*COVER_POLICIES, *ASSISTED_POLICIES) for c in configs):
         raise ValueError("Coverage policies and solver assistance require a coverage suite")
+    if data["generator_version"] != SETTLEMENT_VERSION and any(c["kind"] == SETTLEMENT_POLICY for c in configs):
+        raise ValueError("Settlement operator needs an external settlement suite")
     if data["generator_version"] != INCIDENT_VERSION and any(c["kind"] == INCIDENT_POLICY for c in configs):
         raise ValueError("Incident operator needs an incident suite")
     if (type(replicates) is not int or replicates < 1 or type(wall_seconds) not in (int, float)
@@ -205,7 +211,7 @@ def read_run(directory: Path, *, partial=False):
             raise ValueError("Trace cluster mismatch")
         if case["generator_version"] in REPAIR_VERSIONS and record.get("cluster_unit") != "repository_task":
             raise ValueError("Repository cases cluster by source task, not synthetic seed")
-        if case["generator_version"] == INCIDENT_VERSION and record.get("cluster_unit") != "incident_scenario":
+        if case["generator_version"] in INCIDENT_VERSIONS and record.get("cluster_unit") != "incident_scenario":
             raise ValueError("Incident repeats cluster by scenario")
         if version and type(record.get("request_in_flight")) is not bool:
             raise ValueError("Missing request boundary evidence")

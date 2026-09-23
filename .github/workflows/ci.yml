@@ -28,6 +28,11 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Run complete HTTP and SQLite incident trajectories
         run: python studies/settlement-incident-v1/controls.py artifacts/incident-controls
+      - name: Reproduce external settlement controls and mechanism ablations
+        run: python studies/external-settlement-v1/controls.py artifacts/external-controls.json
+      - name: Regrade external settlement model and control evidence
+        if: hashFiles('studies/external-settlement-v1/execution.json') != ''
+        run: python studies/external-settlement-v1/verify.py
       - name: Regrade published incident trajectories and readable report
         run: python studies/settlement-incident-v1/verify.py
       - name: Regrade separately retained live format-feedback follow-up

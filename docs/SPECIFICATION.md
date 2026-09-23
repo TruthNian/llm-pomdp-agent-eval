@@ -1,6 +1,12 @@
-# Diagnostic benchmark specification — frameworks 2.0–2.9
+# Diagnostic benchmark specification — frameworks 2.0–2.10
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
+
+2.10 adds `external-settlement/1`, with separate provider state, asynchronous
+settlement/refunds, finite liquidity and delayed notifications. Its contract is
+[external settlement](EXTERNAL_SETTLEMENT.md); the old incident remains unchanged.
+Both use shared bounded HTTP/SQL plumbing and action-bound recorded replay. New
+collections require the new source/version; historical records are not relabeled.
 
 2.9.2 corrects incident arrivals after rejected `verify`/`finish` calls and clarifies
 the verification workload's initial batch plus four drain passes. Old recorded

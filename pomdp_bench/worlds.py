@@ -7,7 +7,11 @@ from .generator import validate_case as validate_diagnostic
 from .repair import VERSION as REPAIR_VERSION, REPAIR_VERSIONS, RepairEnvironment, validate_case as validate_repair
 from .incident import VERSION as INCIDENT_VERSION, IncidentEnvironment, validate_case as validate_incident
 
-VERSIONS = (GENERATOR_VERSION, *COVER_VERSIONS, *REPAIR_VERSIONS, INCIDENT_VERSION)
+from .settlement import VERSION as SETTLEMENT_VERSION, SettlementEnvironment, validate_case as validate_settlement
+
+INCIDENT_VERSIONS = (INCIDENT_VERSION, SETTLEMENT_VERSION)
+
+VERSIONS = (GENERATOR_VERSION, *COVER_VERSIONS, *REPAIR_VERSIONS, *INCIDENT_VERSIONS)
 CONDITIONS = (*DIAGNOSTIC_CONDITIONS, "solver_assisted")
 
 
@@ -27,6 +31,8 @@ def validate_case(case):
         validate_cover(case)
     elif version in REPAIR_VERSIONS:
         validate_repair(case)
+    elif version == SETTLEMENT_VERSION:
+        validate_settlement(case)
     elif version == INCIDENT_VERSION:
         validate_incident(case)
     else:
@@ -34,6 +40,8 @@ def validate_case(case):
 
 
 def validate_case_version(case, framework_version):
+    if case["generator_version"] == SETTLEMENT_VERSION and not version_at_least(framework_version, "2.10.0"):
+        raise ValueError("External settlement requires framework 2.10")
     if case["generator_version"] == INCIDENT_VERSION and not version_at_least(framework_version, "2.9.0"):
         raise ValueError("Executable incident requires framework 2.9")
     if case["generator_version"] in REPAIR_VERSIONS:
@@ -52,6 +60,8 @@ def Environment(case, condition="open", noise_seed=0, *, framework_version=__ver
         return CoverageEnvironment(case, condition, noise_seed, framework_version)
     if case["generator_version"] in REPAIR_VERSIONS:
         return RepairEnvironment(case, condition, recorded_calls=recorded_calls)
+    if case["generator_version"] == SETTLEMENT_VERSION:
+        return SettlementEnvironment(case, condition, recorded_calls=recorded_calls)
     if case["generator_version"] == INCIDENT_VERSION:
         return IncidentEnvironment(case, condition, recorded_calls=recorded_calls)
     if case["generator_version"] == GENERATOR_VERSION:
@@ -62,4 +72,4 @@ def Environment(case, condition="open", noise_seed=0, *, framework_version=__ver
 def cluster_id(case):
     from .generator import digest
     return digest([case["generator_version"], case["source_task_id"]
-                   if case["generator_version"] in (*REPAIR_VERSIONS, INCIDENT_VERSION) else case["seed"]])
+                   if case["generator_version"] in (*REPAIR_VERSIONS, *INCIDENT_VERSIONS) else case["seed"]])

@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.10.0 — 2026-09-23
+
+- Add separately versioned external settlement with independent provider/local
+  databases, irreversible transfers, pending/failed refunds, finite reserve,
+  cancellation deadlines, and duplicated/out-of-order notifications.
+- Local adjustments cannot change external history. Verification reads state
+  without draining queues or completing refunds. Useful SQL remains available.
+- Reuse bounded HTTP/SQL and recorded-call replay; preserve the old incident.
+- Add public-history operator controls and paired notification-delay and
+  cancellation-deadline ablations. Freeze full max-reasoning model episodes
+  separately from qualification; no frontier-difficulty claim from control tests.
+
 ## 2.9.2
 
 - Attribute watchdog socket shutdown to deadline expiry even if the next clock

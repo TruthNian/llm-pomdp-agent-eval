@@ -36,6 +36,8 @@ completed in 26 actions, including recovery from two malformed action responses.
 All 33 accepted orders reconciled. The original failed attempt remains published;
 the two adapter versions are not pooled into a model ranking.
 
+Framework 2.10 adds [external settlement](docs/EXTERNAL_SETTLEMENT.md): separate provider/local state, finite refund liquidity, cancellation deadlines and delayed notifications. Local bookkeeping cannot undo an external payment. [Development protocol](studies/external-settlement-v1/README.md).
+
 ## Architecture
 
 ```text

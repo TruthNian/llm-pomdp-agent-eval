@@ -9,7 +9,7 @@ from . import REPLAY_VERSIONS, SCHEMA_VERSION, __version__
 from .agents import AdapterError, make_agent, validate_agent_version
 from .generator import digest, keyed_seed
 from .storage import read_json
-from .worlds import Environment, VERSIONS, REPAIR_VERSIONS, INCIDENT_VERSION, cluster_id, validate_case, validate_case_version, validate_condition_version
+from .worlds import Environment, VERSIONS, REPAIR_VERSIONS, INCIDENT_VERSIONS, cluster_id, validate_case, validate_case_version, validate_condition_version
 
 
 def episode_record(env, config, replicate, elapsed=0, usage=None, error=None, in_flight=False):
@@ -23,7 +23,7 @@ def episode_record(env, config, replicate, elapsed=0, usage=None, error=None, in
             **({"cluster_unit": "repository_task", "repository_evidence": env.evidence()}
                if case["generator_version"] in REPAIR_VERSIONS else {}),
             **({"cluster_unit": "incident_scenario", "service_evidence": env.evidence()}
-               if case["generator_version"] == INCIDENT_VERSION else {}),
+               if case["generator_version"] in INCIDENT_VERSIONS else {}),
             "agent": copy.deepcopy(config), "condition": env.condition, "replicate": replicate,
             "initial_observation": initial.observation(),
             "contract": env.contract(), "events": copy.deepcopy(env.history),
@@ -107,7 +107,7 @@ def replay_environment(trace: dict, case: dict, *, partial=False, execute_checks
     if trace["case_id"] != digest(case):
         raise ValueError("Trace/case fingerprint mismatch")
     repository = case["generator_version"] in REPAIR_VERSIONS
-    incident = case["generator_version"] == INCIDENT_VERSION
+    incident = case["generator_version"] in INCIDENT_VERSIONS
     evidence_key = "repository_evidence" if repository else "service_evidence"
     calls = trace[evidence_key]["calls"] if repository or incident else None
     env = Environment(case, trace["condition"], trace["replicate"], framework_version=trace["framework_version"],
