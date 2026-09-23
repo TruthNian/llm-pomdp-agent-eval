@@ -20,7 +20,7 @@ python -m pomdp_bench run --suite artifacts/external-suite.json --agents example
 python -m pomdp_bench validate artifacts/external-run
 ```
 
-无需 Docker。模型只通过运维接口操作可信服务，不在本机执行模型生成的代码。
+无需 Docker。模型通过运维接口操作可信服务；候选 SQL 只在受限 SQLite 中读取复制的公开输入，本机不执行模型生成的 shell／Python。
 [逐步路线](docs/ROADMAP.zh-CN.md)与[完整交互规范](docs/SERVICE_INCIDENT.md)。
 
 [实测完整轨迹与证据](studies/settlement-incident-v1/README.md)：Sol 用 20 步完成交付；
@@ -33,6 +33,8 @@ GLM 的原始尝试在 13 步后被旧解析器终止，这不能视为认知难
 原失败仍然保留；两个接入层版本的结果不混成模型排名。
 
 2.11 新增[跨组件对账修复](docs/RECONCILIATION_REPAIR.md)：在两类不同金融数据契约中实际修改 SQL、执行中间结果、部署并回填历史数据。[完整证据](studies/reconciliation-repair-v1/README.md)保留十三条对照及两次因传输故障中断的 Sol max 尝试。已生成的 SQL 经单独脚本探针检验通过，但两次在线尝试均未完成交付，不能据此宣称高难度。
+
+单独冻结的[网络恢复补测](studies/reconciliation-repair-v2/README.md)中，Sol max 在两个契约都用 28 步完成交付，无非法动作或传输错误。两题归入回归参照，高难度仍未得到证明。[2.12 退款实测](studies/refund-recovery-v1/README.md)也已完成：Sol max 用 39/100 步交付，无非法动作或多退款。本次未达到高难度目标，停止继续扩小型 SQL 构造题作为前沿主线。
 
 2.10 新增[外部结算场景](docs/EXTERNAL_SETTLEMENT.md)：外部状态与本地账本分离，退款资金有限，取消有截止时间，通知会延迟和乱序。本地冲账无法撤销外部付款。[完整实测证据](studies/external-settlement-v1/README.md)：Sol 26 步交付；GLM 路由在九步后第十次请求超时。七项机制对照符合预期。配置不变性检查未通过，异常原样披露；本轮只作集成证据，不作严格模型对比，也不证明前沿难度。
 

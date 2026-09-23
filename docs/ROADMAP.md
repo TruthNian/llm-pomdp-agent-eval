@@ -75,10 +75,31 @@ implementation as a source-repair anchor and move to independently sourced causa
 faults and operationally consequential recovery, rather than adding more rows,
 SQL syntax obstacles or configuration options.
 
-Immediate measurement prerequisite: obtain stable transport and preregister a new,
-separate full-interaction collection; never overwrite the interrupted matrix.
-Next substantive candidate: couple component-rule repair to consequential recovery
-in the existing external-state environment, grounded in independently sourced
-incidents. Reuse the implemented SQL execution/evidence boundary rather than
-adding another disconnected toy family. Keep provider queries and intermediate
-tests available; do not manufacture difficulty through tool removal.
+The separately frozen [network-recovery follow-up](../studies/reconciliation-repair-v2/README.md)
+completed both contracts in 28 actions each, without invalid actions or adapter
+errors. The transport prerequisite is resolved for these attempts. Classify both
+as regression anchors: they did not establish frontier difficulty.
+
+## Immediate decision, not another infrastructure phase
+
+The [2.12 refund candidate](REFUND_RECOVERY.md) couples component-rule repair to
+irreversible partial refunds in the existing provider runtime. The complete
+[Sol max ceiling screen](../studies/refund-recovery-v1/plan.json) is frozen before
+collection. Its purpose is to reject weak candidates promptly. A clean delivery
+ends development of miniature SQL variants as the frontier mainline. Preserve them
+for regression; more such variants, controls or releases are not a substitute for
+high-difficulty evidence.
+
+If this candidate fails, attribute the decisive behavior through fresh execution
+and a public-information rescue before calling it cognitive difficulty. One failure
+on one constructed contract does not establish durable discrimination. Report the
+observed outcome first; do not postpone this decision behind more infrastructure.
+
+The [completed 2.12 screen](../studies/refund-recovery-v1/README.md) delivered in
+39/100 actions, with no invalid action or excess refund and a first-pass verification.
+The rejection rule now applies: stop expanding miniature SQL fixtures as the
+frontier mainline. Their regression value remains. The next candidate must preserve
+an independently sourced complex task's actual investigation and recovery burden;
+screen complete strong-model runs before building another task family. The current
+high-difficulty objective remains unmet. The study records the design diagnosis
+and separates it from causally established facts.

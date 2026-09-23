@@ -24,7 +24,7 @@ python -m pomdp_bench validate artifacts/external-run
 ```
 
 No Docker is needed for this service task. Models operate trusted services through maintenance
-interfaces; model-generated code never executes on the host. [Roadmap](docs/ROADMAP.md).
+interfaces. Candidate SQL runs only over copied public inputs in bounded SQLite; model-generated shell/Python never executes on the host. [Roadmap](docs/ROADMAP.md).
 
 [Complete live trajectories and evidence](studies/settlement-incident-v1/README.md):
 Sol delivered in 20 actions. The original GLM attempt stopped at the old parser after
@@ -38,6 +38,8 @@ All 33 accepted orders reconciled. The original failed attempt remains published
 the two adapter versions are not pooled into a model ranking.
 
 Framework 2.11 adds [cross-component reconciliation repair](docs/RECONCILIATION_REPAIR.md): actual SQL edits, intermediate execution, deployment and historical recovery across two financial feed contracts. [Complete evidence](studies/reconciliation-repair-v1/README.md) retains thirteen controls and both interrupted Sol max attempts. An unchanged model patch passes a separate scripted probe check; neither live attempt completed, and high difficulty remains unproven.
+
+The separately frozen [network-recovery follow-up](studies/reconciliation-repair-v2/README.md) completed both contracts in 28 actions, without invalid actions or transport errors. Keep these as regression anchors; high difficulty was not demonstrated. The [2.12 refund screen](studies/refund-recovery-v1/README.md) also passed: Sol max delivered in 39/100 actions. This candidate is rejected as high-difficulty evidence; further miniature SQL variants are no longer the frontier mainline.
 
 Framework 2.10 adds [external settlement](docs/EXTERNAL_SETTLEMENT.md): separate provider/local state, finite refund liquidity, cancellation deadlines and delayed notifications. Local bookkeeping cannot undo an external payment. [Complete evidence](studies/external-settlement-v1/README.md): Sol delivered in 26 actions; the GLM route timed out on request 10 after nine actions. Seven mechanism controls separated as specified. The configuration-invariance check failed and remains disclosed; this is integration evidence, not a controlled model comparison or proof of frontier difficulty.
 

@@ -75,3 +75,8 @@ The [frozen screen](../studies/refund-recovery-v1/plan.json) gives Sol max 100 a
 as high-difficulty evidence. A cognitive failure would justify investigation, not
 automatically establish durable difficulty. If solved, stop extending this family
 of miniature SQL fixtures as the frontier mainline; keep it as regression evidence.
+
+The [completed screen](../studies/refund-recovery-v1/README.md) delivered in 39/100
+actions with no excess refund, invalid action or adapter error. This candidate
+failed the high-difficulty objective. It is retained as regression evidence; further
+miniature SQL fixture expansion is no longer the frontier mainline.

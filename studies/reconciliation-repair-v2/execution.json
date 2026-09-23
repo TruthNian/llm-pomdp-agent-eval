@@ -1,0 +1,14 @@
+{
+  "source_commit": "f3db4ee3778c18decf87c944c16e3d2e00c97491",
+  "framework_version": "2.11.0",
+  "settings_unchanged": true,
+  "model_episodes": 2,
+  "decision": "Both newly retained attempts delivered; retain regression anchors, frontier difficulty not demonstrated. Original v1 failures remain unchanged.",
+  "file_sha256": {
+    "plan.json": "9a647fa4b267af11be34dbb44928c31ce14837227e4d666746a5457f0b46ba0e",
+    "model-evidence.json": "53413a7a9ee5547e0f227eec398a3cd434e86e3e598f39d73482fb607279af4c",
+    "README.md": "a85b6f0d5e6c1ace148310c4178bb796d2c1eb37d02965499bf9ee238fec70db",
+    "trajectories.html": "932d6c2ef776c1a6c03278ba9d8acbb698d64dd036024b5cb460e417342706a1",
+    "../../tools/service_study.py": "afa205a4572ecd7bf1c6cc02780888bfde9e8de8141c673bec29ab54cd46191a"
+  }
+}

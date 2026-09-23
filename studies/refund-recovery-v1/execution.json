@@ -1,0 +1,18 @@
+{
+  "source_commit": "2ac6827cc904d7edcc0f68ad826de1b44feaf984",
+  "framework_version": "2.12.0",
+  "settings_unchanged": true,
+  "model_episodes": 1,
+  "control_episodes": 8,
+  "decision": "Clean Sol max delivery in 39/100 actions. Reject candidate as high-difficulty evidence; stop miniature SQL fixture expansion as frontier mainline. Retain regression value.",
+  "file_sha256": {
+    "plan.json": "defd789609616e4417c7cbbfa14c0a3a789fee8fa5f99b92ce460f2477fdfbb0",
+    "model-evidence.json": "f766261f027d3b1358a01eb10e6c702a85f10ad58aaaffab0206da6fd4a802e0",
+    "control-evidence.json": "5b101c81be896327c6c0d5bfd8a40edfa0737fa6c9b69ecf625bb581b4145205",
+    "controls.py": "532ca06a07fb42b0a6b9efdf54bea4ca31662f85e0fe935f138aefb00c08c80a",
+    "README.md": "52c85927a86e9b0e40e7481dacb2a39742a1e8bc22ba8177d95a17e1212bfd6f",
+    "trajectories.html": "a95f60f7d7da71beb2eabda89d54d587c663a3788b8cb36af0632d69b3c79d97",
+    "controls.html": "6bf0e184f43ef10271d0d0e5f5f17d8ffb1ae9c8f0f30469cfda61299e0d6178",
+    "../../tools/service_study.py": "afa205a4572ecd7bf1c6cc02780888bfde9e8de8141c673bec29ab54cd46191a"
+  }
+}

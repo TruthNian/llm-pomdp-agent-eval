@@ -19,6 +19,13 @@ Synthetic families control local simulated state. Repository repair executes
 candidate code only inside the declared Docker runtime, without host mounts,
 forwarded credentials or network. It must not be pointed at production infrastructure.
 
+Service repair accepts candidate SELECT expressions in SQLite over copies of public
+inputs only. SQLite runs in the evaluator process with an authorizer, function
+allowlist, row/string limits and VM-work bound. ATTACH, host files, extensions and
+provider/grader tables are unavailable. This is a language-level execution boundary,
+not an OS container; Python and SQLite are trusted. No arbitrary candidate Python
+or shell is executed on the host. See [refund recovery](docs/REFUND_RECOVERY.md).
+
 ## V2 observation boundary
 
 The HTTP adapter sends an allowlisted public JSON request and exposes no host
