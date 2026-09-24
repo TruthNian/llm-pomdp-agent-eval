@@ -8,6 +8,10 @@ The user's later instruction resumed the narrower GLM integration investigation:
 [native Codex runtime pilot](../studies/stream-recovery-codex-native-glm-v1/README.md)
 completed a 37-action interaction and failed the independent business grade. It neither
 replaces the earlier failed GLM adapter attempts nor qualifies this candidate as high difficulty.
+The later [frozen GLM `max` attempt](../studies/stream-recovery-codex-native-glm-max-v1/README.md)
+passed accepted-work grading in 44 actions but caused 32 live customer write failures during
+repair. Preserve both scores. A future version must make availability and recovery of refused
+requests explicit before claiming full practical delivery; do not retrofit that rule to either trace.
 No new frontier scenario has been selected in that integration work.
 The continuous Sol screen delivered in 31/200 actions. Retain this candidate as a regression
 anchor; high difficulty remains unmet. The implementation path below records the work completed

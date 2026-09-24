@@ -1,0 +1,110 @@
+{
+  "study_id": "stream-recovery-codex-native-glm-max-v1",
+  "preregistered_commit": "16f84f1a14a05c2023add4163fc21158a239ae97",
+  "plan_sha256": "d2175a416044376574309eda1182b76dcca06409a2398d5881209c4195784186",
+  "trace_gzip_sha256": "58bb37cc32de3019bf6a35f590d5851ac389e488b0c6944eff1db22780fa6ee1",
+  "trace_json_sha256": "188492accbb2787c1c76c5ba0f4b1ab1ea8e7f6bd3f780340dc0d90ef48fccad",
+  "model_requested": "custom/z-ai/glm-5.3",
+  "provider_requested": "codex-router",
+  "reasoning_effort": "max",
+  "session": {
+    "model": "custom/z-ai/glm-5.3",
+    "provider": "codex-router",
+    "effort": "max",
+    "instruction_sources": [],
+    "environment_count": 0,
+    "fallback_allowed": false
+  },
+  "actions": 44,
+  "nonzero_exec_steps": [
+    19,
+    20,
+    24,
+    26,
+    27,
+    31,
+    34,
+    37
+  ],
+  "grade": {
+    "success": true,
+    "termination": "finished",
+    "cost": 44,
+    "steps": 44,
+    "budget": 200,
+    "invalid_actions": 0,
+    "delivered": true,
+    "observer_errors": 0,
+    "retry_errors": 0,
+    "phases": [
+      {
+        "accepted_orders": 146,
+        "accepted_releases": 130,
+        "order_errors": 0,
+        "receipt_errors": 0,
+        "new_command_errors": 0,
+        "missing_bookings": 0,
+        "duplicate_bookings": 0,
+        "unexpected_bookings": 0,
+        "changed_bookings": 0
+      },
+      {
+        "accepted_orders": 152,
+        "accepted_releases": 134,
+        "order_errors": 0,
+        "receipt_errors": 0,
+        "new_command_errors": 0,
+        "missing_bookings": 0,
+        "duplicate_bookings": 0,
+        "unexpected_bookings": 0,
+        "changed_bookings": 0
+      }
+    ],
+    "traffic_write_failures": 32
+  },
+  "observed_usage_through_handover": {
+    "input_tokens": 3278091,
+    "output_tokens": 55425,
+    "reasoning_tokens": 30082
+  },
+  "elapsed_seconds": 1262.956382,
+  "turn_status_after_handover": null,
+  "local_error": null,
+  "error_attribution": [
+    {
+      "wrong_orders": 0,
+      "wrong_orders_from_initial_alpha": 0,
+      "missing_bookings": 0,
+      "missing_bookings_from_initial_alpha": 0
+    },
+    {
+      "wrong_orders": 0,
+      "wrong_orders_from_initial_alpha": 0,
+      "missing_bookings": 0,
+      "missing_bookings_from_initial_alpha": 0
+    }
+  ],
+  "availability_diagnostic": {
+    "traffic_batches": 96,
+    "accepted_commands": 160,
+    "failed_commands": 32,
+    "failed_batches": 16,
+    "failure_response_errors": {
+      "URLError": 32
+    },
+    "failure_windows": [
+      {
+        "first_elapsed": 344.7891,
+        "last_elapsed": 491.834541,
+        "batches": 13,
+        "failed_commands": 26
+      },
+      {
+        "first_elapsed": 1057.012287,
+        "last_elapsed": 1081.494083,
+        "batches": 3,
+        "failed_commands": 6
+      }
+    ]
+  }
+}

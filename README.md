@@ -15,6 +15,11 @@ GLM completed 37 actions and handed over, but independent grading found twelve w
 nine missing dispatches. That pilot measures GLM through Codex and the local router under a different
 interface and reasoning setting; it does not establish a strict model ranking. No new frontier
 scenario was added in that integration work.
+The later, separately frozen [GLM `max` full attempt](studies/stream-recovery-codex-native-glm-max-v1/README.md)
+handed over in 44 actions and passed the accepted-work grade before and after restart, with zero
+order or dispatch errors. During repair, 32 customer writes received connection errors. The grade
+reports these but does not make availability a pass condition. This is a recovery result with a
+material service-interruption cost, not high-difficulty proof or a causal `max` versus `high` test.
 
 Evaluate whether an agent can turn incomplete information into an **accepted,
 useful outcome** under resource constraints. The unit is a complete interaction

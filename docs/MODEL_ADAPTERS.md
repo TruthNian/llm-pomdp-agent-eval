@@ -203,6 +203,9 @@ as served through Codex and the local router, including runtime behavior. It is 
 machine-specific integration path, not a portable core adapter or an isolated
 checkpoint comparison. The 37-action GLM attempt reached handover without an
 adapter error but failed independent business acceptance; earlier adapter failures
-and the successful Sol runs remain separate evidence. The evaluator stops at the
+and the successful Sol runs remain separate evidence. A later, separately frozen
+[GLM `max` run](../studies/stream-recovery-codex-native-glm-max-v1/README.md) passed
+the accepted-work business grade in 44 actions, while 32 live customer writes failed
+during maintenance. The two GLM runs are not a paired effort comparison. The evaluator stops at the
 terminal `finish` call, so its observed usage need not include a later final Codex
 text message.
