@@ -1,0 +1,14 @@
+{
+  "source_commit": "88852625c0bdb29996cbfa5ef7ad30458f929ebf",
+  "expected_episodes": 3,
+  "retained_episodes": 3,
+  "file_sha256": {
+    "plan.json": "d39ff5959e2c73c0f552d05bdf9c25827769f61d24d0295f6414b46fa10945f3",
+    "README.md": "dd7a8ef214af03f189febb4925a37067eed3372504c0bd5cc7b9d58ba9e06543",
+    "evidence.py": "14176f44904d6f3214fcff4fd925a27fc8c1e2c34720f98083dffc42c0eb820a",
+    "model-evidence.json.gz": "dc7891b1bceeb1335575ae3ba8a36d96499655e6501fffe46297f85d4ae6dc9c",
+    "trajectories.html.gz": "1e74a4060f193021da8064de2303816c824d440eb6df701b100542b2a44b1d46",
+    "../stream-recovery-v1/verify.py": "21e9f217ead93ed577b39d989404f7073aba492dcbef79b5580abecbe78bed3d",
+    "../stream-recovery-continuous-v1/verify.py": "55521629579f0f4ab7667cba79fcba57af2fd35623521c1eb96cb71fc3bda030"
+  }
+}

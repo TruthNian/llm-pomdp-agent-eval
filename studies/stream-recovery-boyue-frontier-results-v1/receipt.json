@@ -1,0 +1,72 @@
+{
+  "expected": 7,
+  "retained": 7,
+  "suite_sha256": "a2278a96945e95eb8fb5a7e392dc76f7d32795b97e447f9987ec4f0f19278dfd",
+  "trace_json_sha256": "97df2312098d51b935ec2fdbaec3c7018987f29f68bb0b533b11a79793cc3dbb",
+  "trace_gzip_sha256": "97affcd0871849cec7d7e1cc0237618f8e06824fd4cf3f6e1aec13b5f3410645",
+  "attempts": [
+    {
+      "label": "chat-kimi",
+      "private_checkpoint_sha256": "ff4a2ec81114f1b231481318d31842112c5eb55bc346b3912218e3d74de508a6",
+      "model": "kimi-k3",
+      "actions": 0,
+      "termination": "adapter_error",
+      "error": "RuntimeError:transport_error",
+      "elapsed_seconds": 303.162195
+    },
+    {
+      "label": "chat-deepseek",
+      "private_checkpoint_sha256": "66fd9706120ce5f562a15db2d06f198c3753db57f420edc566a391ecabf1f632",
+      "model": "deepseek-v4-pro",
+      "actions": 0,
+      "termination": "adapter_error",
+      "error": "RuntimeError:transport_error",
+      "elapsed_seconds": 301.267497
+    },
+    {
+      "label": "chat-minimax",
+      "private_checkpoint_sha256": "fe5c87ffbfd465be3aed3c171a8a5fe947d031226d4d879c4f0a666927e6e54f",
+      "model": "MiniMax-M3",
+      "actions": 40,
+      "termination": "adapter_error",
+      "error": "RuntimeError:transport_error",
+      "elapsed_seconds": 558.046819
+    },
+    {
+      "label": "sse-kimi",
+      "private_checkpoint_sha256": "48addcfceeb77221c577ef032757c1dda0f6f5a0d49d8e75089c6c916cab5854",
+      "model": "kimi-k3",
+      "actions": 0,
+      "termination": "adapter_error",
+      "error": "RuntimeError:transport_error",
+      "elapsed_seconds": 354.676695
+    },
+    {
+      "label": "sse-deepseek",
+      "private_checkpoint_sha256": "45e4f431cda6dad2efefe778e2f2dd11aee518543bced06adaf57d7533be4e2d",
+      "model": "deepseek-v4-pro",
+      "actions": 0,
+      "termination": "adapter_error",
+      "error": "RuntimeError:transport_error",
+      "elapsed_seconds": 356.581723
+    },
+    {
+      "label": "sse-minimax",
+      "private_checkpoint_sha256": "596b275ab1f6d7a8becd13398be5b9a70cc51ac444ad803e5ad10c8a2e84f65e",
+      "model": "MiniMax-M3",
+      "actions": 0,
+      "termination": "adapter_error",
+      "error": "ValueError:invalid_tool_count_or_finish",
+      "elapsed_seconds": 241.037132
+    },
+    {
+      "label": "sse-qwen-medium",
+      "private_checkpoint_sha256": "fa08267e10e14fa06df4ab2df13d7487bbdc66fda10eaf07e0c4a9de5c34551c",
+      "model": "qwen3.8-max",
+      "actions": 0,
+      "termination": "adapter_error",
+      "error": "RuntimeError:transport_error",
+      "elapsed_seconds": 330.980166
+    }
+  ]
+}
