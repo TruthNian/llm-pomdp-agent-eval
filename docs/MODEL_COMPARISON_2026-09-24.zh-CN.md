@@ -12,8 +12,12 @@
 | [GLM-5.3 `high`](../studies/stream-recovery-codex-native-glm-v1/README.md) | Codex 代理运行时 | 失败 | 12 / 9 | 37 | 0 / 98 | 12.8 分钟 |
 | [GLM-5.3 `max`](../studies/stream-recovery-codex-native-glm-max-v1/README.md) | Codex 代理运行时 | 通过 | 0 / 0 | 44 | 32 / 192（16.7%） | 21.0 分钟 |
 | [Doubao Seed 2.1 Pro](../studies/stream-recovery-boyue-frontier-recovery-v1/README.md) | Boyue 普通 Chat 工具 | 失败 | 26 / 140 | 62 | 72 / 280（25.7%） | 32.1 分钟 |
+| [Kimi K3](../studies/stream-recovery-boyue-retest-v3/README.md) | Boyue SSE 批量工具 | 失败 | 12 / 9 | 54 | 0 / 420 | 46.0 分钟 |
+| [DeepSeek V4 Pro](../studies/stream-recovery-boyue-retest-v3/README.md) | Boyue SSE 批量工具 | 失败 | 20 / 9 | 74 | 0 / 542 | 58.6 分钟 |
+| [MiniMax M3](../studies/stream-recovery-boyue-retest-v3/README.md) | Boyue SSE 批量工具 | 失败 | 26 / 10 | 125 | 0 / 280 | 31.8 分钟 |
+| [Qwen3.8 Max `medium`](../studies/stream-recovery-boyue-retest-v3/README.md) | Boyue SSE 批量工具 | 通过 | 0 / 0 | 48 | 0 / 650 | 68.3 分钟 |
 
-动作数含最终 `finish`；总用时含环境准备与交接后独立验收，不能当作纯推理延迟。写失败分母是该轮持续客户流量实际发出的指令数，而非相同的固定请求集；百分比只描述本轮服务可用性。最终订单数也随各轮时长不同，不用于能力排序。评分器只要求**获得成功收据**的指令最终正确，另外报告拒绝的实时请求。表中“通过”的轨迹均有客户写失败；零错误的业务状态不能写成零中断交付。
+动作数含最终 `finish`；总用时含环境准备与交接后独立验收，不能当作纯推理延迟。写失败分母是该轮持续客户流量实际发出的指令数，而非相同的固定请求集；百分比只描述本轮服务可用性。最终订单数也随各轮时长不同，不用于能力排序。评分器只要求**获得成功收据**的指令最终正确，另外报告拒绝的实时请求。部分“通过”轨迹仍有客户写失败；Qwen 本轮是 0/650。零订单错误本身不能代替服务可用性数据。
 
 ## 哪些差异比较有意义
 
@@ -27,6 +31,10 @@
 
 **Doubao Seed 2.1 Pro 的 Boyue 普通 Chat 配置**自主交接后留下 26 个订单错误、140 笔漏发和 2 笔意外发货，且运行期间 72/280 次客户写入失败。这是完整轨迹中的实际业务失败；它修复了若干 carrier、CDC 和消费位置问题，但没有从物理备份/WAL 找回旧分支已接受历史。不能用中途工具成功代替最终验收。它与 GPT 的连续 Responses、GLM 的 Codex 代理接口不同，因此只能报告这一整套配置的结果，不能从单轮推断纯模型权重的能力差。
 
+**Kimi、DeepSeek 和 MiniMax 的 Boyue SSE 修复后配置**也完成了交接，分别留下 12/9、20/9、26/10 的订单错误/漏发。Kimi 另有 1 笔意外发货，DeepSeek 有 10 笔重复发货，MiniMax 有 1 笔意外发货；这些都是重启后独立业务验收的实际缺口。三轮客户写入失败均为 0，但这不能抵消已接受工作没有正确完成。它们的执行命令均未实施物理备份/WAL 恢复旧分支；这与历史缺口相符，不能单靠命令关键词证明每个错误的完整因果链。三轮与 GPT/GLM 的代理接口不同，且有部分并发运行，只能比较观察到的整套配置交付，不能推出纯权重能力排名。[新旧完整记录](../studies/stream-recovery-boyue-retest-v3/README.md)保留接入修复前的失败以及批量工具、SSE 终止和有限重试的证据。
+
+**Qwen3.8 Max `medium` 的 Boyue SSE 修复后配置**完成了另一条真实恢复路径：从物理备份与 WAL 还原旧分支，找出当前数据库缺失的已接受请求，重放并核对订单和发货，最终两阶段业务验收均为零错误。这轮运行还有 0/650 次客户写入失败，说明在已观察的 68.3 分钟内维持了写入可用性；第 48 次模型请求首试连接重置、重试成功，49 次实际线缆请求及其成本没有从记录中抹去。与三条 Boyue 失败轨迹的区别是真实业务结果和恢复行为，不是可归因于纯模型权重的稳定优势；每个配置只有一次运行，且共享 API 的部分测试时间重叠。
+
 **GPT-5.6 Sol 与 GPT-6 Sol 的 `max` 连续会话**确实是同一声明条件下的直接对照，而不只是“题目相似”。两者均通过；在各自这一次运行中，GPT-6 Sol 用 27 而非 31 步、10.5 而非 22.3 分钟，运行期间写失败为 34/88 而非 128/206。故对**这一次固定事故的已观察效率与可用性**，GPT-6 Sol 优于 GPT-5.6 Sol；没有必要中和掉这个事实。限制是实时流量没有逐条配对、每个模型只有一轮，不能据此给出总体胜率或确定模型世代带来的因果提升。若按现实交付同时看正确性与客户可用性，也不能只按现有 `success` 布尔值排名；跨 GLM 与 GPT 时尤其不能把各运行时报告的 token 直接换算成同质计算量或价格。
 
 ## 不能放进能力排名的记录
@@ -37,8 +45,10 @@
 
 [另行冻结的后续三轮](../studies/stream-recovery-boyue-frontier-recovery-v1/README.md)中，MiMo V2.5 Pro 执行 14 步、MiniMax M3 执行 25 步后，均在下一次 SSE 响应上触发 `incomplete_sse`，未交接；它们也不是完整能力分数。同一批次的 Doubao 完成交接并失败，已列入上表。新轮次没有替换先前七次失败。
 
+[接入修复后的新轮次](../studies/stream-recovery-boyue-retest-v3/README.md)使 Kimi、DeepSeek、MiniMax 和 Qwen 获得了可评价的完整交接，已列入上表；但 MiMo 在第 16 次请求的两次 HTTP 503 后中止，仍不能作为能力判负，也没有另行补测。最先的 Kimi v2 试验在第 2 次响应遇到两个合法 `exec`，被单调用适配器拒绝；v2 计划中其他四个模型未执行。原有中断记录均未被新轮次覆盖。
+
 ## 对下一轮评测的判断
 
-本事故已有五种配置通过，**不再是前沿高难度的充分证据**；Doubao 的完整失败同时表明它仍能区分部分实际配置。继续在同一个固定事故上堆单次高强度调用，会强化熟悉题目的证据，却难以估计模型间稳定能力差异。若要回答“推理强度是否真正提高现实交付”，先统一代理接口与公开工具、版本化客户可用性和失败请求重试指标，再冻结多个独立、可解且更难的事故任务，对每个模型与强度使用同一任务集合和预算，保留全部失败与资源成本。做不到共同接入时，应明确报告“配置整体”差异，不能称为纯模型差异。当前证据最坚实的结论仍是**发现并恢复不可见的已接受历史**决定了这一次事故的业务正确性；服务中断成本还未进入通过门槛。
+本事故已有六种配置通过，**不再是前沿高难度的充分证据**；包括三条 Boyue 完整失败在内的结果同时表明它仍能区分部分实际配置。继续在同一个固定事故上堆单次高强度调用，会强化熟悉题目的证据，却难以估计模型间稳定能力差异。若要回答“推理强度是否真正提高现实交付”，先统一代理接口与公开工具、版本化客户可用性和失败请求重试指标，再冻结多个独立、可解且更难的事故任务，对每个模型与强度使用同一任务集合和预算，保留全部失败与资源成本。做不到共同接入时，应明确报告“配置整体”差异，不能称为纯模型差异。当前证据最坚实的结论仍是**发现并恢复不可见的已接受历史**决定了这一次事故的业务正确性；服务中断成本还未进入通过门槛。
 
-复核入口：[三模型补测](../studies/stream-recovery-requested-models-v1/README.md)、[连续 Sol](../studies/stream-recovery-continuous-v1/README.md)、[GLM `high`](../studies/stream-recovery-codex-native-glm-v1/README.md)、[GLM `max`](../studies/stream-recovery-codex-native-glm-max-v1/README.md)、[Astra 三档](../studies/stream-recovery-astra-efforts-v1/README.md)、[Boyue 初始七轮](../studies/stream-recovery-boyue-frontier-results-v1/README.md)、[Boyue 后续三轮](../studies/stream-recovery-boyue-frontier-recovery-v1/README.md)。各研究保留其冻结计划、轨迹或审计证据与离线复核命令。
+复核入口：[三模型补测](../studies/stream-recovery-requested-models-v1/README.md)、[连续 Sol](../studies/stream-recovery-continuous-v1/README.md)、[GLM `high`](../studies/stream-recovery-codex-native-glm-v1/README.md)、[GLM `max`](../studies/stream-recovery-codex-native-glm-max-v1/README.md)、[Astra 三档](../studies/stream-recovery-astra-efforts-v1/README.md)、[Boyue 初始七轮](../studies/stream-recovery-boyue-frontier-results-v1/README.md)、[Boyue 后续三轮](../studies/stream-recovery-boyue-frontier-recovery-v1/README.md)、[Boyue 修复补测](../studies/stream-recovery-boyue-retest-v3/README.md)。各研究保留其冻结计划、轨迹或审计证据与离线复核命令。
