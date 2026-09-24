@@ -3,7 +3,12 @@
 Evaluate autonomous investigation, action, observation, recovery and useful delivery under partial observability.
 Calibrate difficulty with useful tools available and complete strong-model interactions.
 
-**Paused for user review.** See the [2026-09-23 acceptance record](ACCEPTANCE_2026-09-23.md).
+The frontier-candidate path was paused for [2026-09-23 stage review](ACCEPTANCE_2026-09-23.md).
+The user's later instruction resumed the narrower GLM integration investigation: the
+[native Codex runtime pilot](../studies/stream-recovery-codex-native-glm-v1/README.md)
+completed a 37-action interaction and failed the independent business grade. It neither
+replaces the earlier failed GLM adapter attempts nor qualifies this candidate as high difficulty.
+No new frontier scenario has been selected in that integration work.
 The continuous Sol screen delivered in 31/200 actions. Retain this candidate as a regression
 anchor; high difficulty remains unmet. The implementation path below records the work completed
 so far, not authorization to start another candidate during review.

@@ -1,0 +1,86 @@
+{
+  "study_id": "stream-recovery-codex-native-glm-v1",
+  "preregistered_commit": "6bfe7592c7a416cea480359aee6aaa8bbc6f3149",
+  "plan_sha256": "edc83cf22ce882e710aa527b5531e5c84d4811e88573c747731a1adb2da36582",
+  "trace_gzip_sha256": "b06e42e4f293ef5ffc5631c51aeda8452226ec4b4754930c134aeaa2dd610093",
+  "trace_json_sha256": "8c4fe1d1297dfef85427d5789db80d4ecc3f34191728b4b7784ec9f03ef44c92",
+  "model_requested": "custom/z-ai/glm-5.3",
+  "provider_requested": "codex-router",
+  "reasoning_effort": "high",
+  "session": {
+    "model": "custom/z-ai/glm-5.3",
+    "provider": "codex-router",
+    "effort": "high",
+    "instruction_sources": [],
+    "environment_count": 0,
+    "fallback_allowed": false
+  },
+  "actions": 37,
+  "nonzero_exec_steps": [
+    4,
+    5,
+    17,
+    20,
+    21,
+    29,
+    31
+  ],
+  "grade": {
+    "success": false,
+    "termination": "finished",
+    "cost": 37,
+    "steps": 37,
+    "budget": 200,
+    "invalid_actions": 0,
+    "delivered": false,
+    "observer_errors": 0,
+    "retry_errors": 0,
+    "phases": [
+      {
+        "accepted_orders": 115,
+        "accepted_releases": 99,
+        "order_errors": 12,
+        "receipt_errors": 0,
+        "new_command_errors": 0,
+        "missing_bookings": 9,
+        "duplicate_bookings": 0,
+        "unexpected_bookings": 0,
+        "changed_bookings": 0
+      },
+      {
+        "accepted_orders": 121,
+        "accepted_releases": 103,
+        "order_errors": 12,
+        "receipt_errors": 0,
+        "new_command_errors": 0,
+        "missing_bookings": 9,
+        "duplicate_bookings": 0,
+        "unexpected_bookings": 0,
+        "changed_bookings": 0
+      }
+    ],
+    "traffic_write_failures": 0
+  },
+  "observed_usage_through_handover": {
+    "input_tokens": 1301676,
+    "output_tokens": 21880,
+    "reasoning_tokens": 10670
+  },
+  "elapsed_seconds": 770.07925,
+  "turn_status_after_handover": null,
+  "local_error": null,
+  "error_attribution": [
+    {
+      "wrong_orders": 12,
+      "wrong_orders_from_initial_alpha": 12,
+      "missing_bookings": 9,
+      "missing_bookings_from_initial_alpha": 9
+    },
+    {
+      "wrong_orders": 12,
+      "wrong_orders_from_initial_alpha": 12,
+      "missing_bookings": 9,
+      "missing_bookings_from_initial_alpha": 9
+    }
+  ]
+}

@@ -4,12 +4,17 @@
 [中文](README.zh-CN.md) · [Roadmap](docs/ROADMAP.md) · [Design](docs/DESIGN.md) · [Connect a model](docs/MODEL_ADAPTERS.md)
 
 **Stage review:** [2026-09-23 acceptance record (中文)](docs/ACCEPTANCE_2026-09-23.md).
-Further development is paused for user review. The execution and measurement loop works;
+That record preserves the stage-review state at the time. The execution and measurement loop works;
 the high-difficulty objective remains unmet.
 The [three user-requested model tests](studies/stream-recovery-requested-models-v1/README.md) have ended:
 GPT-6 Sol delivered in 27 actions; GPT-6 Luna handed over in 28 but left twelve orders and nine dispatches
 missing. GLM's native-tool attempt failed at the interface; its separate text follow-up timed out on
-request ten. All four attempts remain retained. GLM has no comparable complete capability result.
+request ten. All four attempts remain retained. In a later user-directed,
+[separately frozen normal-runtime pilot](studies/stream-recovery-codex-native-glm-v1/README.md),
+GLM completed 37 actions and handed over, but independent grading found twelve wrong orders and
+nine missing dispatches. That pilot measures GLM through Codex and the local router under a different
+interface and reasoning setting; it does not establish a strict model ranking. No new frontier
+scenario was added in that integration work.
 
 Evaluate whether an agent can turn incomplete information into an **accepted,
 useful outcome** under resource constraints. The unit is a complete interaction

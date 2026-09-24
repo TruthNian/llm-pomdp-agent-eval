@@ -190,3 +190,19 @@ Sessions are isolated per episode. Interrupted attempts remain sealed failures;
 they are not resumed by inventing missing reasoning state. Protocol-only diagnostics
 must stay separate from incident outcomes. The [continuous recovery screen](../studies/stream-recovery-continuous-v1/README.md)
 keeps the same task, image and budgets as the preceding stateless attempt.
+
+## Normal Codex runtime pilot for GLM
+
+The separately frozen [GLM runtime pilot](../studies/stream-recovery-codex-native-glm-v1/README.md)
+uses the installed Codex app server for one continuous agent turn. Its two dynamic
+client tools bind directly to `exec` in the isolated incident container and terminal
+`finish`; the model chooses its own commands. An ephemeral Codex home removes user
+and project `AGENTS.md` instructions, while host tools are disabled and ordinary
+software inside the incident container remains available. This measures the model
+as served through Codex and the local router, including runtime behavior. It is a
+machine-specific integration path, not a portable core adapter or an isolated
+checkpoint comparison. The 37-action GLM attempt reached handover without an
+adapter error but failed independent business acceptance; earlier adapter failures
+and the successful Sol runs remain separate evidence. The evaluator stops at the
+terminal `finish` call, so its observed usage need not include a later final Codex
+text message.
