@@ -2,6 +2,8 @@
 
 这批补测使用 GLM-5.3 注册所用的同一个 Boyue API、同一个 `stream-recovery/1` 事故、同一公开交接和独立业务评分。模型 ID 是 Boyue 返回的标签，不能独立证明上游权重身份。每个实例使用独立容器；Kimi 先启动，其余四个 v3 实例随后启动，部分测试时段重叠，因此共享 API 的并发负载可能影响延迟和可用性。本研究没有把接入中断判成认知失败，也不把单轮结果当总体胜率。
 
+本项目此前简称的“SSE 批量工具”不是一种独立模型 API。实际请求发送至 Boyue 的 `/chat/completions`，设置 `stream: true`，以 SSE 接收 Chat Completions 增量响应；“批量”仅指一个助手回复可能带有多个 `tool_calls`。适配器依序执行这些调用并按 ID 回传结果。这里也没有使用异步任务的 Batch API。
+
 原始[七次接入失败](../stream-recovery-boyue-frontier-results-v1/README.md)和[后续三次](../stream-recovery-boyue-frontier-recovery-v1/README.md)保持原样。新代码没有修改它们冻结的源文件。[v2 计划](../stream-recovery-boyue-retest-v2/plan.json)原列五个模型；Kimi 是唯一实际执行的 v2 轮次。它执行 1 步后，在第 2 次模型响应中收到两个 `exec`，旧的单调用处理器报 `invalid_tool_count_or_finish`。其余四个 v2 计划项**未执行**；不伪造结果。随后另行冻结[v3 计划](plan.json)，按模型返回的顺序执行全部合法工具调用，并把每个工具结果对应原调用 ID 回传。
 
 | 新轮次 | 动作 / 模型请求 / 实际线缆请求 | 正式终止 | 重启后订单错误 / 漏发 / 重复发货 / 意外发货 | 客户写入失败 | 总用时 |

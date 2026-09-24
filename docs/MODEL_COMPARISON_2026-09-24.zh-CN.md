@@ -12,12 +12,40 @@
 | [GLM-5.3 `high`](../studies/stream-recovery-codex-native-glm-v1/README.md) | Codex 代理运行时 | 失败 | 12 / 9 | 37 | 0 / 98 | 12.8 分钟 |
 | [GLM-5.3 `max`](../studies/stream-recovery-codex-native-glm-max-v1/README.md) | Codex 代理运行时 | 通过 | 0 / 0 | 44 | 32 / 192（16.7%） | 21.0 分钟 |
 | [Doubao Seed 2.1 Pro](../studies/stream-recovery-boyue-frontier-recovery-v1/README.md) | Boyue 普通 Chat 工具 | 失败 | 26 / 140 | 62 | 72 / 280（25.7%） | 32.1 分钟 |
-| [Kimi K3](../studies/stream-recovery-boyue-retest-v3/README.md) | Boyue SSE 批量工具 | 失败 | 12 / 9 | 54 | 0 / 420 | 46.0 分钟 |
-| [DeepSeek V4 Pro](../studies/stream-recovery-boyue-retest-v3/README.md) | Boyue SSE 批量工具 | 失败 | 20 / 9 | 74 | 0 / 542 | 58.6 分钟 |
-| [MiniMax M3](../studies/stream-recovery-boyue-retest-v3/README.md) | Boyue SSE 批量工具 | 失败 | 26 / 10 | 125 | 0 / 280 | 31.8 分钟 |
-| [Qwen3.8 Max `medium`](../studies/stream-recovery-boyue-retest-v3/README.md) | Boyue SSE 批量工具 | 通过 | 0 / 0 | 48 | 0 / 650 | 68.3 分钟 |
+| [Kimi K3](../studies/stream-recovery-boyue-retest-v3/README.md) | Boyue Chat Completions（SSE） | 失败 | 12 / 9 | 54 | 0 / 420 | 46.0 分钟 |
+| [DeepSeek V4 Pro](../studies/stream-recovery-boyue-retest-v3/README.md) | Boyue Chat Completions（SSE） | 失败 | 20 / 9 | 74 | 0 / 542 | 58.6 分钟 |
+| [MiniMax M3](../studies/stream-recovery-boyue-retest-v3/README.md) | Boyue Chat Completions（SSE） | 失败 | 26 / 10 | 125 | 0 / 280 | 31.8 分钟 |
+| [Qwen3.8 Max `medium`](../studies/stream-recovery-boyue-retest-v3/README.md) | Boyue Chat Completions（SSE） | 通过 | 0 / 0 | 48 | 0 / 650 | 68.3 分钟 |
 
 动作数含最终 `finish`；总用时含环境准备与交接后独立验收，不能当作纯推理延迟。写失败分母是该轮持续客户流量实际发出的指令数，而非相同的固定请求集；百分比只描述本轮服务可用性。最终订单数也随各轮时长不同，不用于能力排序。评分器只要求**获得成功收据**的指令最终正确，另外报告拒绝的实时请求。部分“通过”轨迹仍有客户写失败；Qwen 本轮是 0/650。零订单错误本身不能代替服务可用性数据。
+
+## 本次事故的交付能力排序
+
+这是对上方主表 **12 条已完成配置**的事后决策排序，不是总体模型能力或上游权重排名。GPT-5.6 Sol 的早期无状态失败另作为接口控制保留，不重复计作该模型的正式配置。先设不可替代的门槛：模型必须自主交接，且独立业务验收通过；接入中断不入榜。对通过者计 100 分，其中业务正确占 60 分，客户写入可用性占 25 分，已报告 token 效率占 10 分，总用时占 5 分。动作数与 token、用时重叠，不再重复加分。
+
+具体公式：分数 = 60 + 25 × (1 − 失败写入 / 写入尝试) + 10 × min(1, 613412 / T) + 5 × min(1, 581.991432 / D)。T 是本轮**已报告**输入加输出 token；推理 token 已包含在输出中，不再相加。D 是总秒数。613412 token 是本批通过者的最低已报告用量（Astra `max`），581.991432 秒是最快通过用时（Astra `xhigh`）；两者作为本版固定锚点，未来新轮次不回写。分数是明确偏好下的比较工具，不是统计置信度或计费金额。
+
+| 排名 | 通过配置 | 客户写失败 / 尝试 | 已报告 token，百万 | 用时，分钟 | 分数 / 100 |
+|---:|---|---:|---:|---:|---:|
+| 1 | GPT-6 Astra `xhigh` | 22 / 76 | 0.729 | 9.7 | **91.18** |
+| 2 | GPT-6 Astra `max` | 44 / 108 | **0.613** | 13.5 | **88.41** |
+| 3 | Qwen3.8 Max `medium` | **0 / 650** | 3.723 | 68.3 | **87.36** |
+| 4 | GLM-5.3 `max` | 32 / 192 | 3.334 | 21.0 | **84.98** |
+| 5 | GPT-6 Sol `max` | 34 / 88 | 1.314 | 10.5 | **84.62** |
+| 6 | GPT-5.6 Sol `max` | 128 / 206 | 6.241 | 22.3 | **72.62** |
+
+失败者的 token / 成功交付没有有限值，不能靠低资源消耗抵消错误交付。为了仍给出完整顺序，先按剩余业务缺陷指数从少到多排：订单错误 + 漏发 + 2 × (重复发货 + 意外发货) + 状态变更错误；同指数时以已报告 token 较少、用时较短者在前。重复或意外发货涉及外部动作，故赋双倍；此指数只用于失败组排序，不冒充实际经济损失或独立受害客户数。
+
+| 排名 | 已交接但验收失败的配置 | 订单错误 / 漏发 / 重复发货 / 意外发货 | 缺陷指数 | 已报告 token，百万 |
+|---:|---|---:|---:|---:|
+| 7 | GLM-5.3 `high` | 12 / 9 / 0 / 0 | 21 | 1.324 |
+| 8 | GPT-6 Luna `max` | 12 / 9 / 0 / 0 | 21 | 1.932 |
+| 9 | Kimi K3 | 12 / 9 / 0 / 1 | 23 | 2.092 |
+| 10 | MiniMax M3 | 26 / 10 / 0 / 1 | 38 | ≥11.627 |
+| 11 | DeepSeek V4 Pro | 20 / 9 / 10 / 0 | 49 | 8.313 |
+| 12 | Doubao Seed 2.1 Pro | 26 / 140 / 0 / 2 | 170 | 3.616 |
+
+MiniMax 的 125 次逻辑请求仅 124 次报告 token；Qwen 一次连接重置后的失败线缆请求没有用量报告。GLM 数字来自 Codex 运行时截至交接的观测，其他接口的提示词、历史重传、缓存及分词也不同。因此跨接口 T 是资源代理指标，不能当作同质算力或最终账单；它只占 10 分。各配置只有一次运行，客户流量不逐条配对，特别是 Astra `max` 与 Qwen、GLM `max` 与 GPT-6 Sol 的近邻顺序对权重和流量口径敏感。可确认的维度领先是：Astra `xhigh` 综合分最高，Astra `max` 已报告 token 最省，Qwen 本次 650 次客户写入全成功。Astra `medium`、MiMo 和其他接入中断轮次没有完成交接，不按能力判负，也不入此榜。
 
 ## 哪些差异比较有意义
 
