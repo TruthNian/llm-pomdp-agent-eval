@@ -1,0 +1,85 @@
+{
+  "study_id": "stream-recovery-codex-native-glm-max-v1",
+  "status": "frozen_before_scored_collection",
+  "purpose": "One user-requested full GLM-5.3 max-effort incident attempt through the same normal Codex agent runtime and isolated terminal, preserving the earlier high-effort attempt separately. Practical integration and business-outcome evidence, not a paired causal effort or model comparison.",
+  "case": {
+    "generator_version": "stream-recovery/1",
+    "family": "stream_recovery",
+    "profile": "commerce_handover",
+    "domain": "commerce_operations",
+    "source_task_id": "constructed/postgres-cdc-rewind-v1",
+    "max_steps": 200,
+    "seed": 2718
+  },
+  "model": {
+    "requested": "custom/z-ai/glm-5.3",
+    "provider": "codex-router",
+    "reasoning_effort": "max",
+    "allow_provider_model_fallback": false
+  },
+  "runtime": {
+    "image": "sha256:9ae11d63ae5f3525160b23746fca3f080c976dd9e90956a4f16b12361c33862d",
+    "components": {
+      "POSTGRES": {
+        "tag": "postgres:17-bookworm",
+        "image": "sha256:639ab7ceb90e13123085b741fb31ef493fba25463002f6da665352e7b534b652",
+        "repo_digests": [
+          "postgres@sha256:639ab7ceb90e13123085b741fb31ef493fba25463002f6da665352e7b534b652"
+        ]
+      },
+      "CONNECT": {
+        "tag": "quay.io/debezium/connect:3.2.1.Final",
+        "image": "sha256:13b9eb809050bf615b635686a19ad258ffef011cd7743a83d8f8d0611c216df4",
+        "repo_digests": [
+          "quay.io/debezium/connect@sha256:13b9eb809050bf615b635686a19ad258ffef011cd7743a83d8f8d0611c216df4"
+        ]
+      }
+    },
+    "assets_sha256": {
+      "archive-wal.sh": "631c070ce5e25b4f377d0016e3905b3c27ec9c2a8406fed92ab5b4f7ad4be14c",
+      "broker.properties": "3b7c2faf96efb5665d6d1ba7adca27fb40809aaed407032f8ef054eb2225ccee",
+      "CARRIER.md": "3b86055d8113d6a927e3d88ce22dec555314521cc312a939a43d19341a5a98d9",
+      "connect.properties": "6403da0638ec4409eed8cf31ff06942b0c043ce9c987f7e2fda4075f9ed126a7",
+      "connector.json": "b80f2237de8c964bb097095024639291932616990a38e2555b8f510d98ed38be",
+      "Dockerfile": "a4e8937a34992b672b64d0b50d0e0e2722cc24d6805b7cac7fde8a4163dc2fee",
+      "log4j2.properties": "83615989b7b286effa4904cba122a5007f6ec5e504f5e5e14ee897372597b8ad",
+      "README.md": "f6bee3055a3f97ae6cd4df21e55a0d4469a549b764a4a3ea5d9c712ae13e888d",
+      "schema.sql": "eab6edd9ef5c2b0ad0d1fd2f55b9f82cb32cc894c8559412b60c09d200134130",
+      "service.py": "a644a69139064b58108ca6ed255215f5cb51e7fdeec2e84d7b380f068536be3c",
+      "start-services.sh": "8b38eab0b90a3f25b20b3a2924b9254da8b51784f1d6e745288406847b9ec7b7",
+      "supervisor.conf": "6b010163d4da247c138ecaf2ce4a08cf626342bb3d15ef7721bbaf7f38f21c36"
+    }
+  },
+  "limits": {
+    "max_actions": 200,
+    "wall_seconds": 10800,
+    "idle_seconds": 600,
+    "terminal_seconds": 90,
+    "terminal_output_bytes": 1048576
+  },
+  "interface": {
+    "codex_cli_version": "0.155.0-alpha.16.3",
+    "entry": "codex app-server --stdio",
+    "dynamic_tools": [
+      "exec",
+      "finish"
+    ],
+    "environment_access": [],
+    "runtime_workspace_roots": [],
+    "user_instruction_sources_expected": [],
+    "host_shell_browser_apps_plugins_image_generation": "disabled",
+    "codex_home": "ephemeral config with existing auth hard link; removed on exit",
+    "prompt": "The public alert, task, workspace and limits as natural-language lines; no hidden cause or recovery advice",
+    "tool_feedback": "Only the public environment observation after each action"
+  },
+  "stopping_rule": "Exactly one scored full incident attempt at max effort. Preserve success, business failure, agent stop, protocol/transport failure, observer failure and timeout. No evaluator retry, replacement, hint, rescue, or post-result budget change.",
+  "measurement_boundary": "Measures the requested GLM-5.3 alias as served through the installed Codex runtime and local router, not isolated model weights. The runtime may have internal transport behavior that is not independently attested. Requested alias is not checkpoint attestation. Max versus earlier high is an unpaired real-time episode, so outcome differences cannot be attributed causally to reasoning effort, model parameters, or post-training.",
+  "source_sha256": {
+    "tools/native_codex_stream.py": "4aadaff9bc60a6e3feb10328a368463246d35f1cfcb5af2df92019d12ace5aa2",
+    "pomdp_bench/stream.py": "8b399b5cc0bc5eade5f09b7ffbea2d1a7d1180451af6c0775331a1fdf6977ffe",
+    "pomdp_bench/stream_runtime.py": "abc22fac2890a717e95703fe641fb4e234dc29a304891df9157e9219ca55765c",
+    "pomdp_bench/takeover.py": "a135145e3713c68d5802bc3b078c73acf2b84a8ccb5daabbf4fd90687976af5d",
+    "pomdp_bench/takeover_runtime.py": "adf8ec7b0cd79f1541a4d86613b4d1e109f7704ea706ffb1b7d9692916fe0845"
+  },
+  "comparison_reference": "studies/stream-recovery-codex-native-glm-v1 (high effort, separate earlier episode; no causal effort attribution from these unpaired runs)"
+}
