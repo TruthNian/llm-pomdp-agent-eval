@@ -1,0 +1,101 @@
+{
+  "study_id": "stream-recovery-boyue-mimo25pro-sse-v1",
+  "status": "frozen_before_scored_collection",
+  "purpose": "Independent complete MiMo V2.5 Pro incident attempt through the existing Boyue API. An unscored exact public-initial-input SSE probe returned two tool calls by default and one with parallel_tool_calls=false; the latter is ordinary Chat interface configuration, not an incident hint.",
+  "framework_version": "2.16.0",
+  "generator_version": "stream-recovery/1",
+  "suite_sha256": "a2278a96945e95eb8fb5a7e392dc76f7d32795b97e447f9987ec4f0f19278dfd",
+  "models": [
+    "mimo-v2.5-pro"
+  ],
+  "expected_episodes": 1,
+  "replicates": 1,
+  "conditions": [
+    "open"
+  ],
+  "transport": {
+    "base_url": "https://apicz.boyuerichdata.com/v1",
+    "credential_source": "existing local custom/z-ai/glm-5.3 Boyue registration; no credential copied into evidence",
+    "endpoint": "/chat/completions",
+    "stream": true
+  },
+  "interface": {
+    "kind": "boyue-chat-tools/1",
+    "tools": [
+      "exec",
+      "finish"
+    ],
+    "tool_choice": "omitted (normal model choice)",
+    "parallel_tool_calls": "false via ordinary Chat request parameter",
+    "reasoning_effort": "provider default for each named model; no cross-vendor tier claim",
+    "continuation": "Replay complete assistant message including reasoning_content in memory, followed by its matching tool result. Never save reasoning text.",
+    "initial_input": "same public contract and initial observation, with no hidden cause or solution hints",
+    "request_options": {
+      "parallel_tool_calls": false
+    }
+  },
+  "runtime": {
+    "image": "sha256:9ae11d63ae5f3525160b23746fca3f080c976dd9e90956a4f16b12361c33862d",
+    "components": {
+      "POSTGRES": {
+        "tag": "postgres:17-bookworm",
+        "image": "sha256:639ab7ceb90e13123085b741fb31ef493fba25463002f6da665352e7b534b652",
+        "repo_digests": [
+          "postgres@sha256:639ab7ceb90e13123085b741fb31ef493fba25463002f6da665352e7b534b652"
+        ]
+      },
+      "CONNECT": {
+        "tag": "quay.io/debezium/connect:3.2.1.Final",
+        "image": "sha256:13b9eb809050bf615b635686a19ad258ffef011cd7743a83d8f8d0611c216df4",
+        "repo_digests": [
+          "quay.io/debezium/connect@sha256:13b9eb809050bf615b635686a19ad258ffef011cd7743a83d8f8d0611c216df4"
+        ]
+      }
+    },
+    "assets_sha256": {
+      "archive-wal.sh": "631c070ce5e25b4f377d0016e3905b3c27ec9c2a8406fed92ab5b4f7ad4be14c",
+      "broker.properties": "3b7c2faf96efb5665d6d1ba7adca27fb40809aaed407032f8ef054eb2225ccee",
+      "CARRIER.md": "3b86055d8113d6a927e3d88ce22dec555314521cc312a939a43d19341a5a98d9",
+      "connect.properties": "6403da0638ec4409eed8cf31ff06942b0c043ce9c987f7e2fda4075f9ed126a7",
+      "connector.json": "b80f2237de8c964bb097095024639291932616990a38e2555b8f510d98ed38be",
+      "Dockerfile": "a4e8937a34992b672b64d0b50d0e0e2722cc24d6805b7cac7fde8a4163dc2fee",
+      "log4j2.properties": "83615989b7b286effa4904cba122a5007f6ec5e504f5e5e14ee897372597b8ad",
+      "README.md": "f6bee3055a3f97ae6cd4df21e55a0d4469a549b764a4a3ea5d9c712ae13e888d",
+      "schema.sql": "eab6edd9ef5c2b0ad0d1fd2f55b9f82cb32cc894c8559412b60c09d200134130",
+      "service.py": "a644a69139064b58108ca6ed255215f5cb51e7fdeec2e84d7b380f068536be3c",
+      "start-services.sh": "8b38eab0b90a3f25b20b3a2924b9254da8b51784f1d6e745288406847b9ec7b7",
+      "supervisor.conf": "6b010163d4da247c138ecaf2ce4a08cf626342bb3d15ef7721bbaf7f38f21c36"
+    },
+    "debezium_source_commit": "003672a405041d45d406ffac5149203b1a9e6471"
+  },
+  "limits": {
+    "max_actions": 200,
+    "wall_seconds": 10800,
+    "request_seconds": 600,
+    "response_bytes": 16000000
+  },
+  "stopping_rule": "Exactly one scored MiMo V2.5 Pro SSE attempt, 200 actions, 600 seconds/request, 10800 seconds/episode, 16 MB response cap. No evaluator retry, rescue, hint, post-result option change or substitution; retain infrastructure failures.",
+  "measurement_boundary": "Measures the requested MiMo V2.5 Pro ID as served by Boyue with parallel_tool_calls=false. Not directly equivalent to earlier default-policy Boyue attempts. The returned model label is not upstream weight attestation; one live episode is not a population success rate.",
+  "source_sha256": {
+    "pomdp_bench/stream.py": "8b399b5cc0bc5eade5f09b7ffbea2d1a7d1180451af6c0775331a1fdf6977ffe",
+    "pomdp_bench/stream_data/archive-wal.sh": "631c070ce5e25b4f377d0016e3905b3c27ec9c2a8406fed92ab5b4f7ad4be14c",
+    "pomdp_bench/stream_data/broker.properties": "3b7c2faf96efb5665d6d1ba7adca27fb40809aaed407032f8ef054eb2225ccee",
+    "pomdp_bench/stream_data/CARRIER.md": "3b86055d8113d6a927e3d88ce22dec555314521cc312a939a43d19341a5a98d9",
+    "pomdp_bench/stream_data/connect.properties": "6403da0638ec4409eed8cf31ff06942b0c043ce9c987f7e2fda4075f9ed126a7",
+    "pomdp_bench/stream_data/connector.json": "b80f2237de8c964bb097095024639291932616990a38e2555b8f510d98ed38be",
+    "pomdp_bench/stream_data/Dockerfile": "a4e8937a34992b672b64d0b50d0e0e2722cc24d6805b7cac7fde8a4163dc2fee",
+    "pomdp_bench/stream_data/log4j2.properties": "83615989b7b286effa4904cba122a5007f6ec5e504f5e5e14ee897372597b8ad",
+    "pomdp_bench/stream_data/README.md": "f6bee3055a3f97ae6cd4df21e55a0d4469a549b764a4a3ea5d9c712ae13e888d",
+    "pomdp_bench/stream_data/schema.sql": "eab6edd9ef5c2b0ad0d1fd2f55b9f82cb32cc894c8559412b60c09d200134130",
+    "pomdp_bench/stream_data/service.py": "a644a69139064b58108ca6ed255215f5cb51e7fdeec2e84d7b380f068536be3c",
+    "pomdp_bench/stream_data/start-services.sh": "8b38eab0b90a3f25b20b3a2924b9254da8b51784f1d6e745288406847b9ec7b7",
+    "pomdp_bench/stream_data/supervisor.conf": "6b010163d4da247c138ecaf2ce4a08cf626342bb3d15ef7721bbaf7f38f21c36",
+    "pomdp_bench/stream_runtime.py": "abc22fac2890a717e95703fe641fb4e234dc29a304891df9157e9219ca55765c",
+    "pomdp_bench/takeover.py": "a135145e3713c68d5802bc3b078c73acf2b84a8ccb5daabbf4fd90687976af5d",
+    "pomdp_bench/takeover_runtime.py": "adf8ec7b0cd79f1541a4d86613b4d1e109f7704ea706ffb1b7d9692916fe0845",
+    "tools/boyue_chat_stream.py": "d154fe325b2b67f35b074c7274d4269ed1de4e64f13b23fe259689e62de6f8f7",
+    "tools/boyue_chat_stream_sse.py": "1903370cd4b0df0bf0770efb3c087a66e794c2951de407e69ff2a238daa7715b",
+    "tools/boyue_chat_stream_sse_options.py": "c54d06fdbc0e195cbdca90a9692732f34e17a5afd03be0b4e402a42448971eb9"
+  },
+  "controls_reference": "../stream-recovery-v1/control-evidence.json"
+}
