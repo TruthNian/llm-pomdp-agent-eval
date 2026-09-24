@@ -4,6 +4,8 @@
 [English](README.md) · [路线](docs/ROADMAP.zh-CN.md) · [设计](docs/DESIGN.md) · [接入模型](docs/MODEL_ADAPTERS.md)
 
 **阶段验收入口：[2026-09-23 成果与证据](docs/ACCEPTANCE_2026-09-23.md)。**
+[同一事故的跨模型与推理强度对比](docs/MODEL_COMPARISON_2026-09-24.zh-CN.md)
+区分相同声明条件下的 GPT 对照、GLM `high/max` 对照，以及客户服务中断代价。
 该记录保留当时的阶段验收状态。执行与测量闭环已跑通；高难度目标仍未达到。
 用户指定的[三个模型追加测试](studies/stream-recovery-requested-models-v1/README.md)已结束：GPT-6 Sol 27 步通过，
 GPT-6 Luna 28 步交接后仍缺 12 个订单、9 笔发货；GLM-5.3 原生工具尝试失败，文本补测在第 10 次请求超时。

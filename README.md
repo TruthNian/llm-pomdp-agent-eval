@@ -4,6 +4,8 @@
 [中文](README.zh-CN.md) · [Roadmap](docs/ROADMAP.md) · [Design](docs/DESIGN.md) · [Connect a model](docs/MODEL_ADAPTERS.md)
 
 **Stage review:** [2026-09-23 acceptance record (中文)](docs/ACCEPTANCE_2026-09-23.md).
+[Cross-model and reasoning-effort comparison (中文)](docs/MODEL_COMPARISON_2026-09-24.zh-CN.md)
+separates the matched GPT setup from the GLM runtime and reports customer write failures.
 That record preserves the stage-review state at the time. The execution and measurement loop works;
 the high-difficulty objective remains unmet.
 The [three user-requested model tests](studies/stream-recovery-requested-models-v1/README.md) have ended:
