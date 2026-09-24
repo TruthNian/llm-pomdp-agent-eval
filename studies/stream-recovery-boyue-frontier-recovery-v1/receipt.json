@@ -1,0 +1,54 @@
+{
+  "expected": 3,
+  "retained": 3,
+  "suite_sha256": "a2278a96945e95eb8fb5a7e392dc76f7d32795b97e447f9987ec4f0f19278dfd",
+  "trace_json_sha256": "d15b64939e967a9fb0733c4ac1dd994c041e94f3546a662a5261d5e8266d43e8",
+  "trace_gzip_sha256": "e3ca149fb6d315342cef900184c624d1379fe67e9a7c02ecbe7de5276c7ac939",
+  "attempts": [
+    {
+      "label": "mimo-serial-sse",
+      "private_checkpoint_sha256": "c5a4af3c7a408a89f386f9297aa7359c3a21886bbb8565888be6bf163286ad44",
+      "model": "mimo-v2.5-pro",
+      "actions": 14,
+      "requests": 15,
+      "success": false,
+      "termination": "adapter_error",
+      "error": "ValueError:incomplete_sse",
+      "elapsed_seconds": 469.160282,
+      "traffic_write_failures": 0,
+      "traffic_attempts": 42,
+      "final_order_errors": 26,
+      "final_missing_bookings": 57
+    },
+    {
+      "label": "doubao-chat",
+      "private_checkpoint_sha256": "a15f154005edbe132ff0379540ccf7bccbff2a1b8648ba68f4d15f65e19f425a",
+      "model": "doubao-seed-2-1-pro-260628",
+      "actions": 62,
+      "requests": 62,
+      "success": false,
+      "termination": "finished",
+      "error": null,
+      "elapsed_seconds": 1928.701904,
+      "traffic_write_failures": 72,
+      "traffic_attempts": 280,
+      "final_order_errors": 26,
+      "final_missing_bookings": 140
+    },
+    {
+      "label": "minimax-serial-sse",
+      "private_checkpoint_sha256": "407af3184eb7f68d543a642260dbf822e53b385ca0bc71aea3f79d95cfa5bc54",
+      "model": "MiniMax-M3",
+      "actions": 25,
+      "requests": 26,
+      "success": false,
+      "termination": "adapter_error",
+      "error": "ValueError:incomplete_sse",
+      "elapsed_seconds": 484.528782,
+      "traffic_write_failures": 0,
+      "traffic_attempts": 44,
+      "final_order_errors": 26,
+      "final_missing_bookings": 23
+    }
+  ]
+}

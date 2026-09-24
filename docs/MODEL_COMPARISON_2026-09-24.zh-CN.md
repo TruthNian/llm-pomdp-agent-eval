@@ -11,6 +11,7 @@
 | [GPT-6 Astra `max`](../studies/stream-recovery-astra-efforts-v1/README.md) | 连续 Responses | 通过 | 0 / 0 | 15 | 44 / 108（40.7%） | 13.5 分钟 |
 | [GLM-5.3 `high`](../studies/stream-recovery-codex-native-glm-v1/README.md) | Codex 代理运行时 | 失败 | 12 / 9 | 37 | 0 / 98 | 12.8 分钟 |
 | [GLM-5.3 `max`](../studies/stream-recovery-codex-native-glm-max-v1/README.md) | Codex 代理运行时 | 通过 | 0 / 0 | 44 | 32 / 192（16.7%） | 21.0 分钟 |
+| [Doubao Seed 2.1 Pro](../studies/stream-recovery-boyue-frontier-recovery-v1/README.md) | Boyue 普通 Chat 工具 | 失败 | 26 / 140 | 62 | 72 / 280（25.7%） | 32.1 分钟 |
 
 动作数含最终 `finish`；总用时含环境准备与交接后独立验收，不能当作纯推理延迟。写失败分母是该轮持续客户流量实际发出的指令数，而非相同的固定请求集；百分比只描述本轮服务可用性。最终订单数也随各轮时长不同，不用于能力排序。评分器只要求**获得成功收据**的指令最终正确，另外报告拒绝的实时请求。表中“通过”的轨迹均有客户写失败；零错误的业务状态不能写成零中断交付。
 
@@ -24,6 +25,8 @@
 
 **GPT-6 Astra `xhigh` 与 `max`** 分别用 16、15 步恢复备份/WAL 中的旧分支历史、合并业务状态并完成交接；重启后均为 0 个订单错误、0 笔漏发。`max` 这次少用 1 步，却比 `xhigh` 多用约 3.8 分钟，运行期间客户写入失败为 44/108 而非 22/76。因此按本次现实交付的时长和可用性看，不能简单说 `max` 优于 `xhigh`；两轮客户请求不是逐条配对，不能把差异归因于强度。Astra `medium` 在 7 个动作后，第 8 次模型请求返回 HTTP 502，未完成交接；其未处理业务状态和写入失败只说明中断影响，**不构成 medium 推理能力失败**。[三档冻结计划与完整记录](../studies/stream-recovery-astra-efforts-v1/README.md)保留这一结果。
 
+**Doubao Seed 2.1 Pro 的 Boyue 普通 Chat 配置**自主交接后留下 26 个订单错误、140 笔漏发和 2 笔意外发货，且运行期间 72/280 次客户写入失败。这是完整轨迹中的实际业务失败；它修复了若干 carrier、CDC 和消费位置问题，但没有从物理备份/WAL 找回旧分支已接受历史。不能用中途工具成功代替最终验收。它与 GPT 的连续 Responses、GLM 的 Codex 代理接口不同，因此只能报告这一整套配置的结果，不能从单轮推断纯模型权重的能力差。
+
 **GPT-5.6 Sol 与 GPT-6 Sol 的 `max` 连续会话**确实是同一声明条件下的直接对照，而不只是“题目相似”。两者均通过；在各自这一次运行中，GPT-6 Sol 用 27 而非 31 步、10.5 而非 22.3 分钟，运行期间写失败为 34/88 而非 128/206。故对**这一次固定事故的已观察效率与可用性**，GPT-6 Sol 优于 GPT-5.6 Sol；没有必要中和掉这个事实。限制是实时流量没有逐条配对、每个模型只有一轮，不能据此给出总体胜率或确定模型世代带来的因果提升。若按现实交付同时看正确性与客户可用性，也不能只按现有 `success` 布尔值排名；跨 GLM 与 GPT 时尤其不能把各运行时报告的 token 直接换算成同质计算量或价格。
 
 ## 不能放进能力排名的记录
@@ -32,8 +35,10 @@
 
 [Boyue 同一 API 下七次前沿模型尝试](../studies/stream-recovery-boyue-frontier-results-v1/README.md)分别覆盖 Kimi K3、DeepSeek V4 Pro、MiniMax M3 和 Qwen3.8 Max 的普通 Chat 工具及 SSE 接入。七次均在交接前因传输或接口错误中止，其中 MiniMax 普通 Chat 执行到 40 步，其余为 0 步。它们是**接入可靠性的测量**，不能放进事故解决能力排名；冻结计划、逐轮错误与可离线重放记录均已保留。
 
+[另行冻结的后续三轮](../studies/stream-recovery-boyue-frontier-recovery-v1/README.md)中，MiMo V2.5 Pro 执行 14 步、MiniMax M3 执行 25 步后，均在下一次 SSE 响应上触发 `incomplete_sse`，未交接；它们也不是完整能力分数。同一批次的 Doubao 完成交接并失败，已列入上表。新轮次没有替换先前七次失败。
+
 ## 对下一轮评测的判断
 
-本事故已有五种配置完成，**不再足以证明前沿高难度**。继续在同一个固定事故上堆单次高强度调用，会强化熟悉题目的证据，却难以估计模型间稳定能力差异。若要回答“推理强度是否真正提高现实交付”，先统一代理接口与公开工具、版本化客户可用性和失败请求重试指标，再冻结多个独立、可解且更难的事故任务，对每个模型与强度使用同一任务集合和预算，保留全部失败与资源成本。做不到共同接入时，应明确报告“配置整体”差异，不能称为纯模型差异。当前证据最坚实的结论仍是**发现并恢复不可见的已接受历史**决定了这一次事故的业务正确性；服务中断成本还未进入通过门槛。
+本事故已有五种配置通过，**不再是前沿高难度的充分证据**；Doubao 的完整失败同时表明它仍能区分部分实际配置。继续在同一个固定事故上堆单次高强度调用，会强化熟悉题目的证据，却难以估计模型间稳定能力差异。若要回答“推理强度是否真正提高现实交付”，先统一代理接口与公开工具、版本化客户可用性和失败请求重试指标，再冻结多个独立、可解且更难的事故任务，对每个模型与强度使用同一任务集合和预算，保留全部失败与资源成本。做不到共同接入时，应明确报告“配置整体”差异，不能称为纯模型差异。当前证据最坚实的结论仍是**发现并恢复不可见的已接受历史**决定了这一次事故的业务正确性；服务中断成本还未进入通过门槛。
 
-复核入口：[三模型补测](../studies/stream-recovery-requested-models-v1/README.md)、[连续 Sol](../studies/stream-recovery-continuous-v1/README.md)、[GLM `high`](../studies/stream-recovery-codex-native-glm-v1/README.md)、[GLM `max`](../studies/stream-recovery-codex-native-glm-max-v1/README.md)、[Astra 三档](../studies/stream-recovery-astra-efforts-v1/README.md)、[Boyue 前沿尝试](../studies/stream-recovery-boyue-frontier-results-v1/README.md)。各研究保留其冻结计划、轨迹或审计证据与离线复核命令。
+复核入口：[三模型补测](../studies/stream-recovery-requested-models-v1/README.md)、[连续 Sol](../studies/stream-recovery-continuous-v1/README.md)、[GLM `high`](../studies/stream-recovery-codex-native-glm-v1/README.md)、[GLM `max`](../studies/stream-recovery-codex-native-glm-max-v1/README.md)、[Astra 三档](../studies/stream-recovery-astra-efforts-v1/README.md)、[Boyue 初始七轮](../studies/stream-recovery-boyue-frontier-results-v1/README.md)、[Boyue 后续三轮](../studies/stream-recovery-boyue-frontier-recovery-v1/README.md)。各研究保留其冻结计划、轨迹或审计证据与离线复核命令。
