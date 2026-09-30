@@ -1,0 +1,200 @@
+{
+  "schema": "retrospective-cost-audit/1",
+  "review_date": "2026-09-30",
+  "retrieved_at_utc": "2026-09-30T07:29:46.696821+00:00",
+  "scope": "Completed configurations in MODEL_COMPARISON_2026-09-24.zh-CN.md. This supplement does not alter frozen token counts, grades or the posthoc preference score.",
+  "source_endpoint": "https://apicz.boyuerichdata.com/api/log/token",
+  "source_kind": "authenticated read-only quota consumption logs for the existing local test API key; no model inference calls",
+  "source_record_count": 1000,
+  "source_window_utc": {
+    "first": "2026-09-17T06:28:29+00:00",
+    "last": "2026-09-24T10:00:51+00:00"
+  },
+  "display_conversion": {
+    "source_endpoint": "https://apicz.boyuerichdata.com/api/status",
+    "observed_quota_display_type": "USD",
+    "observed_quota_per_unit": 500000,
+    "formula": "platform_display_usd = quota_consumed / 500000",
+    "limitation": "Account credit consumption in the platform display currency, not a recharge/payment invoice. Historical display settings, actual recharge discounts, taxes and cash exchange rates are not verified."
+  },
+  "identification_limit": "The old traces do not retain provider billing request IDs. Matching uses a unique consecutive model-specific block, logical-request counts and aggregate tokens; it is not a cryptographic per-request linkage. Unlogged charges/refunds cannot be ruled out.",
+  "privacy": "Public evidence contains aggregates only; no API key, user/account/token identifiers, IP addresses, request IDs, raw response bodies or raw reasoning. Local source records remain ignored.",
+  "entries": [
+    {
+      "label": "v3-kimi",
+      "model": "kimi-k3",
+      "source_trace": "studies/stream-recovery-boyue-retest-v3/trace.json.gz",
+      "source_trace_gzip_sha256": "2a76419f6320d73da5514e4c68a6cd761756c1a9da7598cececbfb8728f5e8d0",
+      "status": "matched_provider_consumption_logs",
+      "identification": "unique chronological block with the same logical-request count and reported input/output totals; MiniMax removes exactly one uniquely matching unreported usage row for this comparison only",
+      "reported_requests": 34,
+      "reported_usage_reports": 34,
+      "reported_input_tokens": 2049545,
+      "reported_output_tokens": 42734,
+      "matched_consumption_records": 34,
+      "ledger_input_tokens": 2049545,
+      "ledger_output_tokens": 42734,
+      "ledger_cached_input_tokens": 1946624,
+      "quota_consumed": 691269,
+      "platform_display_usd": "1.382538",
+      "groups": [
+        "Ali.Bailian"
+      ],
+      "first_consumption_utc": "2026-09-24T08:45:00+00:00",
+      "last_consumption_utc": "2026-09-24T09:27:53+00:00",
+      "other_log_records_in_interval": 0
+    },
+    {
+      "label": "v3-deepseek",
+      "model": "deepseek-v4-pro",
+      "source_trace": "studies/stream-recovery-boyue-retest-v3/trace.json.gz",
+      "source_trace_gzip_sha256": "2a76419f6320d73da5514e4c68a6cd761756c1a9da7598cececbfb8728f5e8d0",
+      "status": "matched_provider_consumption_logs",
+      "identification": "unique chronological block with the same logical-request count and reported input/output totals; MiniMax removes exactly one uniquely matching unreported usage row for this comparison only",
+      "reported_requests": 74,
+      "reported_usage_reports": 74,
+      "reported_input_tokens": 8282619,
+      "reported_output_tokens": 30300,
+      "matched_consumption_records": 74,
+      "ledger_input_tokens": 8282619,
+      "ledger_output_tokens": 30300,
+      "ledger_cached_input_tokens": 8079360,
+      "quota_consumed": 760270,
+      "platform_display_usd": "1.52054",
+      "groups": [
+        "Ali.Bailian"
+      ],
+      "first_consumption_utc": "2026-09-24T08:51:33+00:00",
+      "last_consumption_utc": "2026-09-24T09:47:00+00:00",
+      "other_log_records_in_interval": 0
+    },
+    {
+      "label": "v3-qwen",
+      "model": "qwen3.8-max",
+      "source_trace": "studies/stream-recovery-boyue-retest-v3/trace.json.gz",
+      "source_trace_gzip_sha256": "2a76419f6320d73da5514e4c68a6cd761756c1a9da7598cececbfb8728f5e8d0",
+      "status": "matched_provider_consumption_logs",
+      "identification": "unique chronological block with the same logical-request count and reported input/output totals; MiniMax removes exactly one uniquely matching unreported usage row for this comparison only",
+      "reported_requests": 48,
+      "reported_usage_reports": 48,
+      "reported_input_tokens": 3643365,
+      "reported_output_tokens": 79711,
+      "matched_consumption_records": 48,
+      "ledger_input_tokens": 3643365,
+      "ledger_output_tokens": 79711,
+      "ledger_cached_input_tokens": 3482368,
+      "quota_consumed": 677751,
+      "platform_display_usd": "1.355502",
+      "groups": [
+        "Ali.Bailian"
+      ],
+      "first_consumption_utc": "2026-09-24T08:54:19+00:00",
+      "last_consumption_utc": "2026-09-24T10:00:51+00:00",
+      "other_log_records_in_interval": 0
+    },
+    {
+      "label": "v3-minimax",
+      "model": "MiniMax-M3",
+      "source_trace": "studies/stream-recovery-boyue-retest-v3/trace.json.gz",
+      "source_trace_gzip_sha256": "2a76419f6320d73da5514e4c68a6cd761756c1a9da7598cececbfb8728f5e8d0",
+      "status": "matched_provider_consumption_logs",
+      "identification": "unique chronological block with the same logical-request count and reported input/output totals; MiniMax removes exactly one uniquely matching unreported usage row for this comparison only",
+      "reported_requests": 125,
+      "reported_usage_reports": 124,
+      "reported_input_tokens": 11578599,
+      "reported_output_tokens": 48576,
+      "matched_consumption_records": 125,
+      "ledger_input_tokens": 11715367,
+      "ledger_output_tokens": 49010,
+      "ledger_cached_input_tokens": 11595451,
+      "quota_consumed": 257271,
+      "platform_display_usd": "0.514542",
+      "groups": [
+        "MiniMax"
+      ],
+      "first_consumption_utc": "2026-09-24T08:51:36+00:00",
+      "last_consumption_utc": "2026-09-24T09:20:06+00:00",
+      "other_log_records_in_interval": 0,
+      "usage_omitted_from_frozen_trace": {
+        "request_ordinal": 97,
+        "input_tokens": 136768,
+        "output_tokens": 434,
+        "quota": 2780
+      }
+    },
+    {
+      "label": "doubao-chat",
+      "model": "doubao-seed-2-1-pro-260628",
+      "source_trace": "studies/stream-recovery-boyue-frontier-recovery-v1/trace.json.gz",
+      "source_trace_gzip_sha256": "e3ca149fb6d315342cef900184c624d1379fe67e9a7c02ecbe7de5276c7ac939",
+      "status": "matched_provider_consumption_logs",
+      "identification": "unique chronological block with the same logical-request count and reported input/output totals; MiniMax removes exactly one uniquely matching unreported usage row for this comparison only",
+      "reported_requests": 62,
+      "reported_usage_reports": 62,
+      "reported_input_tokens": 3592079,
+      "reported_output_tokens": 23592,
+      "matched_consumption_records": 62,
+      "ledger_input_tokens": 3592079,
+      "ledger_output_tokens": 23592,
+      "ledger_cached_input_tokens": 3212152,
+      "quota_consumed": 510735,
+      "platform_display_usd": "1.02147",
+      "groups": [
+        "Byte.Ark"
+      ],
+      "first_consumption_utc": "2026-09-24T07:36:22+00:00",
+      "last_consumption_utc": "2026-09-24T08:05:06+00:00",
+      "other_log_records_in_interval": 0
+    },
+    {
+      "label": "glm-high",
+      "model": "z-ai/glm-5.3",
+      "source_trace": "studies/stream-recovery-codex-native-glm-v1/trace.json.gz",
+      "source_trace_gzip_sha256": "b06e42e4f293ef5ffc5631c51aeda8452226ec4b4754930c134aeaa2dd610093",
+      "status": "partial_usage_match_not_final_price",
+      "matched_consumption_records": 36,
+      "matched_input_tokens": 1301676,
+      "matched_output_tokens": 21880,
+      "matched_quota": 269842,
+      "matched_platform_display_usd": "0.539684",
+      "limitation": "This unique block only matches Codex usage observed through handover. It does not identify all final-tool, interrupted, retried or post-handover requests. Do not label it the final episode cost."
+    },
+    {
+      "label": "glm-max",
+      "model": "z-ai/glm-5.3",
+      "source_trace": "studies/stream-recovery-codex-native-glm-max-v1/trace.json.gz",
+      "status": "final_price_unverified",
+      "limitation": "Codex aggregate usage does not match a unique chronological provider-billing block. Effort and time alone cannot resolve episode membership; unrelated same-model requests overlap. No final price inferred."
+    },
+    {
+      "model": "gpt-5.6-sol",
+      "effort": "max",
+      "status": "no_attributable_cash_charge_in_retained_evidence",
+      "limitation": "The recorded collector used existing native-login credentials through the local router. API list prices are not a bill for this route. Subscription allocation or extra-credit deductions have not been identified for this episode; unavailable does not mean zero."
+    },
+    {
+      "model": "gpt-6-sol",
+      "effort": "max",
+      "status": "no_attributable_cash_charge_in_retained_evidence",
+      "limitation": "The recorded collector used existing native-login credentials through the local router. API list prices are not a bill for this route. Subscription allocation or extra-credit deductions have not been identified for this episode; unavailable does not mean zero."
+    },
+    {
+      "model": "gpt-6-luna",
+      "effort": "max",
+      "status": "no_attributable_cash_charge_in_retained_evidence",
+      "limitation": "The recorded collector used existing native-login credentials through the local router. API list prices are not a bill for this route. Subscription allocation or extra-credit deductions have not been identified for this episode; unavailable does not mean zero."
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "status": "no_attributable_cash_charge_in_retained_evidence",
+      "limitation": "The recorded collector used existing native-login credentials through the local router. API list prices are not a bill for this route. Subscription allocation or extra-credit deductions have not been identified for this episode; unavailable does not mean zero."
+    },
+    {
+      "model": "gpt-6-astra",
+      "effort": "max",
+      "status": "no_attributable_cash_charge_in_retained_evidence",
+      "limitation": "The recorded collector used existing native-login credentials through the local router. API list prices are not a bill for this route. Subscription allocation or extra-credit deductions have not been identified for this episode; unavailable does not mean zero."
+    }
+  ]
+}
