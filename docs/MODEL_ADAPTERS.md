@@ -217,10 +217,13 @@ The default remains zero for old configurations; the single-test example declare
 two retries. This is ordinary transport recovery, following the bounded retry
 approach in the [official SDK documentation](https://developers.openai.com/api/reference/python).
 
-Only HTTP 500/502/503/504 are retried. The exact serialized input is reused;
+2.17.1 retries only HTTP 500/502/503/504. Following a separately retained early-SSE
+termination, 2.17.2 also retries classified connection failures, per-request
+timeouts and premature HTTP/SSE EOF before a complete response. The exact serialized input is reused;
 native continuation state is appended once, and no environment action executes
-until a complete valid call is received. Authentication/quota, timeout, incomplete
-stream, ambiguous call and model-format errors are not retried. Each network
+until a complete valid call is received. Authentication/quota, explicit incomplete
+model responses, ambiguous calls and model-format errors are not retried. An
+episode wall deadline still stops the attempt. Each network
 attempt is bounded by `timeout_seconds` and the remaining episode wall time.
 Backoff is one then two seconds, respecting `Retry-After`; a requested delay above
 sixty seconds or beyond the remaining wall time stops the request instead.

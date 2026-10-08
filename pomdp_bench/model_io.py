@@ -31,11 +31,12 @@ NATIVE_TOOLS = [
 class AdapterError(RuntimeError):
     """Only fixed local descriptions and numeric HTTP status, never remote bodies."""
 
-    def __init__(self, message, code="adapter_error", *, http_status=None, retry_after=None):
+    def __init__(self, message, code="adapter_error", *, http_status=None, retry_after=None, retryable_transport=False):
         super().__init__(message)
         self.code = code
         self.http_status = http_status
         self.retry_after = retry_after
+        self.retryable_transport = retryable_transport
 
 
 def retry_after_seconds(value):
@@ -210,9 +211,9 @@ class ResponseStream:
             self.line(line.rstrip(b"\r"))
         if final:
             if self.buffer or self.lines:
-                raise AdapterError("Endpoint stream ended inside an event", "incomplete_response")
+                raise AdapterError("Endpoint stream ended inside an event", "incomplete_response",retryable_transport=True)
             if self.result is None:
-                raise AdapterError("Endpoint stream ended without completion", "incomplete_response")
+                raise AdapterError("Endpoint stream ended without completion", "incomplete_response",retryable_transport=True)
 
     def line(self, line):
         if line:
@@ -378,17 +379,17 @@ def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=Fals
             else:
                 chunks.append(chunk)
         if response.length not in (None, 0):
-            raise AdapterError("Endpoint body ended before its declared length", "incomplete_response")
+            raise AdapterError("Endpoint body ended before its declared length", "incomplete_response",retryable_transport=True)
         if stream:
             stream.feed(b"", final=True)
             return stream.result
         return strict_json(b"".join(chunks))
     except TimeoutError:
-        raise AdapterError("Endpoint request deadline exceeded", "timeout") from None
+        raise AdapterError("Endpoint request deadline exceeded", "timeout",retryable_transport=True) from None
     except (OSError, http.client.HTTPException):
         if deadline_fired.is_set() or time.monotonic() >= deadline:
-            raise AdapterError("Endpoint request deadline exceeded", "timeout") from None
-        raise AdapterError("Endpoint transport failed", "transport_error") from None
+            raise AdapterError("Endpoint request deadline exceeded", "timeout",retryable_transport=True) from None
+        raise AdapterError("Endpoint transport failed", "transport_error",retryable_transport=True) from None
     except (ValueError, KeyError, TypeError, AttributeError):
         raise AdapterError("Endpoint returned malformed JSON or stream data", "protocol_error") from None
     finally:
@@ -476,8 +477,11 @@ class HttpAgent:
                     wire['outcome'] = exc.code
                     if exc.http_status is not None:
                         wire['http_status'] = exc.http_status
+                    if exc.retryable_transport:
+                        wire['retryable_transport'] = True
                     delay = max(2**attempt,exc.retry_after or 0)
-                    if (exc.http_status not in (500,502,503,504) or attempt==retries or delay>60
+                    if (not(exc.http_status in (500,502,503,504) or exc.retryable_transport)
+                            or attempt==retries or delay>60
                             or deadline-time.monotonic()<=delay):
                         raise
                     wire['retry_delay_seconds'] = delay

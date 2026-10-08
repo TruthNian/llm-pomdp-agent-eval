@@ -18,7 +18,7 @@ python -m pomdp_bench validate artifacts/incident-test-001
 
 这是构造的事故环境。高难度由完整模型行为检验，强模型通过的结果仍然保留；新版验收本身不证明前沿难度或广泛现实预测能力。
 
-[首批新版证据](studies/stream-delivery-v2/README.md)保留两条真实操作对照和 Astra 的 HTTP 502 中断。2.17.1 在现有适配器增加明确、有限的 HTTP 重试，原运行及成绩不变。
+[首批新版证据](studies/stream-delivery-v2/README.md)保留两条真实操作对照和 Astra 的 HTTP 502 中断，[随后提前断流的运行](studies/stream-delivery-http-retry-v1/README.md)也单独保留。2.17.2 在既有适配器中恢复明确、有限的传输故障，原运行及成绩不变。
 
 [既有模型对比](docs/MODEL_COMPARISON_2026-09-24.zh-CN.md)与全部版本化证据保留。以下历史任务用于回归与研究，不是默认单次测试的前置流程。
 

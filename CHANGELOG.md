@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.17.2
+
+- Extend the same bounded transport recovery to classified connection failures, per-request timeouts and premature HTTP/SSE EOF after a second separately retained Astra interruption.
+- Distinguish transport truncation from an explicit incomplete model response. Reuse the same input, discard unfinished calls and execute no partial tool action; retain every attempt and missing usage within unchanged episode limits.
+
 ## 2.17.1
 
 - Add an explicit bounded `max_http_retries` option to existing HTTP agents after the retained Astra attempt encountered upstream HTTP 502. Retry only 500/502/503/504 with the same serialized input; preserve native dialogue and execute each valid action once.

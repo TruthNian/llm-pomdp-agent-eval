@@ -16,6 +16,9 @@ frontier-difficulty claim accompanies this measurement change.
 identical inputs, network-attempt audits and honest usage coverage. The
 [transport contract](MODEL_ADAPTERS.md#explicit-recovery-of-http-server-errors)
 leaves old configurations at zero retries. No incident or grading semantics change.
+2.17.2 extends that same bounded policy to classified request timeouts, connection
+failures and premature transport EOF, while explicit model incompletion and invalid
+tool calls remain failures. Unfinished responses never execute environment actions.
 
 The accepted [incident-takeover design](INCIDENT_TAKEOVER.md) is implemented by
 `incident-takeover/1` in framework 2.13, with a separate [runtime contract](POSTGRES_TAKEOVER.md).

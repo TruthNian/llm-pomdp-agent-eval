@@ -8,11 +8,58 @@ from unittest.mock import patch
 
 from pomdp_bench.agents import validate_agent_version, validate_config
 from pomdp_bench.model_io import AdapterError, HttpAgent, retry_after_seconds
-from tests.test_model_io import config, endpoint, response, send
+from tests.test_model_io import config, endpoint, response, send, sse
 from tests.test_native_session import output
 
 
 class HttpRetryTests(unittest.TestCase):
+    def test_truncated_native_stream_retries_without_executing_a_partial_call(self):
+        bodies = []
+        result = {'model':'test-model','status':'completed','output':output(),
+                  'usage':{'input_tokens':12,'output_tokens':7}}
+        result['output'][-1].update(name='finish',arguments='{}')
+        def reply(handler,body):
+            bodies.append(copy.deepcopy(body))
+            if len(bodies)==1:
+                partial = {'type':'response.output_item.added','output_index':0,
+                           'item':{'type':'function_call','id':'partial','name':'exec','call_id':'partial_call','arguments':''}}
+                send(handler,sse(partial),'text/event-stream')
+            else:
+                send(handler,json.dumps(result).encode())
+        with endpoint(reply),patch('pomdp_bench.model_io.time.sleep'):
+            agent = HttpAgent({**config('responses_session'),'max_http_retries':2})
+            request = {'protocol_version':1,'task':{},'observation':{},'history':[]}
+            self.assertEqual(agent.act(request,timeout=5),{'command':'finish'})
+        self.assertEqual(bodies[0],bodies[1])
+        self.assertEqual(len(agent.request_audit),1)
+        self.assertEqual(agent.usage['requests'],2)
+        self.assertEqual(agent.usage['requests_with_usage'],1)
+        self.assertTrue(agent.request_audit[0]['wire_attempts'][0]['retryable_transport'])
+        self.assertNotIn('partial_call',json.dumps(agent.request_audit[0].get('response_items')))
+
+    def test_explicit_model_incomplete_event_is_not_a_transport_retry(self):
+        bodies = []
+        def reply(handler,body):
+            bodies.append(body)
+            send(handler,sse({'type':'response.incomplete','response':{'status':'incomplete'}}),'text/event-stream')
+        with endpoint(reply):
+            agent = HttpAgent({**config(),'max_http_retries':2})
+            with self.assertRaises(AdapterError):agent.act({'task':{},'history':[]},timeout=5)
+        self.assertEqual(len(bodies),1)
+        self.assertNotIn('retryable_transport',agent.request_audit[0]['wire_attempts'][0])
+
+    def test_classified_connection_and_request_timeout_can_be_retried(self):
+        for code in ('transport_error','timeout'):
+            with self.subTest(code=code), \
+                    patch.dict('os.environ',{'WIRE_ENDPOINT':'http://127.0.0.1:1/responses','WIRE_KEY':'fixture'}), \
+                    patch('pomdp_bench.model_io.time.sleep'), \
+                    patch('pomdp_bench.model_io.exchange',side_effect=[
+                        AdapterError('Network interruption',code,retryable_transport=True),response()]) as wire:
+                agent = HttpAgent({**config(),'max_http_retries':2})
+                self.assertEqual(agent.act({'task':{},'history':[]},timeout=5),{'command':'finish'})
+                self.assertEqual(wire.call_count,2)
+                self.assertEqual(wire.call_args_list[0].args[2],wire.call_args_list[1].args[2])
+
     def test_real_http_502_resends_identical_body_without_fabricating_usage(self):
         bodies = []
         def reply(handler,body):
