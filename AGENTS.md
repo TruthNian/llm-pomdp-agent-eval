@@ -4,6 +4,8 @@ The project's objective is a durable, difficult evaluation of agents delivering 
 
 Question requirements, delete unnecessary dependencies, then simplify and optimize before accelerating or automating. Preserve the information/action/feedback loop when simplifying. Do not substitute localized one-shot answers, CI counts or release counts for complete model trajectories. Follow `docs/ROADMAP.md`.
 
+The current working path is one complete incident test through `pomdp-bench benchmark`: one declared agent configuration, the existing isolated environment, independent business acceptance and a readable outcome/resource result. Do not make a universal generator, a large statistical matrix, a composite leaderboard or exact provider billing a prerequisite to this loop. Retain strong-model successes; judge difficulty from observed decision demands and discrimination rather than automatically discarding every solved task. Historical studies retain their preregistered decisions.
+
 The mainline follows the accepted [incident-takeover design](docs/INCIDENT_TAKEOVER.md). Framework 2.13 implements the first [PostgreSQL candidate](docs/POSTGRES_TAKEOVER.md); implementation and qualification do not establish high difficulty. Start from sparse incident handover and a generic work entry point. Agents discover evidence, tools and operation risks themselves amid authentic operational noise. Do not supply incident-specific guidance, risk menus, recovery hints or omniscient grading feedback. Actual irreversible effects and recovery work must execute; ordinary software help, warnings and useful tools remain available. Keep evaluator-only design notes outside the agent workspace.
 
 ## Preserve the measurement

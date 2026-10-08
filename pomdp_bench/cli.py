@@ -23,6 +23,7 @@ from .repair_portfolio import TASKS as REPAIR_TASKS
 from .incident import suite as incident_suite
 from .settlement import suite as settlement_suite
 from .generator import digest
+from .benchmark import run_benchmark
 
 
 def show_study(report):
@@ -34,6 +35,11 @@ def show_study(report):
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Generative POMDP Agent Benchmark")
     commands = parser.add_subparsers(dest="command", required=True)
+    benchmark = commands.add_parser('benchmark',help='Run one complete incident test and write one delivery/resource result')
+    benchmark.add_argument('--agent',type=Path,required=True,help='One agent configuration; existing adapters and environment variable credentials')
+    benchmark.add_argument('--runtime-config',type=Path,help='Existing pinned stream Docker configuration')
+    benchmark.add_argument('--out',type=Path,required=True)
+    benchmark.add_argument('--wall-seconds',type=float,default=10800)
     generate = commands.add_parser("generate", help="Write a PRIVATE versioned suite")
     generate.add_argument("--out", type=Path, required=True)
     generate.add_argument("--count", type=int, default=12, help="Number of independent generator seeds")
@@ -90,7 +96,11 @@ def main(argv=None) -> int:
         item.add_argument("run_directory", type=Path)
     args = parser.parse_args(argv)
     try:
-        if args.command == 'prepare-stream-suite':
+        if args.command == 'benchmark':
+            result = run_benchmark(read_json(args.agent),args.out,runtime_config=args.runtime_config,wall_seconds=args.wall_seconds)
+            print(json.dumps(result,ensure_ascii=False,indent=2))
+            print(f"Result: {args.out / 'result.md'}; verify with: python -m pomdp_bench validate {args.out}")
+        elif args.command == 'prepare-stream-suite':
             write_json(args.out, stream_suite(), replace=False)
             print('Prepared stream recovery; real execution and model difficulty require separate evidence.')
         elif args.command == 'prepare-takeover-suite':

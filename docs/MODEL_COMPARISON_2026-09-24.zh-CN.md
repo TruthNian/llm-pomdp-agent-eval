@@ -4,6 +4,8 @@
 
 **2026-10-08 规范审查更新：** 动作次数退出主横向比较，旧的事后综合排名已停用。以下分别呈现已接受工作的验收、服务事件与资源成本，不新增评分规则或改判旧成绩。新版本的已确认原则及待审查事项见[评测规范审查记录](MEASUREMENT_REVIEW_2026-10-08.zh-CN.md)。
 
+**后续开发更新：** 用户已授权恢复开发；[版本 2](STREAM_RECOVERY.md#customer-delivery-version-2)增加单次测试入口、固定客户需求和普通重试，覆盖失败响应之后的实际结果。本文的版本 1 成绩保持原义，不与新版结果合并排名。
+
 | 模型 / 推理强度 | 会话接口 | 已接受工作的验收 | 重启后订单错误 / 漏发 / 重复发货 / 意外发货 | 运行期间写失败 / 尝试（诊断记录） | 总用时 |
 |---|---|---|---:|---:|---:|
 | [GPT-5.6 Sol `max`](../studies/stream-recovery-continuous-v1/README.md) | 连续 Responses | 通过 | 0 / 0 / 0 / 0 | 128 / 206 | 22.3 分钟 |
@@ -88,6 +90,6 @@ GLM `high` 只有 36 条消费记录对应已观测用量，最终调用与交�
 
 ## 对下一轮评测的判断
 
-本事故已有六种配置通过，**不再是前沿高难度的充分证据**；包括三条 Boyue 完整失败在内的结果同时表明它仍能区分部分实际配置。继续在同一个固定事故上堆单次高强度调用，会强化熟悉题目的证据，却难以估计模型间稳定能力差异。下一步先按[规范审查记录](MEASUREMENT_REVIEW_2026-10-08.zh-CN.md)确定客户最终结果、正常重试、等待期限与共同负载；开发仍暂停，不启动新候选或补测。后续获准实现时须版本化新语义，使用共同任务、代理条件和资源预算，保留全部失败与成本。做不到共同接入时，应明确报告“配置整体”差异，不能称为纯模型差异。现有证据支持恢复缺失的已接受历史是本事故的重要恢复依赖；失败客户需求的最终损失尚未被完整测量。
+本事故已有六种配置通过，**不再是前沿高难度的充分证据**；包括三条 Boyue 完整失败在内的结果同时表明它仍能区分部分实际配置。继续在同一个固定事故上堆单次高强度调用，会强化熟悉题目的证据，却难以估计模型间稳定能力差异。该次审查先按[规范审查记录](MEASUREMENT_REVIEW_2026-10-08.zh-CN.md)讨论客户最终结果、正常重试、等待期限与共同负载，期间暂停开发；随后用户授权的新版实现须版本化新语义，使用共同任务、代理条件和资源预算，保留全部失败与成本。做不到共同接入时，应明确报告“配置整体”差异，不能称为纯模型差异。现有证据支持恢复缺失的已接受历史是本事故的重要恢复依赖；失败客户需求的最终损失尚未被完整测量。
 
 复核入口：[三模型补测](../studies/stream-recovery-requested-models-v1/README.md)、[连续 Sol](../studies/stream-recovery-continuous-v1/README.md)、[GLM `high`](../studies/stream-recovery-codex-native-glm-v1/README.md)、[GLM `max`](../studies/stream-recovery-codex-native-glm-max-v1/README.md)、[Astra 三档](../studies/stream-recovery-astra-efforts-v1/README.md)、[Boyue 初始七轮](../studies/stream-recovery-boyue-frontier-results-v1/README.md)、[Boyue 后续三轮](../studies/stream-recovery-boyue-frontier-recovery-v1/README.md)、[Boyue 修复补测](../studies/stream-recovery-boyue-retest-v3/README.md)。各研究保留其冻结计划、轨迹或审计证据与离线复核命令。

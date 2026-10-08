@@ -17,7 +17,7 @@ from .settlement import VERSION as SETTLEMENT_VERSION, POLICY as SETTLEMENT_POLI
 from .reconciliation import VERSION as RECONCILIATION_VERSION, POLICY as RECONCILIATION_POLICY
 from .refund_recovery import VERSION as REFUND_VERSION, POLICY as REFUND_POLICY
 from .takeover import VERSION as TAKEOVER_VERSION
-from .stream import VERSION as STREAM_VERSION
+from .stream import VERSIONS as STREAM_VERSIONS
 from .worlds import INCIDENT_VERSIONS, Environment, REPAIR_VERSIONS, cluster_id, validate_case_version, CONDITIONS, validate_condition_version
 from .evaluation import episode_record, recover_interrupted, replay, replay_environment, run_episode, validate_suite
 from .generator import digest
@@ -44,7 +44,7 @@ def validate_definition(data, configs, conditions, replicates, wall_seconds):
     if (not isinstance(conditions, list) or not conditions or len(set(conditions)) != len(conditions)
             or set(conditions) - set(CONDITIONS)):
         raise ValueError("Unknown or duplicate conditions")
-    if data['generator_version'] in (TAKEOVER_VERSION, STREAM_VERSION):
+    if data['generator_version'] in (TAKEOVER_VERSION, *STREAM_VERSIONS):
         if conditions != ['open'] or any(c['kind'] not in ('chat','responses','responses_tools','responses_session','actions') for c in configs):
             raise ValueError('Takeover requires open and HTTP agents or declared artifact controls')
     elif data["generator_version"] == REFUND_VERSION:
@@ -70,7 +70,7 @@ def validate_definition(data, configs, conditions, replicates, wall_seconds):
             raise ValueError("Solver consumer policy requires only solver_assisted")
     elif "solver_assisted" in conditions or any(c["kind"] in (*COVER_POLICIES, *ASSISTED_POLICIES) for c in configs):
         raise ValueError("Coverage policies and solver assistance require a coverage suite")
-    if data["generator_version"] not in (TAKEOVER_VERSION, STREAM_VERSION) and any(c["kind"] in ("responses_tools","responses_session") for c in configs):
+    if data["generator_version"] not in (TAKEOVER_VERSION, *STREAM_VERSIONS) and any(c["kind"] in ("responses_tools","responses_session") for c in configs):
         raise ValueError("Native shell tools require an incident takeover suite")
     if data["generator_version"] != REFUND_VERSION and any(c["kind"] == REFUND_POLICY for c in configs):
         raise ValueError("Refund operator needs a refund recovery suite")

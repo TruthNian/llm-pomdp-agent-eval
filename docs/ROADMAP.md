@@ -3,13 +3,22 @@
 Evaluate autonomous investigation, action, observation, recovery and useful delivery under partial observability.
 Calibrate difficulty with useful tools available and complete strong-model interactions.
 
-**2026-10-08 review status:** development remains paused. The user chose specification
-updates and continued metric review. The [measurement decisions](MEASUREMENT_REVIEW_2026-10-08.zh-CN.md)
+**2026-10-08 current status:** the user resumed development after the specification review
+and requested simplification. The [measurement decisions](MEASUREMENT_REVIEW_2026-10-08.zh-CN.md)
 keep action counts as internal budgets/audit, separate reported tokens and attributable costs,
 and require prospective incident grading to follow customer needs to business outcomes and waiting.
 HTTP failure ratios are diagnostic records, not a capability score. The old posthoc rankings
-are retired; all frozen grades retain their original rules. Customer retry, completion deadlines
-and common workload/observation windows remain review items, not authorization to implement.
+are retired; all frozen grades retain their original rules. Framework 2.17 implements
+the [version-2 customer-delivery contract](STREAM_RECOVERY.md#customer-delivery-version-2):
+one-command test, a fixed cohort, ordinary identical-request retries, independent
+business checks before/after restart, and one readable result. Qualification and a
+complete native-model attempt must be recorded separately; this is not difficulty proof.
+
+The immediate path is: complete the existing incident loop, verify actual consequences
+with a feasible recovery and an unsafe control, then run a full strong-model test.
+Keep its result whether it passes or fails. Examine the actual decisions and remaining
+discrimination before choosing further work; do not automatically discard every solved task.
+Additional statistics, provider adapters and exact billing are not prerequisites to the test.
 
 The frontier-candidate path was paused for [2026-09-23 stage review](ACCEPTANCE_2026-09-23.md).
 The user's later instruction resumed the narrower GLM integration investigation: the
@@ -23,9 +32,9 @@ outcomes and waiting before claiming full practical delivery; do not retrofit th
 No new frontier scenario has been selected in that integration work.
 The continuous Sol screen delivered in 31/200 actions. Retain this candidate as a regression
 anchor; high difficulty remains unmet. The implementation path below records the work completed
-so far, not authorization to start another candidate during review.
+so far; version 2 above is the resumed development path.
 
-## Active next step: incident takeover
+## Historical selection: incident takeover
 
 The user-approved [design constraints](INCIDENT_TAKEOVER.md) start with an incident's
 visible symptoms, minimal background and a generic work entry point. The agent
@@ -45,7 +54,7 @@ preserving 110 accepted orders through restart. Apply the preregistered rejectio
 retain it as a regression anchor, not high-difficulty evidence. Earlier text-channel failures remain
 published separately. Historical stages below explain existing anchors.
 
-## Current implementation path
+## Historical version-1 implementation path
 
 Question the assumption that real software, sparse handover or dangerous operations establish difficulty.
 The observed solution paused the API, backed up both branches, merged conflict-free records and unified

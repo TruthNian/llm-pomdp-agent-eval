@@ -92,8 +92,11 @@ The [2026-10-08 measurement review](MEASUREMENT_REVIEW_2026-10-08.zh-CN.md) reco
 the accepted principles for the next incident version: actions are internal budgets/audit,
 customer needs are followed to actual outcomes and waiting, and resource use separates
 reported tokens from attributable costs. HTTP failure ratios are diagnostic evidence,
-not a direct capability penalty. Development is paused; historical family metrics remain
-unchanged and customer retry/deadline/workload choices still require review.
+not a direct capability penalty. The user's subsequent instruction resumed development:
+[version 2](STREAM_RECOVERY.md#customer-delivery-version-2) implements a fixed customer cohort,
+ordinary same-ID retries and independent desired-outcome grading. Historical family metrics
+remain unchanged. A complete test and readable delivery/resource result are the main path;
+broad capability inference and universal platform construction are not prerequisites.
 
 Evaluate what a deployed model configuration can deliver. Record its declared reasoning setting, wall time, provider-reported token usage, tool budget, and failures. Equal FLOPs are not required for the default product comparison. A training-mechanism study can add its own controls without redefining the product track.
 

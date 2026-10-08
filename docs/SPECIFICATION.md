@@ -1,4 +1,4 @@
-# Benchmark specification — frameworks 2.0–2.16
+# Benchmark specification — frameworks 2.0–2.17
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
 
@@ -6,9 +6,11 @@ Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 
 [review record](MEASUREMENT_REVIEW_2026-10-08.zh-CN.md) defines the direction for the next
 incident version: action budgets/audit, customer outcomes and waiting, reported token
 coverage and attributable costs. HTTP failure ratios do not directly score capability.
-This is a specification review, not an implemented protocol or grader change.
-Development remains paused; customer retry, deadlines and workload/observation windows
-are undecided. Frozen traces retain the versioned rules below.
+The subsequent user instruction resumed implementation. Framework 2.17 implements
+the [version-2 customer-delivery contract](STREAM_RECOVERY.md#customer-delivery-version-2)
+and one-command `benchmark` entry, reusing the existing collector and runtime.
+Version 1 and all frozen traces retain their recorded rules. No new fault or
+frontier-difficulty claim accompanies this measurement change.
 
 The accepted [incident-takeover design](INCIDENT_TAKEOVER.md) is implemented by
 `incident-takeover/1` in framework 2.13, with a separate [runtime contract](POSTGRES_TAKEOVER.md).

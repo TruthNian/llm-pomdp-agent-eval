@@ -3,86 +3,23 @@
 [![CI](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/TruthNian/llm-pomdp-agent-eval/actions/workflows/ci.yml)
 [中文](README.zh-CN.md) · [Roadmap](docs/ROADMAP.md) · [Design](docs/DESIGN.md) · [Connect a model](docs/MODEL_ADAPTERS.md)
 
-**Stage review:** [2026-09-23 acceptance record (中文)](docs/ACCEPTANCE_2026-09-23.md).
-[Cross-model and reasoning-effort comparison (中文)](docs/MODEL_COMPARISON_2026-09-24.zh-CN.md)
-separates the matched GPT setup from the GLM runtime and reports customer write failures.
-That record preserves the stage-review state at the time. The execution and measurement loop works;
-the high-difficulty objective remains unmet.
-The [three user-requested model tests](studies/stream-recovery-requested-models-v1/README.md) have ended:
-GPT-6 Sol delivered in 27 actions; GPT-6 Luna handed over in 28 but left twelve orders and nine dispatches
-missing. GLM's native-tool attempt failed at the interface; its separate text follow-up timed out on
-request ten. All four attempts remain retained. In a later user-directed,
-[separately frozen normal-runtime pilot](studies/stream-recovery-codex-native-glm-v1/README.md),
-GLM completed 37 actions and handed over, but independent grading found twelve wrong orders and
-nine missing dispatches. That pilot measures GLM through Codex and the local router under a different
-interface and reasoning setting; it does not establish a strict model ranking. No new frontier
-scenario was added in that integration work.
-The later, separately frozen [GLM `max` full attempt](studies/stream-recovery-codex-native-glm-max-v1/README.md)
-handed over in 44 actions and passed the accepted-work grade before and after restart, with zero
-order or dispatch errors. During repair, 32 customer writes received connection errors. The grade
-reports these but does not make availability a pass condition. This is a recovery result with a
-material service-interruption cost, not high-difficulty proof or a causal `max` versus `high` test.
+Test whether a model can independently investigate and resolve an unfamiliar operational incident, preserve business records and fulfil customer work. One test is a complete interaction, with normal tools, sparse handover, actual consequences and independent outcome checks.
 
-Evaluate whether an agent can turn incomplete information into an **accepted,
-useful outcome** under resource constraints. The unit is a complete interaction
-trajectory, including unsuccessful actions, execution failures and delivery costs.
-
-**The mainline is sparse incident takeover.** The [2.13 PostgreSQL candidate](docs/POSTGRES_TAKEOVER.md)
-uses a generic shell, actual divergent database timelines, continuing customer traffic and independent
-business grading. No evaluator verification command or incident-specific operation menu is provided.
-The [completed native-tool screen](studies/incident-takeover-native-v1/README.md) delivered in
-9/150 actions: all 110 accepted orders survived, including restart. This candidate is rejected as
-high-difficulty evidence. Seventeen reads and seventeen writes failed during permitted maintenance;
-those costs remain visible. Earlier [text-channel failures](studies/incident-takeover-v1/README.md)
-are retained separately. The high-difficulty objective remains unmet.
-
-The [2.15 destructive recovery study](studies/stream-recovery-v1/README.md) now retains four
-real mechanism controls and a complete Sol max attempt: 29 actions, twelve unrecovered orders
-and nine missing dispatches, without protocol or observer errors. Its stateless history adapter
-does not preserve native reasoning continuity, so this is not yet a continuous-agent ceiling result.
-The [matched artifact experiment](studies/stream-recovery-counterfactual-v1/README.md) now confirms
-that recovering missing history removes both deficits without replacing the model's repaired pipeline.
-The separately frozen [continuous native-session screen](studies/stream-recovery-continuous-v1/README.md)
-delivered in 31/200 actions: all 111 accepted orders and 93 required dispatches passed after restart.
-Maintenance refused 128 customer writes. Reject this candidate as high-difficulty evidence and retain
-it as a regression anchor. These unpaired attempts do not isolate the adapter's causal effect.
-
-The earlier [settlement incident](docs/SERVICE_INCIDENT.md)
-executes actual HTTP requests and persists orders, an outbox and a ledger. An agent takes over an
-ambiguous fault, investigates, acts, receives feedback, recovers backlog and reconciles accounts.
-Temporary excess debits remain visible even when the final state is repaired.
-
-This is a constructed local business system, not a claimed production incident. Difficulty needs
-complete strong-model trajectories. Localized one-shot patch screens are no longer the mainline;
-the three 2.8 source repairs and all historical evidence remain regression anchors.
+**Current path: one incident, one agent, one result.** Framework 2.17 adds `stream-recovery/2`, reusing the existing isolated PostgreSQL/Kafka environment and collector. A fixed customer cohort retries identical commands. Acceptance follows every requested intent, including work that never obtained a successful HTTP receipt. Correct order state and external dispatches must survive restart.
 
 ```bash
 python -m pip install -e .
-python studies/stream-recovery-continuous-v1/verify.py
+python -m pomdp_bench benchmark --agent examples/benchmark-agent.example.json --runtime-config runtime.json --out artifacts/incident-test-001
+python -m pomdp_bench validate artifacts/incident-test-001
 ```
 
-This regrades the published complete run without Docker or model calls. Read its
-[full action trace](studies/stream-recovery-continuous-v1/trajectories.html), or follow the
-[Docker setup and native-model run instructions](docs/POSTGRES_TAKEOVER.md#run-locally)
-for a fresh incident. Candidate shell/Python runs inside the isolated Linux container.
-The older HTTP/SQLite service tasks remain available as regression anchors.
+Configure the model ID and existing endpoint/credential environment variables in the example. `runtime.json` is the pinned Docker configuration from the [stream runtime setup](docs/STREAM_RECOVERY.md#run-locally); an existing stream image can be reused. The [current contract](docs/STREAM_RECOVERY.md#customer-delivery-version-2) documents the customer policy and migration.
 
-[Complete live trajectories and evidence](studies/settlement-incident-v1/README.md):
-Sol delivered in 20 actions. The original GLM attempt stopped at the old parser after
-13 actions; this is not evidence of cognitive difficulty. Both outcomes and their
-intermediate business consequences are retained, with matching fresh execution.
-This scenario is a workflow anchor; the required frontier difficulty is not yet achieved.
+The run writes `result.md` and `result.json`, plus the complete trace and independent audit. Read the business outcome first, then token usage, elapsed time and verified expense where available. HTTP errors are diagnostic events; actions are an internal budget. Missing usage or expense remains unknown. Transport interruptions are reported separately from completed business failures. Existing failed runs are never silently retried.
 
-A separately frozen [GLM follow-up](studies/settlement-incident-v2/README.md)
-completed in 26 actions, including recovery from two malformed action responses.
-All 33 accepted orders reconciled. The original failed attempt remains published;
-the two adapter versions are not pooled into a model ranking.
+This is a constructed operational benchmark. Difficulty must be measured from complete model behavior; a strong-model success remains useful evidence. The new acceptance is not a claim of frontier difficulty or broad production validity.
 
-Framework 2.11 adds [cross-component reconciliation repair](docs/RECONCILIATION_REPAIR.md): actual SQL edits, intermediate execution, deployment and historical recovery across two financial feed contracts. [Complete evidence](studies/reconciliation-repair-v1/README.md) retains thirteen controls and both interrupted Sol max attempts. An unchanged model patch passes a separate scripted probe check; neither live attempt completed, and high difficulty remains unproven.
-
-The separately frozen [network-recovery follow-up](studies/reconciliation-repair-v2/README.md) completed both contracts in 28 actions, without invalid actions or transport errors. Keep these as regression anchors; high difficulty was not demonstrated. The [2.12 refund screen](studies/refund-recovery-v1/README.md) also passed: Sol max delivered in 39/100 actions. This candidate is rejected as high-difficulty evidence; further miniature SQL variants are no longer the frontier mainline.
-
-Framework 2.10 adds [external settlement](docs/EXTERNAL_SETTLEMENT.md): separate provider/local state, finite refund liquidity, cancellation deadlines and delayed notifications. Local bookkeeping cannot undo an external payment. [Complete evidence](studies/external-settlement-v1/README.md): Sol delivered in 26 actions; the GLM route timed out on request 10 after nine actions. Seven mechanism controls separated as specified. The configuration-invariance check failed and remains disclosed; this is integration evidence, not a controlled model comparison or proof of frontier difficulty.
+[Previous model comparisons](docs/MODEL_COMPARISON_2026-09-24.zh-CN.md) and all versioned studies remain available. The historical families below are regression and research controls, outside the default single-test path.
 
 ## Architecture
 

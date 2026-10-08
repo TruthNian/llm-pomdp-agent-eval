@@ -1,7 +1,7 @@
 """PostgreSQL, Debezium, Kafka and an independently persisted dispatch ledger.
 
 Prototype execution only until qualification and a versioned ceiling screen are
-frozen. The source of truth for accepted work is the external customer's receipts.
+frozen. Customer receipts define accepted history; version 2 also checks requested work.
 """
 import copy
 import hashlib
@@ -16,6 +16,8 @@ import time
 import uuid
 
 from .takeover_runtime import docker, HTTP_CLIENT
+from .stream_customers import (CustomerWorkload, expectations, completion, CUSTOMERS,
+                               RETRY_SECONDS, HANDOVER_SECONDS, POLICY)
 
 CLIENT = HTTP_CLIENT.replace("'http://127.0.0.1:8080'+item['path']", "'http://127.0.0.1:'+str(item.get('port',8080))+item['path']")
 ROOT = Path(__file__).with_name('stream_data')
@@ -70,6 +72,11 @@ def initial_batches(seed=2718):
                    for x in commands(n,seed,ending='cancel' if n%4==0 else 'release',amend=n%3==0)]
         branches.append(branch)
     return common,*branches
+
+
+def customer_plans(seed=2718):
+    return [commands(n,seed,ending=None if n%4==0 else 'cancel' if n%3==0 else 'release',amend=n%2==0)
+            for n in range(1000,1000+CUSTOMERS)]
 
 
 def matches(expected,observed):
@@ -138,13 +145,25 @@ def booking_errors(expected,observed):
             'unexpected_bookings':unexpected,'changed_bookings':changed}
 
 
-def assess(audit):
+def assess(audit, *, customer_delivery=False):
     if audit is None:
         return {'delivered':False,'observer_errors':0,'phases':[]}
     expected_initial = [x for batch in initial_batches(audit['seed']) for x in batch]
     if ([x['body'] for x in audit['initial']] != expected_initial or len(audit['phases'])!=2
             or any(x['response'].get('status')!=201 for x in audit['initial'])):
         raise ValueError('Incomplete stream incident audit')
+    customers = None
+    if customer_delivery:
+        evidence = audit.get('customer_workload',{})
+        plans = customer_plans(audit['seed'])
+        if evidence.get('plans') != plans:
+            raise ValueError('Missing or changed customer cohort')
+        customers = CustomerWorkload(plans,evidence['arrived_elapsed'])
+        for batch in audit['traffic']:
+            if 'observer_error' not in batch:
+                customers.record(batch['commands'],batch['elapsed'])
+        if customers.evidence() != evidence:
+            raise ValueError('Customer acknowledgement history changed')
     records = list(audit['initial']) + [x for batch in audit['traffic'] for x in batch['commands']]
     observer_errors = sum('observer_error' in batch for batch in audit['traffic'])
     summaries = []
@@ -155,15 +174,23 @@ def assess(audit):
             raise ValueError('Terminal customer workload changed')
         records += phase['commands']
         orders,releases,receipt_errors = obligations(records)
+        accepted_orders,accepted_releases = len(orders),len(releases)
+        if customers is not None:
+            required_orders,required_releases = expectations(customers.plans)
+            orders.update(required_orders)
+            releases.update(required_releases)
         if [x['reference'] for x in phase['reads']] != list(orders):
             raise ValueError('Incomplete terminal order observations')
         order_errors = sum(item['response'].get('status')!=200 or
                            not matches(orders[item['reference']],item['response'].get('body'))
                            for item in phase['reads'])
-        summary = {'accepted_orders':len(orders),'accepted_releases':len(releases),
+        summary = {'accepted_orders':accepted_orders,'accepted_releases':accepted_releases,
                    'order_errors':order_errors,'receipt_errors':receipt_errors,
                    'new_command_errors':sum(x['response'].get('status')!=201 for x in phase['commands']),
                    **booking_errors(releases,phase['bookings'])}
+        if customers is not None:
+            summary.update(required_orders=len(orders),required_releases=len(releases))
+            summary['customer_outcomes'] = completion(required_orders,required_releases,phase['reads'],phase['bookings'])
         summaries.append(summary)
     if len(audit['retry_probes'])!=2:
         raise ValueError('Missing request identity probes')
@@ -171,14 +198,20 @@ def assess(audit):
     _,_,replay_errors = obligations(records+[audit['retry_probes'][0]])
     retry_errors += max(0,replay_errors-summaries[-1]['receipt_errors'])
     accepted = [x for batch in audit['traffic'] for x in batch['commands']]
-    return {'delivered':not(observer_errors or retry_errors or any(v for phase in summaries for k,v in phase.items()
-                                                                 if k not in ('accepted_orders','accepted_releases'))),
+    result = {'delivered':not(observer_errors or retry_errors or any(v for phase in summaries for k,v in phase.items()
+                                                                 if k not in ('accepted_orders','accepted_releases','required_orders','required_releases','customer_outcomes'))),
             'observer_errors':observer_errors,'retry_errors':retry_errors,'phases':summaries,
             'traffic_write_failures':sum(x['response'].get('status')not in(200,201) for x in accepted)}
+    if customers is not None:
+        result['customers'] = {**summaries[-1]['customer_outcomes'],
+            'acknowledged_intents':sum(t is not None for t in customers.acknowledged_elapsed),
+            'acknowledgement_wait_seconds':[None if t is None else round(t-customers.arrived_elapsed,6)
+                                            for t in customers.acknowledged_elapsed]}
+    return result
 
 
 class Runtime:
-    def __init__(self, case=None, *, progress=None, traffic=True):
+    def __init__(self, case=None, *, progress=None, traffic=True, customer_delivery=False):
         self.case = case or {'seed':2718}
         self.config = configuration()
         self.command = self.config.get('docker_command',['docker'])
@@ -188,6 +221,7 @@ class Runtime:
         self.stop_event = threading.Event()
         self.thread,self.keepalive,self.audit = None,None,None
         self.initial,self.traffic = [],[]
+        self.customers = None
         self.started = time.monotonic()
         self.provenance = {}
         progress = progress or (lambda _:None)
@@ -262,6 +296,10 @@ class Runtime:
             self.provenance['databases'] = self.must_shell("for port in 5432 5433; do psql -h 127.0.0.1 -p $port -U postgres -d commerce -Atc 'SELECT timeline_id FROM pg_control_checkpoint(); SELECT count(*),min(id),max(id) FROM outbox;'; done")
             self.provenance['connector'] = self.http([{'port':8083,'path':'/connectors/commerce-outbox/status'}])[0]
             self.provenance['carrier_bookings'] = len(self.bookings())
+            if customer_delivery:
+                self.customers = CustomerWorkload(customer_plans(self.case['seed']),round(time.monotonic()-self.started,6))
+                self.must_shell("python3 - <<'PY'\nfrom pathlib import Path\np=Path('/srv/commerce/README.md')\n"
+                                + 'p.write_text(p.read_text()+'+repr(POLICY)+")\nPY")
             progress('Incident ready; only ordinary operational surfaces enter model observations')
             if traffic:
                 self.thread = threading.Thread(target=self.workload,daemon=True)
@@ -350,6 +388,12 @@ class Runtime:
     def workload(self):
         number = 1000
         while not self.stop_event.is_set():
+            if self.customers is not None:
+                if not self.customers.pending():
+                    return
+                self.customer_round()
+                self.stop_event.wait(RETRY_SECONDS)
+                continue
             batch = {'elapsed':round(time.monotonic()-self.started,6),'commands':[]}
             try:
                 batch['commands'] = self.submit(commands(number,self.case['seed']))
@@ -359,13 +403,31 @@ class Runtime:
             number += 1
             self.stop_event.wait(12)
 
+    def customer_round(self):
+        batch = {'elapsed':round(time.monotonic()-self.started,6),'commands':[]}
+        try:
+            batch['commands'] = self.submit(self.customers.pending())
+            batch['elapsed'] = round(time.monotonic()-self.started,6)
+            self.customers.record(batch['commands'],batch['elapsed'])
+        except Exception as exc:
+            batch['observer_error'] = type(exc).__name__
+        self.traffic.append(batch)
+
+    def requirements(self,records):
+        orders,releases,errors = obligations(records)
+        if self.customers is not None:
+            required_orders,required_releases = expectations(self.customers.plans)
+            orders.update(required_orders)
+            releases.update(required_releases)
+        return orders,releases,errors
+
     def persistent_bookings(self):
         # Read the independent ledger, not a response the operated host could forge.
         code = "import sqlite3,json; c=sqlite3.connect('file:/data/carrier.sqlite?mode=ro',uri=True); print(json.dumps([{**json.loads(b),'idempotency_key':k,'booking_id':i,'accepted_at':t} for k,b,i,t in c.execute('SELECT key,body,booking_id,accepted_at FROM bookings ORDER BY id')]))"
         return json.loads(self.checked(['exec',self.carrier,'python3','-c',code],limit=4194304))
 
     def observe(self,records):
-        orders,releases,_ = obligations(records)
+        orders,releases,_ = self.requirements(records)
         deadline = time.monotonic()+60
         trials = []
         while True:
@@ -388,6 +450,17 @@ class Runtime:
             self.thread.join(timeout=40)
             if self.thread.is_alive():
                 raise RuntimeError('Customer workload did not stop')
+        if self.customers is not None:
+            deadline = time.monotonic()+HANDOVER_SECONDS
+            while self.customers.pending() and time.monotonic()<deadline:
+                last = self.traffic[-1]['elapsed'] if self.traffic else self.customers.arrived_elapsed-RETRY_SECONDS
+                delay = min(max(0,self.started+last+RETRY_SECONDS-time.monotonic()),
+                            max(0,deadline-time.monotonic()))
+                if delay:
+                    time.sleep(delay)
+                if time.monotonic()>=deadline:
+                    break
+                self.customer_round()
         records = list(self.initial)+[x for batch in self.traffic for x in batch['commands']]
         phases = []
         restart = None
@@ -416,6 +489,8 @@ class Runtime:
                       'traffic':copy.deepcopy(self.traffic),'phases':phases,'retry_probes':retries,
                       'image':self.image,'components':self.config['components'],
                       'initial_provenance':self.provenance,'restart':restart}
+        if self.customers is not None:
+            self.audit['customer_workload'] = self.customers.evidence()
         return self.audit
 
     def call(self,action):
