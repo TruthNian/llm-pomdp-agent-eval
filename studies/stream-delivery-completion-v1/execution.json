@@ -1,0 +1,19 @@
+{
+  "source_commit": "fb4925d75e3628ca17d7a2161510585c5086e93d",
+  "file_sha256": {
+    "plan.json": "76c1f7f01db05b51ab963fa14a8ddb881590402a5870f845af230c9edf9e8ed9",
+    "README.md": "9b0771a08c75670790a054a06a1e12c0a6ccc5397aed020cd7cf13c93f47e88c",
+    "evidence.py": "0959221fe944e265f750b8d00c998ba62b717cecd08d1d98ed45b471e8cd037a",
+    "evidence.json.gz": "bda0aeaf69e2f03b36137211886cb0a10822d7d7df80ecd29e4e8ed0ff3af669",
+    "trajectories.html.gz": "627129cc4de472de9b7432fb5fa9f257bb429e6ec9dd3a52a5263df668807254",
+    "model-result.json": "e761e0d6b98aefe53a696a004370d88d000d3d073dd798a91e1df75579fdfbdf",
+    "model-result.md": "ba08544159d99dc4822a955971910d50054094e44cf15b49c8a4c10cb76e69f6",
+    "../stream-delivery-v2/evidence.py": "90fc4190a06a1c05a666e50f845f5409d224928ea34e917705ee01bbe2608b0b",
+    "../stream-delivery-v2/execution.json": "3361c10d1a1cbbc1d08a5c9f763b12eee0c2ec2fbadb5c2d45794b4829b929d8",
+    "../stream-delivery-http-retry-v1/execution.json": "30d3a06e3cf6956350f72ab692c8846f476a911e4f90fd752c06938c58889d89",
+    "../stream-delivery-transport-retry-v1/execution.json": "4941470c98b98d07b264a81ee5aaf285374079c56a30efcd603dfcd2775b345d",
+    "protocol-diagnostics.json": "f9f09647dbd9d49db3566772306ef4fdba7d6c4a4fa2523934d9f3165b8e1509",
+    "../stream-recovery-continuous-v1/verify.py": "55521629579f0f4ab7667cba79fcba57af2fd35623521c1eb96cb71fc3bda030",
+    "../stream-recovery-v1/verify.py": "21e9f217ead93ed577b39d989404f7073aba492dcbef79b5580abecbe78bed3d"
+  }
+}

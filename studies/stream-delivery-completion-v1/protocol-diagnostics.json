@@ -1,0 +1,71 @@
+{
+  "scope": "Two independent non-scored two-turn diagnostics. Tool results were synthetic; no incident work executed. Neither reproduced the previous unknown event. These tokens are separate from the incident result.",
+  "probes": [
+    {
+      "framework_version": "2.17.2",
+      "model_io_sha256": "dc9dcb7f6f6a7468172c194c896d4beb511348d2842fccdf6c7c94355134ae14",
+      "report": {
+        "scope": "Non-scored two-turn native protocol diagnostic, not an incident model result.",
+        "model": "gpt-6-astra",
+        "reasoning_effort": "max",
+        "actions": [
+          "exec",
+          "finish"
+        ],
+        "outcome": "finished",
+        "event_counts": {
+          "response.created": 2,
+          "response.in_progress": 2,
+          "response.output_item.added": 2,
+          "response.function_call_arguments.delta": 8,
+          "response.function_call_arguments.done": 2,
+          "response.output_item.done": 2,
+          "response.completed": 2
+        },
+        "usage": {
+          "requests": 2,
+          "requests_with_usage": 2,
+          "input_tokens": 462,
+          "output_tokens": 32,
+          "reasoning_tokens": 0,
+          "requests_with_reasoning_usage": 2
+        },
+        "elapsed_seconds": 7.300281,
+        "settings_and_auth_bytes_unchanged": true
+      }
+    },
+    {
+      "framework_version": "2.17.3",
+      "model_io_sha256": "eed6565bd4733c44f540e888dc9aa55747b774d7e4c6512d6b2320920dff4414",
+      "report": {
+        "scope": "Non-scored two-turn native protocol diagnostic, not an incident model result.",
+        "model": "gpt-6-astra",
+        "reasoning_effort": "max",
+        "actions": [
+          "exec",
+          "finish"
+        ],
+        "outcome": "finished",
+        "event_counts": {
+          "response.created": 2,
+          "response.in_progress": 2,
+          "response.output_item.added": 2,
+          "response.function_call_arguments.delta": 8,
+          "response.function_call_arguments.done": 2,
+          "response.output_item.done": 2,
+          "response.completed": 2
+        },
+        "usage": {
+          "requests": 2,
+          "requests_with_usage": 2,
+          "input_tokens": 462,
+          "output_tokens": 32,
+          "reasoning_tokens": 0,
+          "requests_with_reasoning_usage": 2
+        },
+        "elapsed_seconds": 6.343328,
+        "settings_and_auth_bytes_unchanged": true
+      }
+    }
+  ]
+}

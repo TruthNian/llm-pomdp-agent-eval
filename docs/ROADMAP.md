@@ -18,15 +18,18 @@ The [real controls](../studies/stream-delivery-v2/README.md) passed full recover
 exposed 18 duplicate bookings from blind replay. Three separate Astra max attempts
 are retained. The [third](../studies/stream-delivery-transport-retry-v1/README.md)
 restored all 12 customer intents and business state across restart but lacked
-formal handover after an event-parser interruption. 2.17.3 separates non-action
-stream metadata from executable calls. Its small native protocol checks passed;
-they do not replace the interrupted incident result. Complete the fresh frozen
-integration before claiming successful formal delivery under this adapter.
+formal handover after an event-parser interruption. The separately frozen
+[2.17.3 integration](../studies/stream-delivery-completion-v1/README.md) completed
+formal handover and business acceptance: 12/12 intents, 84 correct orders and 60
+correct dispatches after restart, with 656,034 reported tokens across 17/17 requests.
+Actual expense remains unknown. All four outcomes remain independent evidence.
 
-The immediate path is: complete the existing incident loop, verify actual consequences
-with a feasible recovery and an unsafe control, then run a full strong-model test.
-Keep its result whether it passes or fails. Examine the actual decisions and remaining
-discrimination before choosing further work; do not automatically discard every solved task.
+The incident loop, consequence controls and full strong-model integration are complete.
+Keep this incident as a business-recovery regression anchor. Next, select one real
+recovery decision not yet tested by this case, verify that its mechanism produces
+distinct business consequences, then screen difficulty with complete strong-model
+trajectories. Examine observed decisions and discrimination before extending it;
+do not automatically discard every solved task.
 Additional statistics, provider adapters and exact billing are not prerequisites to the test.
 
 The frontier-candidate path was paused for [2026-09-23 stage review](ACCEPTANCE_2026-09-23.md).

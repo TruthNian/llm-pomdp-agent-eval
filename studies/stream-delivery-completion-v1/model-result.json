@@ -1,0 +1,90 @@
+{
+  "benchmark_version": "stream-recovery/2",
+  "outcome": "delivered",
+  "termination": "finished",
+  "attempt_type": "model",
+  "agent": {
+    "name": "gpt-6-astra-max-metadata-compatible",
+    "kind": "responses_session",
+    "model": "gpt-6-astra",
+    "options": {
+      "reasoning_effort": "max"
+    },
+    "max_http_retries": 2
+  },
+  "business_phases": [
+    {
+      "accepted_orders": 78,
+      "accepted_releases": 56,
+      "order_errors": 0,
+      "receipt_errors": 0,
+      "new_command_errors": 0,
+      "missing_bookings": 0,
+      "duplicate_bookings": 0,
+      "unexpected_bookings": 0,
+      "changed_bookings": 0,
+      "required_orders": 78,
+      "required_releases": 56,
+      "customer_outcomes": {
+        "required_intents": 12,
+        "fulfilled_intents": 12,
+        "unfulfilled_intents": 0
+      }
+    },
+    {
+      "accepted_orders": 84,
+      "accepted_releases": 60,
+      "order_errors": 0,
+      "receipt_errors": 0,
+      "new_command_errors": 0,
+      "missing_bookings": 0,
+      "duplicate_bookings": 0,
+      "unexpected_bookings": 0,
+      "changed_bookings": 0,
+      "required_orders": 84,
+      "required_releases": 60,
+      "customer_outcomes": {
+        "required_intents": 12,
+        "fulfilled_intents": 12,
+        "unfulfilled_intents": 0
+      }
+    }
+  ],
+  "customers": {
+    "required_intents": 12,
+    "fulfilled_intents": 12,
+    "unfulfilled_intents": 0,
+    "acknowledged_intents": 12,
+    "acknowledgement_wait_seconds": [
+      15.769945,
+      15.769945,
+      28.03866,
+      15.769945,
+      15.769945,
+      15.769945,
+      28.03866,
+      15.769945,
+      15.769945,
+      15.769945,
+      28.03866,
+      15.769945
+    ]
+  },
+  "resources": {
+    "reported_input_tokens": 641104,
+    "reported_output_tokens": 14930,
+    "reported_total_tokens": 656034,
+    "usage_reports": 17,
+    "requests": 17,
+    "usage_completeness": "complete",
+    "reported_cached_input_tokens": null,
+    "total_elapsed_seconds": 689.879012,
+    "verified_cost": null,
+    "cost_status": "not_verified"
+  },
+  "diagnostics": {
+    "traffic_write_failures": 0,
+    "error": null
+  },
+  "scope": "Observed delivery on one constructed incident and declared agent configuration; not a population capability estimate."
+}

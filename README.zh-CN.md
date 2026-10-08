@@ -18,7 +18,7 @@ python -m pomdp_bench validate artifacts/incident-test-001
 
 这是构造的事故环境。高难度由完整模型行为检验，强模型通过的结果仍然保留；新版验收本身不证明前沿难度或广泛现实预测能力。
 
-[首批新版证据](studies/stream-delivery-v2/README.md)保留两条真实操作对照和 Astra 的 HTTP 502 中断，[随后提前断流的运行](studies/stream-delivery-http-retry-v1/README.md)也单独保留。[第三条轨迹](studies/stream-delivery-transport-retry-v1/README.md)恢复了全部 12 项客户需求和重启后的业务状态，但最终请求被事件解析拒绝，正式成绩仍是接入中断。2.17.3 支持不承载动作的新增流式元数据，保留严格的完整工具调用检查与事件审计，原运行及成绩不变。
+[最新完整验收](studies/stream-delivery-completion-v1/README.md)：GPT-6 Astra `max` 主动交接，12/12 客户需求、84 个订单及 60 笔发货通过重启后的独立检查。全部 17 次请求报告合计 656,034 token，费用未知。此前三次接入中断及真实操作对照分别保留。2.17.3 使用有限传输恢复、非动作元数据兼容与完整工具调用检查；本次成功不证明前沿高难度，也不改写此前成绩。
 
 [既有模型对比](docs/MODEL_COMPARISON_2026-09-24.zh-CN.md)与全部版本化证据保留。以下历史任务用于回归与研究，不是默认单次测试的前置流程。
 

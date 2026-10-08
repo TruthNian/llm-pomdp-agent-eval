@@ -19,7 +19,7 @@ The run writes `result.md` and `result.json`, plus the complete trace and indepe
 
 This is a constructed operational benchmark. Difficulty must be measured from complete model behavior; a strong-model success remains useful evidence. The new acceptance is not a claim of frontier difficulty or broad production validity.
 
-The [first version-2 evidence](studies/stream-delivery-v2/README.md) includes two real operation controls and the retained Astra HTTP-502 interruption. A [separate early-stream interruption](studies/stream-delivery-http-retry-v1/README.md) is also retained. The [third trajectory](studies/stream-delivery-transport-retry-v1/README.md) fulfilled all 12 customer intents and restored business state across restart, but its final request was rejected by the event parser; the formal result remains interrupted. Version 2.17.3 accepts new non-action stream metadata while retaining complete-call checks and event audits. Old runs and grades stay intact.
+The [latest complete acceptance](studies/stream-delivery-completion-v1/README.md) passed: GPT-6 Astra `max` handed over all 12 customer intents, with 84 orders and 60 dispatches correct after restart. All 17 requests reported usage, totaling 656,034 tokens; expense is unknown. Three preceding interruptions and real operation controls remain separately retained. Version 2.17.3 provides bounded transport recovery, non-action metadata compatibility and complete-call checks. This success does not establish frontier difficulty or replace any previous grade.
 
 [Previous model comparisons](docs/MODEL_COMPARISON_2026-09-24.zh-CN.md) and all versioned studies remain available. The historical families below are regression and research controls, outside the default single-test path.
 
