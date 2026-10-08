@@ -2,6 +2,14 @@
 
 Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 results are governed by their original specification.
 
+**Prospective measurement decisions (2026-10-08):** the user-approved
+[review record](MEASUREMENT_REVIEW_2026-10-08.zh-CN.md) defines the direction for the next
+incident version: action budgets/audit, customer outcomes and waiting, reported token
+coverage and attributable costs. HTTP failure ratios do not directly score capability.
+This is a specification review, not an implemented protocol or grader change.
+Development remains paused; customer retry, deadlines and workload/observation windows
+are undecided. Frozen traces retain the versioned rules below.
+
 The accepted [incident-takeover design](INCIDENT_TAKEOVER.md) is implemented by
 `incident-takeover/1` in framework 2.13, with a separate [runtime contract](POSTGRES_TAKEOVER.md).
 It has sparse handover, a generic shell and independent final grading.

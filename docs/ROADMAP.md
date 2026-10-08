@@ -3,15 +3,23 @@
 Evaluate autonomous investigation, action, observation, recovery and useful delivery under partial observability.
 Calibrate difficulty with useful tools available and complete strong-model interactions.
 
+**2026-10-08 review status:** development remains paused. The user chose specification
+updates and continued metric review. The [measurement decisions](MEASUREMENT_REVIEW_2026-10-08.zh-CN.md)
+keep action counts as internal budgets/audit, separate reported tokens and attributable costs,
+and require prospective incident grading to follow customer needs to business outcomes and waiting.
+HTTP failure ratios are diagnostic records, not a capability score. The old posthoc rankings
+are retired; all frozen grades retain their original rules. Customer retry, completion deadlines
+and common workload/observation windows remain review items, not authorization to implement.
+
 The frontier-candidate path was paused for [2026-09-23 stage review](ACCEPTANCE_2026-09-23.md).
 The user's later instruction resumed the narrower GLM integration investigation: the
 [native Codex runtime pilot](../studies/stream-recovery-codex-native-glm-v1/README.md)
 completed a 37-action interaction and failed the independent business grade. It neither
 replaces the earlier failed GLM adapter attempts nor qualifies this candidate as high difficulty.
 The later [frozen GLM `max` attempt](../studies/stream-recovery-codex-native-glm-max-v1/README.md)
-passed accepted-work grading in 44 actions but caused 32 live customer write failures during
-repair. Preserve both scores. A future version must make availability and recovery of refused
-requests explicit before claiming full practical delivery; do not retrofit that rule to either trace.
+passed accepted-work grading in 44 actions with 32 live customer write failures recorded during
+repair. Preserve both scores. A future version must track original customer needs, eventual
+outcomes and waiting before claiming full practical delivery; do not retrofit that rule to either trace.
 No new frontier scenario has been selected in that integration work.
 The continuous Sol screen delivered in 31/200 actions. Retain this candidate as a regression
 anchor; high difficulty remains unmet. The implementation path below records the work completed

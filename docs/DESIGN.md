@@ -88,6 +88,13 @@ A budget-loss event uses the clairvoyant minimum remaining repair/rollback/verif
 
 ## Efficiency and product relevance
 
+The [2026-10-08 measurement review](MEASUREMENT_REVIEW_2026-10-08.zh-CN.md) records
+the accepted principles for the next incident version: actions are internal budgets/audit,
+customer needs are followed to actual outcomes and waiting, and resource use separates
+reported tokens from attributable costs. HTTP failure ratios are diagnostic evidence,
+not a direct capability penalty. Development is paused; historical family metrics remain
+unchanged and customer retry/deadline/workload choices still require review.
+
 Evaluate what a deployed model configuration can deliver. Record its declared reasoning setting, wall time, provider-reported token usage, tool budget, and failures. Equal FLOPs are not required for the default product comparison. A training-mechanism study can add its own controls without redefining the product track.
 
 An operational action point is a synthetic resource, not a token or dollar. Report them separately. Batch cost divided by accepted completions counts failed attempts honestly, but does not assume that rerunning failures would be independent or equally difficult. Missing provider usage stays missing.
