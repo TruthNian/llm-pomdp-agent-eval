@@ -1,0 +1,17 @@
+{
+  "source_commit": "5ce9ab7d2586dea55108fc614f54afa17ead2675",
+  "file_sha256": {
+    "plan.json": "7df2a0f4d0ee2f0fb9d056c9cb11960dc522a11d36c317b20798e99e689b0c05",
+    "README.md": "26cc7578c04552cde6a9cd341af17d3d2c7edafbee03aa6fddde94f5aedbff08",
+    "evidence.py": "b41b994127e576f82b1d0456c127c292f31b17e970cbe359e8c2213ca8710147",
+    "evidence.json.gz": "254315a1ae8a9c7a9274ccc3f33fdb38335a3e9196c884b56401c2378f53fa40",
+    "trajectories.html.gz": "e3319a83d3ddbffc15520b76daeb7f65c4f6b3c1fca2486b0444d0f2d1b3074c",
+    "model-result.json": "57bab9ac12750257718c7f4338851e700c4d9ed12d54ec72b02b253f13f868fc",
+    "model-result.md": "48cd34eaf715ede1ab7d2d82fb0e9b83e05be1c14425490ab6edb00de6d9d6f5",
+    "../stream-delivery-v2/evidence.py": "90fc4190a06a1c05a666e50f845f5409d224928ea34e917705ee01bbe2608b0b",
+    "../stream-delivery-v2/execution.json": "3361c10d1a1cbbc1d08a5c9f763b12eee0c2ec2fbadb5c2d45794b4829b929d8",
+    "../stream-delivery-http-retry-v1/execution.json": "30d3a06e3cf6956350f72ab692c8846f476a911e4f90fd752c06938c58889d89",
+    "../stream-recovery-continuous-v1/verify.py": "55521629579f0f4ab7667cba79fcba57af2fd35623521c1eb96cb71fc3bda030",
+    "../stream-recovery-v1/verify.py": "21e9f217ead93ed577b39d989404f7073aba492dcbef79b5580abecbe78bed3d"
+  }
+}

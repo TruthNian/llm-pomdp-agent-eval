@@ -1,0 +1,90 @@
+{
+  "benchmark_version": "stream-recovery/2",
+  "outcome": "execution_interrupted",
+  "termination": "adapter_error",
+  "attempt_type": "model",
+  "agent": {
+    "name": "gpt-6-astra-max-transport-retry-2",
+    "kind": "responses_session",
+    "model": "gpt-6-astra",
+    "options": {
+      "reasoning_effort": "max"
+    },
+    "max_http_retries": 2
+  },
+  "business_phases": [
+    {
+      "accepted_orders": 78,
+      "accepted_releases": 56,
+      "order_errors": 0,
+      "receipt_errors": 0,
+      "new_command_errors": 0,
+      "missing_bookings": 0,
+      "duplicate_bookings": 0,
+      "unexpected_bookings": 0,
+      "changed_bookings": 0,
+      "required_orders": 78,
+      "required_releases": 56,
+      "customer_outcomes": {
+        "required_intents": 12,
+        "fulfilled_intents": 12,
+        "unfulfilled_intents": 0
+      }
+    },
+    {
+      "accepted_orders": 84,
+      "accepted_releases": 60,
+      "order_errors": 0,
+      "receipt_errors": 0,
+      "new_command_errors": 0,
+      "missing_bookings": 0,
+      "duplicate_bookings": 0,
+      "unexpected_bookings": 0,
+      "changed_bookings": 0,
+      "required_orders": 84,
+      "required_releases": 60,
+      "customer_outcomes": {
+        "required_intents": 12,
+        "fulfilled_intents": 12,
+        "unfulfilled_intents": 0
+      }
+    }
+  ],
+  "customers": {
+    "required_intents": 12,
+    "fulfilled_intents": 12,
+    "unfulfilled_intents": 0,
+    "acknowledged_intents": 12,
+    "acknowledgement_wait_seconds": [
+      14.836541,
+      14.836541,
+      458.06907,
+      14.836541,
+      14.836541,
+      14.836541,
+      458.06907,
+      14.836541,
+      14.836541,
+      14.836541,
+      458.06907,
+      14.836541
+    ]
+  },
+  "resources": {
+    "reported_input_tokens": 656500,
+    "reported_output_tokens": 14736,
+    "reported_total_tokens": 671236,
+    "usage_reports": 17,
+    "requests": 20,
+    "usage_completeness": "partial",
+    "reported_cached_input_tokens": null,
+    "total_elapsed_seconds": 1052.621216,
+    "verified_cost": null,
+    "cost_status": "not_verified"
+  },
+  "diagnostics": {
+    "traffic_write_failures": 105,
+    "error": "Endpoint streamed an undeclared event type"
+  },
+  "scope": "Observed delivery on one constructed incident and declared agent configuration; not a population capability estimate."
+}
