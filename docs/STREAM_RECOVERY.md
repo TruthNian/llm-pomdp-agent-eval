@@ -12,6 +12,8 @@ python -m pomdp_bench validate artifacts/incident-test-001
 The existing isolated image, sparse handover, normal tools, physical rewind,
 backup/WAL, CDC and independent carrier are reused. There is no new execution
 platform or extra fault. Version 1 and every frozen grade below remain replayable.
+The historical `prepare-stream-suite` command still creates version 1; `benchmark`
+uses the separately declared version-2 suite.
 
 The customer workload is a fixed cohort of twelve requested order workflows,
 including drafts, amendments, cancellations and releases. All intents arrive when
@@ -35,8 +37,9 @@ post-handover work retain their independent checks.
 
 The result separates requested, acknowledged and fulfilled intents. Counts of
 acknowledged orders are not relabeled as requested orders. Acknowledgement waits
-are measured from cohort arrival to client receipt observation; they are not
-dispatch latency. HTTP errors and action budgets remain diagnostics. Token totals
+are measured from cohort arrival until the observer receives the complete round's
+receipt batch. They are bounds on observed confirmation time, not individual
+request latency or dispatch latency. HTTP errors and action budgets remain diagnostics. Token totals
 retain usage-report coverage; cached input and actual expense remain unknown when
 not available. `result.md` identifies artifact controls separately from model runs.
 

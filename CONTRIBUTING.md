@@ -2,6 +2,12 @@
 
 Contributions should strengthen the validity and longevity of the evaluation: new decision structures, observable mechanism tests, reliable scoring, reproducible collection, and external-task validation. Read [the design](docs/DESIGN.md), [specification](docs/SPECIFICATION.md), and [acceptance gates](docs/ROADMAP.md) first.
 
+The current path is one complete incident through `pomdp-bench benchmark`, using an
+existing model adapter and the [stream runtime](docs/STREAM_RECOVERY.md#run-locally).
+Improve the agent's decisions or the validity of business acceptance before adding
+platform components. A large comparison matrix or exact billing integration is not
+required to complete this loop. Keep the observed result and declared configuration.
+
 ## Development checks
 
 The project uses the Python standard library. Before opening a pull request, run:
@@ -12,6 +18,7 @@ python -m unittest discover -s tests -v
 python tools/verify_release.py
 python tools/verify_study.py
 python tools/check_docs.py
+python studies/stream-delivery-v2/evidence.py verify
 python -m pomdp_bench demo --out artifacts/contribution-check --count 4
 python -m pomdp_bench validate artifacts/contribution-check
 python -m pomdp_bench.discovery_controls --out artifacts/discovery-check.json

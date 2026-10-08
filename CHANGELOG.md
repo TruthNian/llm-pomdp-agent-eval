@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.17.0
+
+- Add `benchmark`: one configured agent, one complete incident and one readable business/resource result through the existing collector and adapters.
+- Version `stream-recovery/2` separately. Use twelve fixed customer workflows, ordinary retries of identical requests and independent grading of requested work, including unacknowledged commands. Keep the existing image and incident.
+- Distinguish actual fulfilment, acknowledgement waits, HTTP diagnostics, reported token coverage and unknown expense. Separate execution interruptions from completed business failures; do not substitute action counts or HTTP ratios for capability.
+- Retain every version-1 grade and study. Qualify complete recovery and dangerous replay separately from the declared strong-model attempt; this change does not establish frontier difficulty.
+
 ## 2.16.0
 
 - Publish the complete continuous Sol max screen: delivery in 31/200 actions, all 111 accepted orders and 93 required dispatches correct after restart; retain 128 refused customer writes. Reject the candidate as high-difficulty evidence. Preserve all earlier failures and pause further development for stage review.

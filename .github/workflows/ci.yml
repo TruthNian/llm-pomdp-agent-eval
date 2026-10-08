@@ -64,6 +64,8 @@ jobs:
         run: python -m pomdp_bench validate artifacts/ci-demo
       - name: Verify documentation links
         run: python tools/check_docs.py
+      - name: Regrade complete customer-delivery evidence without Docker or model calls
+        run: python studies/stream-delivery-v2/evidence.py verify
       - name: Regrade published real-repair behavior without code execution
         run: python studies/repository-repair-v1/verify.py
       - name: Regrade published portfolio and model artifacts
