@@ -1,0 +1,16 @@
+{
+  "source_commit": "aa09ad061f3257cb2c83d1e12a61f04e1bbee0f2",
+  "file_sha256": {
+    "plan.json": "b893a28844993a74d9c6d25c3706adb022775b5c56e9f9c217a7d898574fc1bf",
+    "README.md": "62a01027165024ed4179ddb4aa46d6478fb560a692387d38aaf258fe4729926d",
+    "evidence.py": "22916a7482750c92d88c21723c7cdc3a2ca91b71756d5f4ca17b85376aa93fab",
+    "evidence.json.gz": "dbca0aec7e17428d593bec772ce81b6153978c0f66e4f779f1e85de0e70e3cc4",
+    "trajectories.html.gz": "c895dddaca32864503c88c4a9582e2081e72b8332dc3a76594cb277dcd8158ab",
+    "model-result.json": "fa950f7318a7a7f5a1f9ec186287fce468d62f2a2eb5689305c4631e5f6d3cdd",
+    "model-result.md": "48c035ac1ba1b1da019271e79078e8b846b3a2a34c77b65954939374f632bcf3",
+    "../stream-delivery-v2/evidence.py": "90fc4190a06a1c05a666e50f845f5409d224928ea34e917705ee01bbe2608b0b",
+    "../stream-delivery-v2/execution.json": "3361c10d1a1cbbc1d08a5c9f763b12eee0c2ec2fbadb5c2d45794b4829b929d8",
+    "../stream-recovery-continuous-v1/verify.py": "55521629579f0f4ab7667cba79fcba57af2fd35623521c1eb96cb71fc3bda030",
+    "../stream-recovery-v1/verify.py": "21e9f217ead93ed577b39d989404f7073aba492dcbef79b5580abecbe78bed3d"
+  }
+}
