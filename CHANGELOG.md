@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.17.1
+
+- Add an explicit bounded `max_http_retries` option to existing HTTP agents after the retained Astra attempt encountered upstream HTTP 502. Retry only 500/502/503/504 with the same serialized input; preserve native dialogue and execute each valid action once.
+- Retain every network attempt and missing usage; respect per-attempt timeouts, the episode wall limit and bounded `Retry-After`. Old configurations still make no automatic retries. The incident, image and business acceptance are unchanged.
+
 ## 2.17.0
 
 - Add `benchmark`: one configured agent, one complete incident and one readable business/resource result through the existing collector and adapters.

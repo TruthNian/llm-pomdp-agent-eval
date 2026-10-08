@@ -209,3 +209,24 @@ the accepted-work business grade in 44 actions, while 32 live customer writes fa
 during maintenance. The two GLM runs are not a paired effort comparison. The evaluator stops at the
 terminal `finish` call, so its observed usage need not include a later final Codex
 text message.
+
+## Explicit recovery of HTTP server errors
+
+Framework 2.17.1 adds `max_http_retries` (0, 1 or 2) for existing HTTP adapters.
+The default remains zero for old configurations; the single-test example declares
+two retries. This is ordinary transport recovery, following the bounded retry
+approach in the [official SDK documentation](https://developers.openai.com/api/reference/python).
+
+Only HTTP 500/502/503/504 are retried. The exact serialized input is reused;
+native continuation state is appended once, and no environment action executes
+until a complete valid call is received. Authentication/quota, timeout, incomplete
+stream, ambiguous call and model-format errors are not retried. Each network
+attempt is bounded by `timeout_seconds` and the remaining episode wall time.
+Backoff is one then two seconds, respecting `Retry-After`; a requested delay above
+sixty seconds or beyond the remaining wall time stops the request instead.
+
+The logical tool audit contains `wire_attempts`, with request hashes and outcomes.
+Usage request counts include these attempts; absent usage stays unreported, so
+retrying a request cannot fabricate complete token coverage or a zero-cost failure.
+Services and customers keep running during retries. Already terminated episodes
+remain sealed; a later follow-up has its own plan and trace.

@@ -19,6 +19,8 @@ The run writes `result.md` and `result.json`, plus the complete trace and indepe
 
 This is a constructed operational benchmark. Difficulty must be measured from complete model behavior; a strong-model success remains useful evidence. The new acceptance is not a claim of frontier difficulty or broad production validity.
 
+The [first version-2 evidence](studies/stream-delivery-v2/README.md) includes two real operation controls and the retained Astra HTTP-502 interruption. Version 2.17.1 adds explicit bounded HTTP retries to the existing adapter; old runs and grades stay intact.
+
 [Previous model comparisons](docs/MODEL_COMPARISON_2026-09-24.zh-CN.md) and all versioned studies remain available. The historical families below are regression and research controls, outside the default single-test path.
 
 ## Architecture

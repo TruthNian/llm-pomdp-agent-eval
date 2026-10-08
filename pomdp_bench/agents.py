@@ -27,7 +27,7 @@ POLICIES = (*BUILTINS, "reserve_probe", *COVER_POLICIES, *ASSISTED_POLICIES, INC
 
 def validate_config(config: dict) -> None:
     allowed = {"name", "kind", "model", "endpoint_env", "api_key_env", "options",
-               "timeout_seconds", "headers_env", "max_response_bytes", "actions"}
+               "timeout_seconds", "headers_env", "max_response_bytes", "actions", "max_http_retries"}
     if not isinstance(config, dict) or set(config) - allowed:
         raise ValueError("Unknown agent configuration fields")
     if not isinstance(config.get("name"), str) or not config["name"].strip():
@@ -40,6 +40,10 @@ def validate_config(config: dict) -> None:
             raise ValueError("Fixed-action artifact controls require 1-100 explicit actions")
     elif "actions" in config:
         raise ValueError("Only fixed-action controls accept an action sequence")
+    if 'max_http_retries' in config:
+        if (config['kind'] not in ('chat','responses','responses_tools','responses_session')
+                or type(config['max_http_retries']) is not int or not 0<=config['max_http_retries']<=2):
+            raise ValueError('max_http_retries must be 0, 1 or 2 for an HTTP agent')
     if "max_response_bytes" in config:
         if config["kind"] not in ("chat", "responses", "responses_tools", "responses_session"):
             raise ValueError("max_response_bytes applies only to HTTP agents")
@@ -69,6 +73,8 @@ def validate_config(config: dict) -> None:
 
 
 def validate_agent_version(config, version):
+    if 'max_http_retries' in config and not version_at_least(version,'2.17.1'):
+        raise ValueError('Explicit HTTP retries require framework 2.17.1')
     if config["kind"] == "responses_session" and not version_at_least(version, "2.16.0"):
         raise ValueError("Continuous native sessions require framework 2.16")
     if config["kind"] == "responses_tools" and not version_at_least(version, "2.14.0"):

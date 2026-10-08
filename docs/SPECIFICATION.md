@@ -12,6 +12,11 @@ and one-command `benchmark` entry, reusing the existing collector and runtime.
 Version 1 and all frozen traces retain their recorded rules. No new fault or
 frontier-difficulty claim accompanies this measurement change.
 
+2.17.1 adds an explicitly configured bounded retry of HTTP server errors, with
+identical inputs, network-attempt audits and honest usage coverage. The
+[transport contract](MODEL_ADAPTERS.md#explicit-recovery-of-http-server-errors)
+leaves old configurations at zero retries. No incident or grading semantics change.
+
 The accepted [incident-takeover design](INCIDENT_TAKEOVER.md) is implemented by
 `incident-takeover/1` in framework 2.13, with a separate [runtime contract](POSTGRES_TAKEOVER.md).
 It has sparse handover, a generic shell and independent final grading.

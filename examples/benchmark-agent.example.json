@@ -5,6 +5,7 @@
   "endpoint_env": "BENCH_RESPONSES_ENDPOINT",
   "api_key_env": "BENCH_API_KEY",
   "timeout_seconds": 600,
+  "max_http_retries": 2,
   "max_response_bytes": 16000000,
   "options": {}
 }

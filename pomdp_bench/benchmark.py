@@ -26,7 +26,7 @@ def result_for(trace):
     agent = trace['agent']
     return {'benchmark_version':DELIVERY_VERSION, 'outcome':outcome, 'termination':termination,
             'attempt_type':'artifact_control' if agent['kind']=='actions' else 'model',
-            'agent':{k:agent[k] for k in ('name','kind','model','options') if k in agent},
+            'agent':{k:agent[k] for k in ('name','kind','model','options','max_http_retries') if k in agent},
             'business_phases':grade.get('phases',[]), 'customers':grade.get('customers'),
             'resources':{'reported_input_tokens':input_tokens, 'reported_output_tokens':output_tokens,
                          'reported_total_tokens':None if input_tokens is None or output_tokens is None else input_tokens+output_tokens,

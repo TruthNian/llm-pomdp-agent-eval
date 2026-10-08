@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import copy
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 import hashlib
 import http.client
 import json
@@ -29,9 +31,27 @@ NATIVE_TOOLS = [
 class AdapterError(RuntimeError):
     """Only fixed local descriptions and numeric HTTP status, never remote bodies."""
 
-    def __init__(self, message, code="adapter_error"):
+    def __init__(self, message, code="adapter_error", *, http_status=None, retry_after=None):
         super().__init__(message)
         self.code = code
+        self.http_status = http_status
+        self.retry_after = retry_after
+
+
+def retry_after_seconds(value):
+    if value is None:
+        return None
+    try:
+        seconds = float(value)
+    except (TypeError,ValueError):
+        try:
+            stamp = parsedate_to_datetime(value)
+            if stamp.tzinfo is None:
+                stamp = stamp.replace(tzinfo=timezone.utc)
+            seconds = (stamp-datetime.now(timezone.utc)).total_seconds()
+        except (TypeError,ValueError,OverflowError):
+            return None
+    return max(0,seconds) if math.isfinite(seconds) else None
 
 
 class InvalidActionError(AdapterError):
@@ -336,7 +356,9 @@ def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=Fals
         sock.settimeout(remaining())
         response = connection.getresponse()
         if not 200 <= response.status < 300:
-            raise AdapterError(f"Endpoint HTTP status {response.status}", "http_error")
+            raise AdapterError(f"Endpoint HTTP status {response.status}", "http_error",
+                               http_status=response.status,
+                               retry_after=retry_after_seconds(response.getheader('Retry-After')))
         media = response.getheader("Content-Type", "").split(";", 1)[0].strip().lower()
         # A missing media header uses the format we explicitly requested.
         # Never sniff arbitrary body text or treat a delta as an action.
@@ -428,14 +450,38 @@ class HttpAgent:
         if self.session:
             from .native_session import fingerprint, projected_payload
             audit['input_projection_sha256'] = fingerprint(projected_payload(payload))
-        self.usage["requests"] += 1
         try:
             extra = {'functions':('exec','finish')} if self.config['kind'] in ('responses_tools','responses_session') else {}
             if self.session:
                 extra['preserve_reasoning'] = True
-            data = exchange(self.endpoint, self.key, body, limit, self.headers,
-                            streaming=self.config["kind"] in ('responses','responses_tools','responses_session'),
-                            max_response_bytes=self.max_response_bytes, **extra)
+            retries = self.config.get('max_http_retries',0)
+            if retries:
+                audit['wire_attempts'] = []
+            deadline = time.monotonic()+timeout
+            for attempt in range(retries+1):
+                wire_limit = min(limit,max(0,deadline-time.monotonic()))
+                if wire_limit<=0:
+                    raise AdapterError('Endpoint request deadline exceeded','timeout')
+                wire = {'request_sha256':audit['request_sha256'],'timeout_seconds':wire_limit,'outcome':'in_flight'}
+                if retries:
+                    audit['wire_attempts'].append(wire)
+                self.usage['requests'] += 1
+                try:
+                    data = exchange(self.endpoint,self.key,body,wire_limit,self.headers,
+                                    streaming=self.config['kind'] in ('responses','responses_tools','responses_session'),
+                                    max_response_bytes=self.max_response_bytes,**extra)
+                    wire['outcome'] = 'response_received'
+                    break
+                except AdapterError as exc:
+                    wire['outcome'] = exc.code
+                    if exc.http_status is not None:
+                        wire['http_status'] = exc.http_status
+                    delay = max(2**attempt,exc.retry_after or 0)
+                    if (exc.http_status not in (500,502,503,504) or attempt==retries or delay>60
+                            or deadline-time.monotonic()<=delay):
+                        raise
+                    wire['retry_delay_seconds'] = delay
+                    time.sleep(delay)
             self.add_usage(data)
             # Record label agreement even when completed action text is invalid.
             audit["reported_model_matches_request"] = data.get("model") == self.config["model"] if isinstance(data, dict) and data.get("model") else None
