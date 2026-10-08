@@ -14,11 +14,11 @@ python -m pomdp_bench validate artifacts/incident-test-001
 
 在示例中填写模型 ID 和已有接入的环境变量名称；凭据从环境读取。`runtime.json` 使用 [stream 运行配置](docs/STREAM_RECOVERY.md#run-locally)，可复用已有 stream 镜像。[新版业务契约](docs/STREAM_RECOVERY.md#customer-delivery-version-2)说明客户策略与版本迁移。
 
-输出 `result.md`、`result.json`、完整轨迹和独立审计。先判断业务是否交付及实际错误，再看分项 token、耗时和可核对费用。HTTP 失败仅作诊断，动作仅作内部预算；漏报与未知费用如实标明。接入中断与完成后业务失败分开记录，失败尝试不会被静默重试或覆盖。
+输出 `result.md`、`result.json`、完整轨迹和独立审计。先判断业务是否交付及实际错误，再看分项 token、耗时和可核对费用。后台写请求失败次数仅作诊断，动作仅作内部预算；漏报与未知费用如实标明。接入中断与完成后业务失败分开记录，失败尝试不会被静默重试或覆盖。
 
 这是构造的事故环境。高难度由完整模型行为检验，强模型通过的结果仍然保留；新版验收本身不证明前沿难度或广泛现实预测能力。
 
-[首批新版证据](studies/stream-delivery-v2/README.md)保留两条真实操作对照和 Astra 的 HTTP 502 中断，[随后提前断流的运行](studies/stream-delivery-http-retry-v1/README.md)也单独保留。2.17.2 在既有适配器中恢复明确、有限的传输故障，原运行及成绩不变。
+[首批新版证据](studies/stream-delivery-v2/README.md)保留两条真实操作对照和 Astra 的 HTTP 502 中断，[随后提前断流的运行](studies/stream-delivery-http-retry-v1/README.md)也单独保留。[第三条轨迹](studies/stream-delivery-transport-retry-v1/README.md)恢复了全部 12 项客户需求和重启后的业务状态，但最终请求被事件解析拒绝，正式成绩仍是接入中断。2.17.3 支持不承载动作的新增流式元数据，保留严格的完整工具调用检查与事件审计，原运行及成绩不变。
 
 [既有模型对比](docs/MODEL_COMPARISON_2026-09-24.zh-CN.md)与全部版本化证据保留。以下历史任务用于回归与研究，不是默认单次测试的前置流程。
 

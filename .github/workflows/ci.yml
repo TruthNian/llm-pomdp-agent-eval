@@ -66,6 +66,10 @@ jobs:
         run: python tools/check_docs.py
       - name: Regrade complete customer-delivery evidence without Docker or model calls
         run: python studies/stream-delivery-v2/evidence.py verify
+      - name: Verify separately retained delivery transport follow-ups
+        run: |
+          python studies/stream-delivery-http-retry-v1/evidence.py verify
+          python studies/stream-delivery-transport-retry-v1/evidence.py verify
       - name: Regrade published real-repair behavior without code execution
         run: python studies/repository-repair-v1/verify.py
       - name: Regrade published portfolio and model artifacts

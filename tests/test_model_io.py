@@ -179,7 +179,7 @@ class EnvelopeTests(unittest.TestCase):
     def test_stream_rejects_tool_events_and_error_after_valid_text(self):
         for event in ({"type": "response.output_item.added", "item": {"type": "image_generation_call"}},
                       {"type": "response.function_call_arguments.delta", "delta": "secret"},
-                      {"type": "future.provider.event"}, {"type": "error", "message": "secret"}):
+                      {"type": "future.provider_tool.event"}, {"type": "error", "message": "secret"}):
             with self.assertRaises(AdapterError) as result:
                 parser = ResponseStream()
                 parser.feed(sse({"type": "response.output_text.delta", "delta": '{"command":"finish"}'}))
@@ -218,7 +218,7 @@ class EnvelopeTests(unittest.TestCase):
     def test_content_parts_must_belong_to_the_declared_item_type(self):
         for item_id, index, part in (("missing", 0, "reasoning_text"), ("rs_1", 1, "reasoning_text"),
                                      ("rs_1", 0, "output_text"), ("msg_1", 1, "reasoning_text"),
-                                     ("msg_1", 1, "refusal"), ("msg_1", 1, "function_call")):
+                                     ("rs_1", 0, "refusal"), ("msg_1", 1, "function_call")):
             parser = ResponseStream()
             for ident, item_type, output_index in (("rs_1", "reasoning", 0), ("msg_1", "message", 1)):
                 parser.feed(sse({"type": "response.output_item.added", "output_index": output_index,

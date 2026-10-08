@@ -9,6 +9,7 @@ import http.client
 import json
 import math
 import os
+import re
 import socket
 import threading
 import time
@@ -196,6 +197,8 @@ class ResponseStream:
         self.item_names = {}
         self.function_arguments = {}
         self.preserve_reasoning = preserve_reasoning
+        self.ignored_event_types = {}
+        self.last_event_type = None
 
     def check_item(self, item):
         if item.get('type') in ('message','reasoning'):
@@ -232,21 +235,40 @@ class ResponseStream:
         if not isinstance(event, dict):
             raise AdapterError("Invalid endpoint stream event", "protocol_error")
         kind = event.get("type", "")
-        if kind in ("error", "response.failed", "response.incomplete", "response.cancelled"):
+        if not isinstance(kind,str) or len(kind)>96 or not re.fullmatch(r'[a-zA-Z0-9_.-]+',kind):
+            self.last_event_type = '<invalid>'
+            raise AdapterError('Endpoint streamed an invalid event type','protocol_error')
+        self.last_event_type = kind
+        if self.result is not None:
+            raise AdapterError("Endpoint streamed events after completion", "protocol_error")
+        if (kind in ("error", "response.failed", "response.incomplete", "response.cancelled")
+                or kind.endswith(('.error','.failed','.incomplete','.cancelled')) or event.get('error')
+                or event.get('status') in ('failed','incomplete','cancelled')
+                or event.get('response',{}).get('status') in ('failed','incomplete','cancelled')):
             raise AdapterError("Endpoint stream failed or was incomplete", "incomplete_response")
+        for item in event.get("response", {}).get("output", []):
+            self.check_item(item)
         allowed = {"response.created", "response.in_progress", "response.queued", "response.completed",
                    "response.output_item.added", "response.output_item.done",
                    "response.content_part.added", "response.content_part.done",
                    "response.output_text.delta", "response.output_text.done", "response.output_text.annotation.added",
+                   "response.refusal.delta", "response.refusal.done",
                    "response.reasoning_summary_part.added", "response.reasoning_summary_part.done",
                    "response.reasoning_summary_text.delta", "response.reasoning_summary_text.done",
                    "response.reasoning_text.delta", "response.reasoning_text.done"}
         if self.functions:
             allowed.update(('response.function_call_arguments.delta','response.function_call_arguments.done'))
         if kind not in allowed:
-            raise AdapterError("Endpoint streamed an undeclared event type", "unexpected_tool")
-        if self.result is not None:
-            raise AdapterError("Endpoint streamed events after completion", "protocol_error")
+            # Progress metadata has no authority to create, close or execute a call.
+            # New item/content/call protocols still require deliberate support.
+            if (kind.startswith(('response.output_item.','response.content_part.',
+                                 'response.function_call_arguments.','response.custom_tool_call_input.'))
+                    or any('_call' in part or 'tool' in part for part in kind.split('.'))
+                    or {'item','part','arguments','call_id','name','output','input'} & event.keys()
+                    or event.get('response',{}).get('output')):
+                raise AdapterError("Endpoint streamed an undeclared action event", "unexpected_tool")
+            self.ignored_event_types[kind] = self.ignored_event_types.get(kind,0)+1
+            return
         if kind in ("response.output_item.added", "response.output_item.done"):
             item = event.get("item", {})
             self.check_item(item)
@@ -280,12 +302,10 @@ class ResponseStream:
                 self.function_arguments[identity] = event['arguments']
         if kind in ("response.content_part.added", "response.content_part.done"):
             part = event.get("part", {})
-            expected = {"output_text": "message", "reasoning_text": "reasoning"}.get(part.get("type"))
+            expected = {"output_text": "message", "refusal": "message", "reasoning_text": "reasoning"}.get(part.get("type"))
             identity = (event.get("item_id"), event.get("output_index"))
             if expected is None or self.item_types.get(identity) != expected:
                 raise AdapterError("Endpoint streamed content outside its declared item", "protocol_error")
-        for item in event.get("response", {}).get("output", []):
-            self.check_item(item)
         if kind == "response.completed":
             terminal = event["response"]
             if self.item_types.keys() != self.completed_items.keys():
@@ -317,7 +337,7 @@ class ResponseStream:
 
 
 def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=False,
-             max_response_bytes=MAX_RESPONSE_BYTES, functions=(), preserve_reasoning=False):
+             max_response_bytes=MAX_RESPONSE_BYTES, functions=(), preserve_reasoning=False, stream_audit=None):
     """No redirects, implicit proxies or retries. Bound reads by one deadline."""
     parsed = urllib.parse.urlsplit(endpoint)
     connection_type = http.client.HTTPSConnection if parsed.scheme == "https" else http.client.HTTPConnection
@@ -346,6 +366,7 @@ def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=Fals
     timer.daemon = True
     timer.start()
     response = None
+    stream = None
     try:
         connection.connect()
         sock = connection.sock
@@ -384,6 +405,10 @@ def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=Fals
             stream.feed(b"", final=True)
             return stream.result
         return strict_json(b"".join(chunks))
+    except AdapterError:
+        if stream_audit is not None and stream is not None and stream.last_event_type is not None:
+            stream_audit['last_stream_event_type'] = stream.last_event_type
+        raise
     except TimeoutError:
         raise AdapterError("Endpoint request deadline exceeded", "timeout",retryable_transport=True) from None
     except (OSError, http.client.HTTPException):
@@ -393,6 +418,8 @@ def exchange(endpoint, key, body, timeout, extra_headers=None, *, streaming=Fals
     except (ValueError, KeyError, TypeError, AttributeError):
         raise AdapterError("Endpoint returned malformed JSON or stream data", "protocol_error") from None
     finally:
+        if stream_audit is not None and stream is not None and stream.ignored_event_types:
+            stream_audit['ignored_stream_event_types'] = dict(sorted(stream.ignored_event_types.items()))
         timer.cancel()
         if response is not None:
             response.close()
@@ -470,7 +497,7 @@ class HttpAgent:
                 try:
                     data = exchange(self.endpoint,self.key,body,wire_limit,self.headers,
                                     streaming=self.config['kind'] in ('responses','responses_tools','responses_session'),
-                                    max_response_bytes=self.max_response_bytes,**extra)
+                                    max_response_bytes=self.max_response_bytes,stream_audit=wire if retries else audit,**extra)
                     wire['outcome'] = 'response_received'
                     break
                 except AdapterError as exc:

@@ -88,7 +88,7 @@ From 2.3, the Chat Completions response must contain exactly one assistant choic
 
 Use [responses-agent.example.json](../examples/responses-agent.example.json) with `kind: responses` and an endpoint ending in `/responses`. Supported options are `reasoning_effort`, `max_output_tokens`, `temperature` and `top_p`; no silent conversion from Chat-specific token or seed options is performed. The declared reasoning effort maps to the protocol's `reasoning.effort` field.
 
-Each request sends the same system instruction and complete public task/history, with `store: false`, `stream: true`, empty tools and no previous-response ID. The parser accepts a completed JSON envelope or the protocol's server-sent events. It applies only the final completed assistant message, never a text delta. Exactly one completed message containing output text is required; reasoning items are ignored rather than saved. Function calls, hosted-tool output, unrecognized events, failed/incomplete streams and missing terminal envelopes are rejected. See the official [text-generation](https://developers.openai.com/api/docs/guides/text) and [streaming](https://developers.openai.com/api/docs/guides/streaming-responses) protocol guides.
+Each request sends the same system instruction and complete public task/history, with `store: false`, `stream: true`, empty tools and no previous-response ID. The parser accepts a completed JSON envelope or the protocol's server-sent events. It applies only the final completed assistant message, never a text delta. Exactly one completed message containing output text is required; reasoning items are ignored rather than saved. Function calls, hosted-tool output, failed/incomplete streams and missing terminal envelopes are rejected. Before 2.17.3, every unrecognized event was also rejected; the metadata compatibility contract below replaces that restriction. See the official [text-generation](https://developers.openai.com/api/docs/guides/text) and [streaming](https://developers.openai.com/api/docs/guides/streaming-responses) protocol guides.
 
 Optional `headers_env` names an environment variable containing a JSON object of distinct `X-` headers, for example a gateway's explicit exact-route selector. From 2.4 it also accepts `ChatGPT-Account-Id` for a client's explicitly supplied account selector. It cannot replace authorization, host or content headers. Values must be ASCII without control characters and are not saved to traces; never put credentials directly in configuration files. Requesting an exact route is only as reliable as the gateway implementing that header. The core does not discover login files or infer one provider's settings from another's.
 
@@ -96,7 +96,7 @@ Optional `headers_env` names an environment variable containing a JSON object of
 
 The [second direct-channel validation](../studies/direct-channel-validation-v2/README.md) distinguishes legitimate protocol variation from tools and incomplete answers:
 
-- A `reasoning_text` content part belongs to a declared reasoning item. It is ignored, never accumulated as action text. An output-text part must belong to a message item. Unknown parts, mixed item identities and type changes are rejected. The [official event reference](https://developers.openai.com/api/reference/resources/responses/streaming-events#response.content_part.added) documents reasoning parts; 2.3 incorrectly rejected them.
+- A `reasoning_text` content part belongs to a declared reasoning item. It is ignored, never accumulated as action text. Output-text and, from 2.17.3, refusal parts must belong to a message item. Refusal text cannot become an action. Unknown parts, mixed item identities and type changes are rejected. The [official event reference](https://developers.openai.com/api/reference/resources/responses/streaming-events#response.content_part.added) documents reasoning parts; 2.3 incorrectly rejected them.
 - If a streaming request receives no media header, use its declared SSE format. Do not sniff arbitrary body text. Explicit JSON envelopes are still supported when labeled as JSON.
 - A native stream may finish each output item and send a final completed response with empty/omitted `output`. Assemble only closed items, require whole-response completion and exactly one valid assistant action. All started items must be closed; duplicate identities, conflicting nonempty terminal actions, unfinished streams and tool items fail. A text delta alone remains insufficient.
 
@@ -175,7 +175,8 @@ Only the initial contract/observation, prior model output and actual tool result
 enter the dialogue. A changed task, rewritten history, wrong action/result binding
 or reused call identity terminates the attempt. Returned reasoning items without
 encrypted continuation state are not silently discarded. No server-side storage,
-provider-hosted tools, automatic retry, added incident hint or history summary is used.
+provider-hosted tools, added incident hint or history summary is used. Transport
+retries remain zero unless explicitly configured as described below.
 
 Opaque reasoning stays in process memory and is never written into public evidence.
 The request audit retains sanitized assistant/function items and hashes for encrypted
@@ -233,3 +234,27 @@ Usage request counts include these attempts; absent usage stays unreported, so
 retrying a request cannot fabricate complete token coverage or a zero-cost failure.
 Services and customers keep running during retries. Already terminated episodes
 remain sealed; a later follow-up has its own plan and trace.
+
+## Non-action stream metadata (2.17.3)
+
+The [API compatibility contract](https://developers.openai.com/api/reference/overview#backwards-compatibility)
+allows new stream event types. A fixed event whitelist can therefore interrupt a
+valid tool dialogue. 2.17.3 ignores new non-action progress metadata and retains
+only bounded event names and counts in `ignored_stream_event_types`. It never
+interprets metadata, commentary or partial arguments as executable actions.
+
+Unknown output-item, content-part and call protocols still require deliberate
+support. Call/tool event names and action-shaped fields are rejected; response
+envelopes are checked for undeclared output items. Explicit error/incomplete
+results and events after completion remain failures. Both item closure and a
+valid whole-response completion are required before accepting one declared call.
+The documented refusal events are message content, not tools or valid actions.
+
+On a parsing failure the audit records `last_stream_event_type`, the last decoded
+event name, not its body and not a claim that it caused every possible failure.
+Invalid names use a fixed marker. With retries these fields belong to each wire
+attempt; without retries they belong to the logical request audit. The
+[retained event interruption](../studies/stream-delivery-transport-retry-v1/README.md)
+predates this audit: its exact rejected event is unknown. Small native protocol
+checks completed before and after this change but did not reproduce that event;
+they are not incident scores or proof that the original interruption is resolved.

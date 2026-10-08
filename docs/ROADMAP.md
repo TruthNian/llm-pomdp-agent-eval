@@ -7,12 +7,21 @@ Calibrate difficulty with useful tools available and complete strong-model inter
 and requested simplification. The [measurement decisions](MEASUREMENT_REVIEW_2026-10-08.zh-CN.md)
 keep action counts as internal budgets/audit, separate reported tokens and attributable costs,
 and require prospective incident grading to follow customer needs to business outcomes and waiting.
-HTTP failure ratios are diagnostic records, not a capability score. The old posthoc rankings
+Background write-failure ratios are diagnostic records, not a capability score. The old posthoc rankings
 are retired; all frozen grades retain their original rules. Framework 2.17 implements
 the [version-2 customer-delivery contract](STREAM_RECOVERY.md#customer-delivery-version-2):
 one-command test, a fixed cohort, ordinary identical-request retries, independent
 business checks before/after restart, and one readable result. Qualification and a
 complete native-model attempt must be recorded separately; this is not difficulty proof.
+
+The [real controls](../studies/stream-delivery-v2/README.md) passed full recovery and
+exposed 18 duplicate bookings from blind replay. Three separate Astra max attempts
+are retained. The [third](../studies/stream-delivery-transport-retry-v1/README.md)
+restored all 12 customer intents and business state across restart but lacked
+formal handover after an event-parser interruption. 2.17.3 separates non-action
+stream metadata from executable calls. Its small native protocol checks passed;
+they do not replace the interrupted incident result. Complete the fresh frozen
+integration before claiming successful formal delivery under this adapter.
 
 The immediate path is: complete the existing incident loop, verify actual consequences
 with a feasible recovery and an unsafe control, then run a full strong-model test.

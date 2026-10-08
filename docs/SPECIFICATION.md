@@ -5,7 +5,7 @@ Generator: `diagnostic-graphs/1`. Protocol and trace schema: `1`. Historical v1 
 **Prospective measurement decisions (2026-10-08):** the user-approved
 [review record](MEASUREMENT_REVIEW_2026-10-08.zh-CN.md) defines the direction for the next
 incident version: action budgets/audit, customer outcomes and waiting, reported token
-coverage and attributable costs. HTTP failure ratios do not directly score capability.
+coverage and attributable costs. Background write-failure ratios do not directly score capability.
 The subsequent user instruction resumed implementation. Framework 2.17 implements
 the [version-2 customer-delivery contract](STREAM_RECOVERY.md#customer-delivery-version-2)
 and one-command `benchmark` entry, reusing the existing collector and runtime.
@@ -19,6 +19,11 @@ leaves old configurations at zero retries. No incident or grading semantics chan
 2.17.2 extends that same bounded policy to classified request timeouts, connection
 failures and premature transport EOF, while explicit model incompletion and invalid
 tool calls remain failures. Unfinished responses never execute environment actions.
+2.17.3 accepts new non-action stream metadata, recording type counts rather than
+remote bodies. Unknown action/item protocols, explicit errors, invalid calls and
+events after completion remain rejected. Valid refusal content never substitutes
+for an action. This changes adapter admission, not incident or business grading;
+interrupted earlier runs retain their original results.
 
 The accepted [incident-takeover design](INCIDENT_TAKEOVER.md) is implemented by
 `incident-takeover/1` in framework 2.13, with a separate [runtime contract](POSTGRES_TAKEOVER.md).
